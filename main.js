@@ -115,6 +115,13 @@ class Main extends Phaser.Scene {
         this.cameras.main.setBackgroundColor(this.ui_colors[0])
         if (this.game_layer) this.cameras.main.ignore(this.game_layer)
 
+        //game camera
+        this.game_camera = this.cameras.add(200, 0)
+        this.game_camera.zoom = 2
+        this.game_camera.setBackgroundColor(this.ui_colors[1])
+        if (this.ui_layer) this.game_camera.ignore(this.ui_layer)
+        if (this.forground_layer) this.game_camera.ignore(this.forground_layer)
+
         //minimap
         const minimap = this.cameras.add(- 35, -30, 240, 200)
         minimap.zoom = 0.3
@@ -122,12 +129,7 @@ class Main extends Phaser.Scene {
         if (this.ui_layer) minimap.ignore(this.ui_layer)
         if (this.forground_layer) minimap.ignore(this.forground_layer)
 
-        //game camera
-        this.game_camera = this.cameras.add(200, 0)
-        this.game_camera.zoom = 2
-        this.game_camera.setBackgroundColor(this.ui_colors[1])
-        if (this.ui_layer) this.game_camera.ignore(this.ui_layer)
-        if (this.forground_layer) this.game_camera.ignore(this.forground_layer)
+
 
         //forground camera
         this.forground_cam = this.cameras.add()
