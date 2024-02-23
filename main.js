@@ -41,9 +41,11 @@ class Main extends Phaser.Scene {
 
 
         this.input.on('gameobjectover', (pointer, gameObject) => {
+            gameObject.setTint(0xff0000)
+        })
 
-            gameObject.setTint(0xff0000);
-
+        this.input.on('gameobjectout', (pointer, gameObject) => {
+            gameObject.clearTint()
         })
 
         const camera = this.game_camera;
@@ -154,7 +156,7 @@ class Main extends Phaser.Scene {
 
         //game but1
         if (this.forground_layer.but1) this.forground_layer.but1.destroy()
-        this.forground_layer.but1 = this.add.graphics({ fillStyle: { color: this.ui_colors[2] } }).setInteractive()
+        this.forground_layer.but1 = this.add.graphics({ fillStyle: { color: this.ui_colors[2] } })
         this.forground_layer.but1.fillRectShape(new Phaser.Geom.Rectangle(this.game_padding[0] + this.game_padding[4] * 2, this.game_padding[1] + this.game_padding[4] * 2, 20, 20))
         this.forground_layer.add([this.forground_layer.but1])
 
@@ -208,6 +210,7 @@ class Main extends Phaser.Scene {
             if (this.game_layer) this.game_layer.add(this.players.get(uid))
         }
         let player = this.players.get(uid)
+        //player.setInteractive({ useHandCursor: true })
         if (data.x) player.x = data.x
         if (data.y) player.y = data.y
         return player
