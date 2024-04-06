@@ -35,8 +35,3 @@ net.on('auth.info', (data) => {
 })
 
 net.connect('wss://ws.emupedia.net/ws/')
-
-
-
-
-
