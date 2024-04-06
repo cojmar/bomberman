@@ -17,10 +17,14 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
             "name": "",
             "direction": "",
             "x": 0,
-            "y": 0
+            "y": 0,
+            destroy: () => {
+
+            }
         }
         this.init_anims(scene)
     }
+
     init_anims(scene) {
         if (!scene.anims.anims.entries['player_left']) scene.anims.create({
             key: 'player_left',
