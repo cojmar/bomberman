@@ -51,9 +51,9 @@ export class Game extends Phaser.Scene {
         // })
     }
 
-    set_player(data) {
+    set_player(uid = 'default', data) {
         if (!data) data = {}
-        let uid = data?.uid || 'default'
+
         let player = false
 
         if (!this.players.has(uid)) {
