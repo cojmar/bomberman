@@ -9,13 +9,10 @@ class Main extends Phaser.Scene {
         console.log(this.sys.game.net.room)
         this.scene.start('game')
     }
-
 }
 
 let net = new Network()
-net.on('connect', () => {
-    net.send_cmd('auth', { 'user': '', 'room': 'bomb-main' })
-})
+net.on('connect', () => net.send_cmd('auth', { 'user': '', 'room': 'bomb-main' }))
 
 net.on('auth.info', (data) => {
     const game = new Phaser.Game({
@@ -35,8 +32,8 @@ net.on('auth.info', (data) => {
     game.net = net
     game.net.on("cmd", (data) => { if (game.net_cmd) game.net_cmd(data) })
     window.addEventListener("resize", () => game?.resize())
-
 })
+
 net.connect('wss://ws.emupedia.net/ws/')
 
 
