@@ -43,6 +43,7 @@ export class Game extends Phaser.Scene {
         this.collision_layer = this.physics.add.group()
         this.map = new TileMap(this)
         this.spwans = this.map.spawn_spots || [[0, 0]]
+
         Object.values(this.net.room.users).map(user => this.set_player(user.info.user, user.data))
 
         this.spawn_player()
@@ -56,11 +57,10 @@ export class Game extends Phaser.Scene {
         })
     }
 
-    spawn_player() {
-        let randomSpawn = this.spwans[Math.floor(Math.random() * this.spwans.length)]
-        randomSpawn = [1, 1]
-        let start_tile = this.map_layer.getTileAt(...randomSpawn)
-
+    spawn_player(random = false) {
+        let index = Object.keys(this.net.room.users).indexOf(this.net.me.info.user)
+        let spawnIndex = (random) ? Math.floor(Math.random() * this.spwans.length) : index % this.spwans.length
+        let start_tile = this.map_layer.getTileAt(...this.spwans[spawnIndex])
         this.player = this.set_player(this.net.me.info.user, {
             x: start_tile.pixelX + (start_tile.baseWidth / 2),
             y: start_tile.pixelY + (start_tile.baseHeight / 2)
