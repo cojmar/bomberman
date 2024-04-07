@@ -6,9 +6,10 @@ export class TileMap {
     static init_map(scene) {
         const map = scene.make.tilemap({ key: 'map' })
         const tileset = map.addTilesetImage('tiles')
-        scene.colision_layer = map.createLayer('Tile Layer 1', tileset, 0, 0)
+        if (scene.map_layer) scene.map_layer.destroy()
+        scene.map_layer = map.createLayer('Tile Layer 1', tileset, 0, 0)
+        scene.game_layer.add([scene.map_layer])
 
-        scene.game_layer.add([scene.colision_layer])
 
         map.setCollision([34, 20]) // 20 = dark gray, 32 = dark blue
         // map.setCollision([ 136 ]) // dark brown

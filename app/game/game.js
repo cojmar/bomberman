@@ -27,16 +27,13 @@ export class Game extends Phaser.Scene {
     net_cmd(cmd_data) {
         switch (cmd_data.cmd) {
             case 'room.user_leave':
-                if (this.players.has(cmd_data.data.user)) {
-                    this.players.get(cmd_data.data.user).destroy()
-                    this.players.delete(cmd_data.data.user)
-                }
+                this.players.get(cmd_data.data.user)?.destroy()
                 break
             case 'room.user_data':
                 if (cmd_data.data.user !== this.net.me.info.user) this.set_player(cmd_data.data.user, cmd_data.data.data)
                 break
             default:
-                console.log(cmd_data)
+                //console.log(cmd_data)
                 break
         }
 
@@ -45,15 +42,16 @@ export class Game extends Phaser.Scene {
     new_game() {
         this.players = new Map()
         this.game_layer.getChildren().forEach(child => child.destroy())
+        if (this.collision_layer) this.collision_layer.destroy()
+        this.collision_layer = this.physics.add.group()
+
+
 
         TileMap.init_map(this)
 
-        Object.values(this.net.room.users).map(user => {
+        Object.values(this.net.room.users).map(user => this.set_player(user.info.user, user.data))
 
-            this.set_player(user.info.user, user.data)
-        })
-
-        this.player = this.set_player(this.net.me.info.user)
+        this.player = this.players.get(this.net.me.info.user)
         this.net.send_cmd('set_data', this.player.data)
 
 
@@ -78,19 +76,7 @@ export class Game extends Phaser.Scene {
 
     set_player(uid = 'default', data) {
         if (!data) data = {}
-
-        let player = false
-
-        if (!this.players.has(uid)) {
-            player = new Player(this)
-            player.set_data({ x: 48, y: 48 })
-            this.players.set(uid, player)
-            this.physics.add.collider(player, this.colision_layer)
-            if (this.game_layer) this.game_layer.add(player)
-            this.players.set(uid, player)
-        }
-        else player = this.players.get(uid)
-
+        let player = this.players.get(uid) || new Player(this, uid, { x: 48, y: 48 })
         player.set_data(data)
         return player
     }
