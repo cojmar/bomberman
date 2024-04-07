@@ -14,16 +14,22 @@ export class TileMap {
             136, // dark brown
             80, // yellow
             122,// light brown
-            104, // purple
+            104, // purple,
+            76,//light green
+            62,//green
 
         ]
         this.safe_spots = [
             29, 30,// blue 
-            100, 99,// purple
+            100, 99,// purple,
+            59, 57,//green,
+            71, 72,//light green
         ]
         this.spawn_spots = [
             [1, 1],
-            [14, 11]
+            [14, 11],
+            [3, 11],
+            [16, 3],
         ]
 
 
