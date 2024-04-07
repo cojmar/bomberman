@@ -21,12 +21,15 @@ export class Game extends Phaser.Scene {
         this.sys.game.resize = () => this.ui.init_screen()
         this.send_cmd = (cmd, data) => this.sys.game.net.send_cmd(cmd, data)
         this.new_game()
-        this.send_cmd("cucu", "bau")
-        //this.send_cmd('set_data', { "x": 1 })
+
 
         setTimeout(() => {
             // this.scene.switch('main')
         }, 5000)
+
+        setInterval(() => {
+            //this.send_cmd('set_data', Object.assign(this.player.data, { x: this.player.x, y: this.player.y }))
+        }, 1000)
 
     }
     net_cmd(cmd_data) {
@@ -53,7 +56,10 @@ export class Game extends Phaser.Scene {
 
         TileMap.init_map(this)
 
-        Object.values(this.net.room.users).map(user => this.set_player(user.info.user, user.info.data))
+        Object.values(this.net.room.users).map(user => {
+
+            this.set_player(user.info.user, user.data)
+        })
 
         this.player = this.set_player(this.net.me.info.user)
         this.net.send_cmd('set_data', this.player.data)
@@ -121,7 +127,8 @@ export class Game extends Phaser.Scene {
 
             // send direction
             if (direction !== this.player.data.direction) {
-                this.player.set_data({ direction })
+                this.send_cmd('set_data', { direction, x: this.player.x, y: this.player.y })
+
                 if (this.game_camera) this.game_camera.startFollow(this.player)
             }
         }
