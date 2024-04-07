@@ -6,8 +6,13 @@ class Main extends Phaser.Scene {
         super({ key: 'main' })
     }
     create() {
-        console.log(this.sys.game.net.room)
+        this.net = this.sys.game.net
+        this.sys.game.net_cmd = (data) => this.net_cmd(data)
+        //this.net.send_cmd("list")
         this.scene.start('game')
+    }
+    net_cmd(data) {
+        console.log(data)
     }
 }
 

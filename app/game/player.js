@@ -13,8 +13,6 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         this.body.setSize(20, 30, true)
         this.body.setOffset(6, 18)
         this.data = {
-            "uid": "",
-            "name": "",
             "direction": "",
             "x": 0,
             "y": 0,
