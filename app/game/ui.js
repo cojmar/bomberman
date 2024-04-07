@@ -115,37 +115,42 @@ export class UI {
         })
     }
     init_ui() {
-        try {
 
 
-            //game camera border
-            if (this.scene.ui_layer.cam_border) this.scene.ui_layer.cam_border.destroy()
-            this.scene.ui_layer.cam_border = this.scene.add.graphics({ fillStyle: { color: this.scene.ui_colors[2] } })
-            this.scene.ui_layer.cam_border.fillRectShape(new Phaser.Geom.Rectangle(this.scene.game_padding[0] - this.scene.game_padding[4], this.scene.game_padding[1] - this.scene.game_padding[4], window.innerWidth - this.scene.game_padding[0] - this.scene.game_padding[2] + (this.scene.game_padding[4] * 2), window.innerHeight - this.scene.game_padding[1] - this.scene.game_padding[3] + (this.scene.game_padding[4] * 2)))
-            this.scene.ui_layer.add([this.scene.ui_layer.cam_border])
+
+        //game camera border
+        if (this.scene.ui_layer.cam_border) this.scene.ui_layer.cam_border.destroy()
+        this.scene.ui_layer.cam_border = this.scene.add.graphics({ fillStyle: { color: this.scene.ui_colors[2] } })
+        this.scene.ui_layer.cam_border.fillRectShape(new Phaser.Geom.Rectangle(this.scene.game_padding[0] - this.scene.game_padding[4], this.scene.game_padding[1] - this.scene.game_padding[4], window.innerWidth - this.scene.game_padding[0] - this.scene.game_padding[2] + (this.scene.game_padding[4] * 2), window.innerHeight - this.scene.game_padding[1] - this.scene.game_padding[3] + (this.scene.game_padding[4] * 2)))
+        this.scene.ui_layer.add([this.scene.ui_layer.cam_border])
 
 
-            //game but1
-            if (this.scene.forground_layer.but1) this.scene.forground_layer.but1.destroy()
-            this.scene.forground_layer.but1 = this.scene.add.graphics({ fillStyle: { color: this.scene.ui_colors[2] } })
-            this.scene.forground_layer.but1.fillRectShape(new Phaser.Geom.Rectangle(this.scene.game_padding[0] + this.scene.game_padding[4] * 2, this.scene.game_padding[1] + this.scene.game_padding[4] * 2, 20, 20))
-            this.scene.forground_layer.add([this.scene.forground_layer.but1])
+        //game but1
+        if (this.scene.forground_layer.but1) this.scene.forground_layer.but1.destroy()
+        this.scene.forground_layer.but1 = this.scene.add.graphics({ fillStyle: { color: this.scene.ui_colors[2] } })
+        this.scene.forground_layer.but1.fillRectShape(new Phaser.Geom.Rectangle(this.scene.game_padding[0] + this.scene.game_padding[4] * 2, this.scene.game_padding[1] + this.scene.game_padding[4] * 2, 20, 20))
+        this.scene.forground_layer.add([this.scene.forground_layer.but1])
 
-            //fixed stuff 
-            if (!this.scene.ui_layer.fixed_ui) {
-                this.scene.ui_layer.fixed_ui = this.scene.add.graphics({ fillStyle: { color: this.scene.ui_colors[2] } })
-                this.scene.ui_layer.fixed_ui2 = this.scene.add.graphics({ fillStyle: { color: this.scene.ui_colors[1] } })
-                this.scene.ui_layer.fixed_ui.fillRectShape(new Phaser.Geom.Rectangle(9, 8, 200, 152))
-                this.scene.ui_layer.fixed_ui.fillRectShape(new Phaser.Geom.Rectangle(200, 90, 50, 25))
+        //fixed stuff 
+        if (!this.scene.ui_layer.fixed_ui) {
+            this.scene.ui_layer.fixed_ui = this.scene.add.graphics({ fillStyle: { color: this.scene.ui_colors[2] } })
+            this.scene.ui_layer.fixed_ui2 = this.scene.add.graphics({ fillStyle: { color: this.scene.ui_colors[1] } })
+            this.scene.ui_layer.fixed_ui.fillRectShape(new Phaser.Geom.Rectangle(9, 8, 200, 152))
+            this.scene.ui_layer.fixed_ui.fillRectShape(new Phaser.Geom.Rectangle(200, 90, 50, 25))
 
-                this.scene.ui_layer.fixed_ui.fillRectShape(new Phaser.Geom.Rectangle(9, 168, 200, 60))
-                this.scene.ui_layer.fixed_ui2.fillRectShape(new Phaser.Geom.Rectangle(13, 172, 192, 52))
-                this.scene.ui_layer.fixed_ui.fillRectShape(new Phaser.Geom.Rectangle(200, 185, 50, 25))
+            this.scene.ui_layer.fixed_ui.fillRectShape(new Phaser.Geom.Rectangle(9, 168, 200, 60))
+            this.scene.ui_layer.fixed_ui2.fillRectShape(new Phaser.Geom.Rectangle(13, 172, 192, 52))
+            this.scene.ui_layer.fixed_ui.fillRectShape(new Phaser.Geom.Rectangle(200, 185, 50, 25))
 
-                this.scene.ui_layer.add([this.scene.ui_layer.fixed_ui, this.scene.ui_layer.fixed_ui2])
-            }
-        } catch (error) {
+            this.scene.ui_layer.add([this.scene.ui_layer.fixed_ui, this.scene.ui_layer.fixed_ui2])
 
         }
+        // text zone
+        if (this.scene.ui_text) this.scene.ui_text.destroy()
+        this.scene.ui_text = this.scene.add.text(20, 178, '', { font: '20px monospace', fill: '#d1cdcd' })
+
+        this.scene.ui_layer.add([this.scene.ui_text])
+
+
     }
 }

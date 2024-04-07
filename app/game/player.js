@@ -15,7 +15,8 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         scene.physics.add.existing(this)
         scene.collision_layer.add(this)
 
-        let safe_spots = [29, 30]
+        let safe_spots = []
+        if (this.scene?.map?.safe_spots) safe_spots = [...safe_spots, ...this.scene.map.safe_spots]
 
         if (scene.map_layer) scene.physics.add.collider(this, scene.map_layer, () => {
             //console.log('colision')

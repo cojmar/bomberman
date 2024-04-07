@@ -12,7 +12,7 @@ class Main extends Phaser.Scene {
         this.scene.start('game')
     }
     net_cmd(data) {
-        console.log(data)
+        //console.log(data)
     }
 }
 

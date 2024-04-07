@@ -20,7 +20,7 @@ export class Game extends Phaser.Scene {
 
         this.sys.game.resize = () => this.ui.init_screen()
         this.send_cmd = (cmd, data) => this.sys.game.net.send_cmd(cmd, data)
-        this.new_game()
+        this.init_game()
 
 
     }
@@ -39,17 +39,18 @@ export class Game extends Phaser.Scene {
 
     }
 
-    new_game() {
+    init_game() {
         this.players = new Map()
         this.game_layer.getChildren().forEach(child => child.destroy())
         if (this.collision_layer) this.collision_layer.destroy()
         this.collision_layer = this.physics.add.group()
+        this.map = new TileMap(this)
+        this.spwans = this.map.spawn_spots || [0, 0]
 
-
-
-        TileMap.init_map(this)
-
-        Object.values(this.net.room.users).map(user => this.set_player(user.info.user, user.data))
+        Object.values(this.net.room.users).map((user, i) => {
+            console.log(i)
+            this.set_player(user.info.user, user.data)
+        })
 
         this.player = this.players.get(this.net.me.info.user)
         this.net.send_cmd('set_data', this.player.data)
@@ -82,6 +83,10 @@ export class Game extends Phaser.Scene {
     }
 
     update(time, delta) {
+        if (this.ui_text) {
+            let tile = this.player.get_tile()
+            this.ui_text.text = `X:${tile.x} Y:${tile.y} TYPE:${tile.index}`
+        }
         // calculate movment direction
         if (this.player) {
             let direction = ""
