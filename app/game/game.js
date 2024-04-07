@@ -46,8 +46,20 @@ export class Game extends Phaser.Scene {
         this.collision_layer = this.physics.add.group()
         this.map = new TileMap(this)
         this.spwans = this.map.spawn_spots || [[0, 0]]
-
         Object.values(this.net.room.users).map(user => this.set_player(user.info.user, user.data))
+
+        this.spawn_player()
+
+        this.input.on('gameobjectover', (pointer, gameObject) => {
+            gameObject.setTint(0xff0000)
+        })
+
+        this.input.on('gameobjectout', (pointer, gameObject) => {
+            gameObject.clearTint()
+        })
+    }
+
+    spawn_player() {
         let randomSpawn = this.spwans[Math.floor(Math.random() * this.spwans.length)]
         let start_tile = this.map_layer.getTileAt(...randomSpawn)
 
@@ -57,25 +69,7 @@ export class Game extends Phaser.Scene {
         })
 
         this.net.send_cmd('set_data', this.player.data)
-
-
         if (this.game_camera) this.game_camera.startFollow(this.player)
-
-        this.input.on('gameobjectover', (pointer, gameObject) => {
-            gameObject.setTint(0xff0000)
-        })
-
-        this.input.on('gameobjectout', (pointer, gameObject) => {
-            gameObject.clearTint()
-        })
-
-        // this.physics.add.collider(player, layer, () => {
-        //     console.log('colliding')
-        // })
-
-        // this.physics.add.overlap(player, layer, () => {
-        //     console.log('overlapping')
-        // })
     }
 
     set_player(uid = 'default', data) {
