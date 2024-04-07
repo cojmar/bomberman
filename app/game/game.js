@@ -17,12 +17,9 @@ export class Game extends Phaser.Scene {
         this.net = this.sys.game.net
         this.sys.game.net_cmd = (data) => this.net_cmd(data)
 
-
         this.sys.game.resize = () => this.ui.init_screen()
         this.send_cmd = (cmd, data) => this.sys.game.net.send_cmd(cmd, data)
         this.init_game()
-
-
     }
     net_cmd(cmd_data) {
         switch (cmd_data.cmd) {
