@@ -20,6 +20,8 @@ export class Game extends Phaser.Scene {
         this.sys.game.resize = () => this.ui.init_screen()
         this.send_cmd = (cmd, data) => this.sys.game.net.send_cmd(cmd, data)
         this.init_game()
+
+        //setTimeout(() => this.scene.switch('main'), 4000)
     }
     net_cmd(cmd_data) {
         switch (cmd_data.cmd) {
@@ -80,7 +82,9 @@ export class Game extends Phaser.Scene {
     update(time, delta) {
         if (this.ui_text) {
             let tile = this.player.get_tile()
-            this.ui_text.text = `X:${tile.x} Y:${tile.y} TYPE:${tile.index}`
+            try {
+                this.ui_text.text = `X:${tile.x} Y:${tile.y} T:${tile.index}`
+            } catch (error) { }
         }
         // calculate movment direction
         if (this.player) {
