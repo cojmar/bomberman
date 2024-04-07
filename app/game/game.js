@@ -23,14 +23,6 @@ export class Game extends Phaser.Scene {
         this.new_game()
 
 
-        setTimeout(() => {
-            // this.scene.switch('main')
-        }, 5000)
-
-        setInterval(() => {
-            //this.send_cmd('set_data', Object.assign(this.player.data, { x: this.player.x, y: this.player.y }))
-        }, 1000)
-
     }
     net_cmd(cmd_data) {
         switch (cmd_data.cmd) {
@@ -41,7 +33,7 @@ export class Game extends Phaser.Scene {
                 }
                 break
             case 'room.user_data':
-                this, this.set_player(cmd_data.data.user, cmd_data.data.data)
+                if (cmd_data.data.user !== this.net.me.info.user) this.set_player(cmd_data.data.user, cmd_data.data.data)
                 break
             default:
                 console.log(cmd_data)
@@ -127,6 +119,7 @@ export class Game extends Phaser.Scene {
 
             // send direction
             if (direction !== this.player.data.direction) {
+                this.player.set_data({ direction })
                 this.send_cmd('set_data', { direction, x: this.player.x, y: this.player.y })
 
                 if (this.game_camera) this.game_camera.startFollow(this.player)
