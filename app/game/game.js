@@ -58,6 +58,7 @@ export class Game extends Phaser.Scene {
 
     spawn_player() {
         let randomSpawn = this.spwans[Math.floor(Math.random() * this.spwans.length)]
+        randomSpawn = [1, 1]
         let start_tile = this.map_layer.getTileAt(...randomSpawn)
 
         this.player = this.set_player(this.net.me.info.user, {

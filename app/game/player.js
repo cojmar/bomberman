@@ -10,6 +10,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         if (!scene.players) scene.players = new Map()
         if (scene.players.has(uid)) return false
 
+        this.uid = uid
         scene.add.existing(this)
         scene.game_layer.add(this)
         scene.physics.add.existing(this)
@@ -22,14 +23,10 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
             //console.log('colision')
         })
         scene.physics.add.collider(this, scene.collision_layer, (obj1, obj2) => {
-            // Calculate the distance between obj1 and obj2
-            let distance = Phaser.Math.Distance.Between(obj1.x, obj1.y, obj2.x, obj2.y)
             let tile = this.get_tile()
             if (safe_spots.indexOf(tile.index) !== -1) return false
             this.collision = true
-            this.setVelocity(-this.body.velocity.x * 1.5, -this.body.velocity.y * 1.5); // Invert the direction and send the body back where it was before no collision
-
-
+            this.setVelocity(-this.body.velocity.x * 1.5, -this.body.velocity.y * 1.5) // Invert the direction and send the body back where it was before no collision
         })
 
         this.setScale(0.58)
