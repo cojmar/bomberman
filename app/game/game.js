@@ -50,7 +50,7 @@ export class Game extends Phaser.Scene {
         Object.values(this.net.room.users).map(user => this.set_player(user.info.user, user.data))
         let randomSpawn = this.spwans[Math.floor(Math.random() * this.spwans.length)]
         let start_tile = this.map_layer.getTileAt(...randomSpawn)
-        console.log(start_tile)
+
         this.player = this.set_player(this.net.me.info.user, {
             x: start_tile.pixelX + (start_tile.baseWidth / 2),
             y: start_tile.pixelY + (start_tile.baseHeight / 2)
