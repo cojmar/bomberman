@@ -11,7 +11,7 @@ export class TileMap {
         scene.game_layer.add([scene.map_layer])
         this.collisions = [
             34, 20,// 20 = dark gray, 32 = dark blue
-            136, // dark brown
+            // 136, // dark brown
             80, // yellow
             122,// light brown
             104, // purple,
@@ -22,7 +22,7 @@ export class TileMap {
         this.safe_spots = [
             29, 30,// blue 
             100, 99,// purple,
-            59, 57,//green,
+            57, 58,//green,
             71, 72,//light green
         ]
         this.spawn_spots = [

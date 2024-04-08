@@ -16,18 +16,18 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         scene.physics.add.existing(this)
         scene.collision_layer.add(this)
 
-        let safe_spots = []
-        if (this.scene?.map?.safe_spots) safe_spots = [...safe_spots, ...this.scene.map.safe_spots]
+        this.safe_spots = []
+        if (this.scene?.map?.safe_spots) this.safe_spots = [...this.safe_spots, ...this.scene.map.safe_spots]
 
         if (scene.map_layer) scene.physics.add.collider(this, scene.map_layer, () => {
             //console.log('colision')
         })
-        scene.physics.add.collider(this, scene.collision_layer, (obj1, obj2) => {
-            let tile = this.get_tile()
-            if (safe_spots.indexOf(tile.index) !== -1) return false
-            this.collision = true
-            this.setVelocity(-this.body.velocity.x * 1.5, -this.body.velocity.y * 1.5) // Invert the direction and send the body back where it was before no collision
-        })
+
+        // scene.physics.add.collider(this, scene.collision_layer, (obj1, obj2) => {
+        //     let tile = this.get_tile()
+        //     if (this.safe_spots.indexOf(tile.index) !== -1) return false
+        //     this.setVelocity(-this.body.velocity.x * 1.5, -this.body.velocity.y * 1.5) // Invert the direction and send the body back where it was before no collision
+        // })
 
         this.setScale(0.58)
         this.body.immovable = true
@@ -49,7 +49,6 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         if (!this.scene.map_layer) return false
         return this.scene.map_layer.getTileAtWorldXY(x, y) || false
     }
-
 
     init_anims() {
         if (!this.scene.anims.anims.entries['player_left']) this.scene.anims.create({
@@ -79,23 +78,29 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         if (data.y) this.y = data.y
     }
     update() {
-        if (this.collision) return this.collision = false
+        let direction = this.data.direction
+        this.scene.physics.world.collide(this, this.scene.collision_layer, (obj1, obj2) => {
+            let tile = this.get_tile()
+            if (this.safe_spots.indexOf(tile.index) !== -1) return
 
-        if (this.data.direction.indexOf('l') !== -1) {
-            this.setVelocityX(-100)
-            this.anims.play('player_left', true)
-        }
-        else if (this.data.direction.indexOf('r') !== -1) {
-            this.setVelocityX(100)
-            this.anims.play('player_right', true)
-        }
-        else {
-            this.setVelocityX(0)
-            this.anims.play('player_turn', true)
-        }
+            if (obj1.x > obj2.x) direction = direction.replace('l', 'r')
+            else direction = direction.replace('r', 'l')
 
-        if (this.data.direction.indexOf('u') !== -1) this.setVelocityY(-100)
-        else if (this.data.direction.indexOf('d') !== -1) this.setVelocityY(100)
+            if (obj1.y > obj2.y) direction = direction.replace('u', 'd')
+            else direction = direction.replace('d', 'u')
+        })
+
+        if (this.data.direction.indexOf('l') !== -1) this.anims.play('player_left', true)
+        else if (this.data.direction.indexOf('r') !== -1) this.anims.play('player_right', true)
+        else this.anims.play('player_turn', true)
+
+
+        if (direction.indexOf('l') !== -1) this.setVelocityX(-100)
+        else if (direction.indexOf('r') !== -1) this.setVelocityX(100)
+        else this.setVelocityX(0)
+
+        if (direction.indexOf('u') !== -1) this.setVelocityY(-100)
+        else if (direction.indexOf('d') !== -1) this.setVelocityY(100)
         else this.setVelocityY(0)
 
         this.depth = this.y + 20
