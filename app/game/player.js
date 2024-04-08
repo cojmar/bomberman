@@ -90,11 +90,6 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
             else direction = direction.replace('d', 'u')
         })
 
-        if (this.data.direction.indexOf('l') !== -1) this.anims.play('player_left', true)
-        else if (this.data.direction.indexOf('r') !== -1) this.anims.play('player_right', true)
-        else this.anims.play('player_turn', true)
-
-
         if (direction.indexOf('l') !== -1) this.setVelocityX(-100)
         else if (direction.indexOf('r') !== -1) this.setVelocityX(100)
         else this.setVelocityX(0)
@@ -102,6 +97,10 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         if (direction.indexOf('u') !== -1) this.setVelocityY(-100)
         else if (direction.indexOf('d') !== -1) this.setVelocityY(100)
         else this.setVelocityY(0)
+
+        if (this.data.direction.indexOf('l') !== -1) this.anims.play('player_left', true)
+        else if (this.data.direction.indexOf('r') !== -1) this.anims.play('player_right', true)
+        else this.anims.play('player_turn', true)
 
         this.depth = this.y + 20
     }
