@@ -64,6 +64,15 @@ export class Game extends Phaser.Scene {
         this.input.on('gameobjectout', (pointer, gameObject) => {
             gameObject.clearTint()
         })
+        // Set a seed for the random number generator
+        Phaser.Math.RND.sow([123, 456, 789]);
+        console.log(Phaser.Math.RND.state())
+        // Now, Phaser.Math.RND will return the same sequence of random numbers
+        console.log(Phaser.Math.RND.frac()); // 0.123
+        console.log(Phaser.Math.RND.frac()); // 0.456
+        Phaser.Math.RND.sow([123, 456, 789])
+        console.log(Phaser.Math.RND.frac()); // 0.789
+        console.log(Phaser.Math.RND.frac()); // 0.789
     }
 
     get_user_spawn_tile(uid, random = false) {

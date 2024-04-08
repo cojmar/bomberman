@@ -83,11 +83,11 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
             let tile = this.get_tile()
             if (this.safe_spots.indexOf(tile.index) !== -1) return
 
-            if (obj1.x > obj2.x) direction = direction.replace('l', 'r')
-            else direction = direction.replace('r', 'l')
+            if (obj1.x > obj2.x) direction = direction.replace('l', '')
+            else direction = direction.replace('r', '')
 
-            if (obj1.y > obj2.y) direction = direction.replace('u', 'd')
-            else direction = direction.replace('d', 'u')
+            if (obj1.y > obj2.y) direction = direction.replace('u', '')
+            else direction = direction.replace('d', '')
         })
 
         if (direction.indexOf('l') !== -1) this.setVelocityX(-100)

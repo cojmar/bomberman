@@ -32,8 +32,12 @@ export class TileMap {
             [16, 3],
         ]
 
+        // Replace tiles in this.map
+        this.map.replaceByIndex(57, 29)
 
         this.map.setCollision(this.collisions)
+
+        //console.log(this.map.getChildren())
 
 
     }
