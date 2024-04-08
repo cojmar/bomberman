@@ -95,7 +95,7 @@ export class Game extends Phaser.Scene {
         if (this.ui_text) {
             let tile = this.player.get_tile()
             try {
-                this.ui_text.text = `X:${tile.x} Y:${tile.y} T:${tile.index}`
+                this.ui_text.text = `Players ${Object.keys(this.net.room.users).length}\n X:${tile.x} Y:${tile.y} T:${tile.index}`
             } catch (error) { }
         }
         // calculate movment direction
