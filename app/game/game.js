@@ -61,7 +61,7 @@ export class Game extends Phaser.Scene {
         if (this.collision_layer) this.collision_layer.destroy()
         this.collision_layer = this.physics.add.group()
         //console.log(this.host())
-        this.map = new TileMap(this, this.host()?.data?.map_data || {})
+        this.map = new TileMap(this, this.host()?.data?.map_data?.data || {})
         this.spwans = this.map.spawn_spots || [[0, 0]]
 
         Object.values(this.net.room.users).map(user => {

@@ -72,7 +72,7 @@ export class TileMap {
             }
         }
         if (fill) Array(this.map.layers[0].width * this.map.layers[0].height).fill(fill).map((tile, index) => set_tile(tile, index))
-        data.forEach((tile, index) => set_tile(tile, index))
+        if (Array.isArray(data)) data.forEach((tile, index) => set_tile(tile, index))
         this.update()
     }
     get_map() {
@@ -86,14 +86,11 @@ export class TileMap {
         }
     }
     update() {
-        let map_data = this.get_map()
         if (this.pickable_tiles) {
             let all_gone = true
-            map_data.data.map(t => { if (this.pickable_tiles.indexOf(t) !== -1) all_gone = false })
+            this.get_map().data.map(t => { if (this.pickable_tiles.indexOf(t) !== -1) all_gone = false })
             if (all_gone) this.reset_map()
-
         }
-
-        this.scene.net.send_cmd('set_data', { map_data })
+        this.scene.net.send_cmd('set_data', { map_data: this.get_map() })
     }
 }
