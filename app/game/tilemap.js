@@ -38,7 +38,7 @@ export class TileMap {
         //this.map.putTileAt(57, 1, 1)
         //this.map.replaceByIndex(57, 29)       
         this.init_map(this.def_map())
-        this.init_map(data || {})
+        this.set_map(data || {})
     }
     def_map() {
         return this.scene.sys.game.tile_layer_data
