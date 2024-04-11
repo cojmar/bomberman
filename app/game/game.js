@@ -47,7 +47,7 @@ export class Game extends Phaser.Scene {
     }
 
     init_game() {
-        console.log(this.is_host())
+
         this.players = new Map()
         this.game_layer.getChildren().forEach(child => child.destroy())
         if (this.collision_layer) this.collision_layer.destroy()

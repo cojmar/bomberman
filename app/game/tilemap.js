@@ -30,7 +30,7 @@ export class TileMap {
             [3, 11],
             [16, 3],
         ]
-        console.log(data)
+
         // Replace tiles in this.map
         //this.map.putTileAt(57, 1, 1)
         //this.map.replaceByIndex(57, 29)       
