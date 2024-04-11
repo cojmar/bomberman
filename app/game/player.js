@@ -18,16 +18,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
 
         this.safe_spots = []
         if (this.scene?.map?.safe_spots) this.safe_spots = [...this.safe_spots, ...this.scene.map.safe_spots]
-
-        if (scene.map_layer) this.map_collider = scene.physics.add.collider(this, scene.map_layer, () => {
-            // console.log('colision')
-        })
-
-        // scene.physics.add.collider(this, scene.collision_layer, (obj1, obj2) => {
-        //     let tile = this.get_tile()
-        //     if (this.safe_spots.indexOf(tile.index) !== -1) return false
-        //     this.setVelocity(-this.body.velocity.x * 1.5, -this.body.velocity.y * 1.5) // Invert the direction and send the body back where it was before no collision
-        // })
+        if (scene.map_layer) this.map_collider = scene.physics.add.collider(this, scene.map_layer)
 
         this.setScale(0.58)
         this.body.immovable = true
