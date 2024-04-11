@@ -29,7 +29,15 @@ export class Game extends Phaser.Scene {
                 this.players.get(cmd_data.data.user)?.destroy()
                 break
             case 'room.user_data':
-                if (cmd_data.data.user !== this.net.me.info.user) this.set_player(cmd_data.data.user, cmd_data.data.data)
+                if (cmd_data.data.user === this.net.me.info.user) return false
+                this.set_player(cmd_data.data.user, cmd_data.data.data)
+                if (this.is_host(cmd_data.data.user)) {
+                    if (cmd_data.data.data?.map_data?.data) {
+                        // console.log('map update from host')
+                        this.map.set_map(cmd_data.data.data.map_data.data)
+                    }
+                }
+
                 break
             default:
                 //console.log(cmd_data)
