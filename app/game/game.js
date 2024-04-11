@@ -49,6 +49,7 @@ export class Game extends Phaser.Scene {
         Object.values(this.net.room.users).map(user => {
             if (!user.data.x) {
                 let start_tile = this.get_user_spawn_tile(user.info.user)
+                if (!start_tile) return false
                 user.data.x = start_tile.pixelX + (start_tile.baseWidth / 2)
                 user.data.y = start_tile.pixelY + (start_tile.baseHeight / 2)
             }
@@ -64,26 +65,27 @@ export class Game extends Phaser.Scene {
         this.input.on('gameobjectout', (pointer, gameObject) => {
             gameObject.clearTint()
         })
-        // Set a seed for the random number generator
-        Phaser.Math.RND.sow([123, 456, 789]);
-        console.log(Phaser.Math.RND.state())
-        // Now, Phaser.Math.RND will return the same sequence of random numbers
-        console.log(Phaser.Math.RND.frac()); // 0.123
-        console.log(Phaser.Math.RND.frac()); // 0.456
-        Phaser.Math.RND.sow([123, 456, 789])
-        console.log(Phaser.Math.RND.frac()); // 0.789
-        console.log(Phaser.Math.RND.frac()); // 0.789
+        // // Set a seed for the random number generator
+        // Phaser.Math.RND.sow([123, 456, 789]);
+        // console.log(Phaser.Math.RND.state())
+        // // Now, Phaser.Math.RND will return the same sequence of random numbers
+        // console.log(Phaser.Math.RND.frac()); // 0.123
+        // console.log(Phaser.Math.RND.frac()); // 0.456
+        // Phaser.Math.RND.sow([123, 456, 789])
+        // console.log(Phaser.Math.RND.frac()); // 0.789
+        // console.log(Phaser.Math.RND.frac()); // 0.789
     }
 
     get_user_spawn_tile(uid, random = false) {
         let index = Object.keys(this.net.room.users).indexOf(uid)
         let spawnIndex = (random) ? Math.floor(Math.random() * this.spwans.length) : index % this.spwans.length
-        //spawnIndex = 0
-        return this.map_layer.getTileAt(...this.spwans[spawnIndex])
+        spawnIndex = 0
+        return this.map_layer?.getTileAt(...this.spwans[spawnIndex])
     }
 
     spawn_player(random = false) {
         let start_tile = this.get_user_spawn_tile(this.net.me.info.user)
+        if (!start_tile) return false
         this.player = this.set_player(this.net.me.info.user, {
             x: start_tile.pixelX + (start_tile.baseWidth / 2),
             y: start_tile.pixelY + (start_tile.baseHeight / 2)
@@ -102,8 +104,9 @@ export class Game extends Phaser.Scene {
 
     update(time, delta) {
         if (this.ui_text) {
-            let tile = this.player.get_tile()
+
             try {
+                let tile = this.player.get_tile()
                 this.ui_text.text = ` Players ${Object.keys(this.net.room.users).length}\n X:${tile.x} Y:${tile.y} T:${tile.index}`
             } catch (error) { }
         }
