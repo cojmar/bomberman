@@ -39,7 +39,8 @@ export class Game extends Phaser.Scene {
     }
 
     host() {
-        return Object.values(this.net.room.users).shift() || false
+
+        return (this.net.room.host) ? this.net.room.users[this.net.room.host] : Object.values(this.net.room.users).shift() || false
     }
     is_host(uid = false) {
         if (!uid) uid = this.net.me.info.user
@@ -47,11 +48,11 @@ export class Game extends Phaser.Scene {
     }
 
     init_game() {
-
         this.players = new Map()
         this.game_layer.getChildren().forEach(child => child.destroy())
         if (this.collision_layer) this.collision_layer.destroy()
         this.collision_layer = this.physics.add.group()
+        //console.log(this.host())
         this.map = new TileMap(this, this.host()?.data?.map_data || {})
         this.spwans = this.map.spawn_spots || [[0, 0]]
 
