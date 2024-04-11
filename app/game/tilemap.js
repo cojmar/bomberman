@@ -30,13 +30,17 @@ export class TileMap {
             [3, 11],
             [16, 3],
         ]
-
+        console.log(data)
         // Replace tiles in this.map
         //this.map.putTileAt(57, 1, 1)
         //this.map.replaceByIndex(57, 29)       
         this.init_map(Object.assign(scene.sys.game.tile_layer_data, data || {}))
-        this.set_map([1, 1, 1, [29, 0, 0]])
-        this.reset_map()
+        this.def_map()
+    }
+    def_map() {
+        //this.init_map(this.scene.sys.game.tile_layer_data)
+        //this.set_map([1, 1, 1, [29, 0, 0]], 1)
+        //this.reset_map()
     }
     init_map(data = {}) {
         let layer_data = this.scene.cache.tilemap.get('map').data.layers[0]
@@ -50,6 +54,7 @@ export class TileMap {
         this.scene.game_layer.add([this.scene.map_layer])
         this.map.setCollision(this.collisions)
         this.init_data = this.get_map().data
+        this.update()
     }
     reset_map() {
         this.set_map(this.init_data)
@@ -67,6 +72,7 @@ export class TileMap {
         }
         if (fill) Array(this.map.layers[0].width * this.map.layers[0].height).fill(fill).map((tile, index) => set_tile(tile, index))
         data.forEach((tile, index) => set_tile(tile, index))
+        this.update()
     }
     get_map() {
         let data = []
@@ -77,5 +83,8 @@ export class TileMap {
             height: this.map.layers[0].height,
             data
         }
+    }
+    update() {
+        this.scene.net.send_cmd('set_data', { map_data: this.get_map() })
     }
 }
