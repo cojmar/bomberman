@@ -30,17 +30,18 @@ export class TileMap {
             [3, 11],
             [16, 3],
         ]
+        this.pickable_tiles = [
+            136,// brown box
+        ]
 
         // Replace tiles in this.map
         //this.map.putTileAt(57, 1, 1)
         //this.map.replaceByIndex(57, 29)       
-        this.init_map(Object.assign(scene.sys.game.tile_layer_data, data || {}))
-        this.def_map()
+        this.init_map(this.def_map())
+        this.init_map(data || {})
     }
     def_map() {
-        //this.init_map(this.scene.sys.game.tile_layer_data)
-        //this.set_map([1, 1, 1, [29, 0, 0]], 1)
-        //this.reset_map()
+        return this.scene.sys.game.tile_layer_data
     }
     init_map(data = {}) {
         let layer_data = this.scene.cache.tilemap.get('map').data.layers[0]
@@ -85,6 +86,14 @@ export class TileMap {
         }
     }
     update() {
-        this.scene.net.send_cmd('set_data', { map_data: this.get_map() })
+        let map_data = this.get_map()
+        if (this.pickable_tiles) {
+            let all_gone = true
+            map_data.data.map(t => { if (this.pickable_tiles.indexOf(t) !== -1) all_gone = false })
+            if (all_gone) this.reset_map()
+
+        }
+
+        this.scene.net.send_cmd('set_data', { map_data })
     }
 }
