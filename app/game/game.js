@@ -97,7 +97,7 @@ export class Game extends Phaser.Scene {
     get_user_spawn_tile(uid, random = false) {
         let index = Object.keys(this.net.room.users).indexOf(uid)
         let spawnIndex = (random) ? Math.floor(Math.random() * this.spwans.length) : index % this.spwans.length
-        spawnIndex = 0
+        // spawnIndex = 0
         return this.map_layer?.getTileAt(...this.spwans[spawnIndex])
     }
 
