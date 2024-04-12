@@ -54,7 +54,7 @@ export class TileMap {
         this.update()
     }
     reset_map() {
-        this.set_map(this.init_data)
+        this.set_map(this.init_data, false, false)
     }
     get_x_y(index) {
         let width = this.map.layers[0].width
@@ -62,7 +62,7 @@ export class TileMap {
         let y = Math.floor(index / width)
         return [x, y]
     }
-    set_map(data, fill = false) {
+    set_map(data, fill = false, update = true) {
         if (typeof data !== 'object') data = [data]
 
         let set_tile = (tile, index) => {
@@ -71,7 +71,7 @@ export class TileMap {
         }
         if (fill) Array(this.map.layers[0].width * this.map.layers[0].height).fill(fill).map((tile, index) => set_tile(tile, index))
         if (Array.isArray(data)) data.forEach((tile, index) => set_tile(tile, index))
-        this.update()
+        if (update) this.update()
     }
     get_map() {
         let data = []

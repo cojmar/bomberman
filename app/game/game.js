@@ -31,19 +31,22 @@ export class Game extends Phaser.Scene {
             case 'room.user_data':
                 if (cmd_data.data.user === this.net.me.info.user) return false
                 this.set_player(cmd_data.data.user, cmd_data.data.data)
-                if (this.is_host(cmd_data.data.user)) {
+                if (this.is_host(cmd_data.data.user) || !this.net.room.host) {
                     if (cmd_data.data.data?.map_data?.data) {
-                        // console.log('map update from host')
-                        this.map.set_map(cmd_data.data.data.map_data.data)
+                        let map_data = this.map.get_map()
+                        if (JSON.stringify(map_data) === JSON.stringify(cmd_data.data.data.map_data)) return false
+                        if (
+                            cmd_data.data.data.map_data.width !== map_data.width ||
+                            cmd_data.data.data.map_data.height !== map_data.height
+                        ) this.map.init_map(cmd_data.data.data.map_data)
+                        else this.map.set_map(cmd_data.data.data.map_data.data)
                     }
                 }
-
                 break
             default:
                 //console.log(cmd_data)
                 break
         }
-
     }
 
     host() {
@@ -62,6 +65,10 @@ export class Game extends Phaser.Scene {
         this.collision_layer = this.physics.add.group()
         //console.log(this.host())
         this.map = new TileMap(this, this.host()?.data?.map_data?.data || {})
+        /*
+                this.map.spawn_tiles.push(1)
+                this.map.init_map({ width: 5, height: 5, data: [20, 20, 20, 20, 20] })
+        */
 
 
         Object.values(this.net.room.users).map(user => {
@@ -83,6 +90,8 @@ export class Game extends Phaser.Scene {
         this.input.on('gameobjectout', (pointer, gameObject) => {
             gameObject.clearTint()
         })
+
+
         // // Set a seed for the random number generator
         // Phaser.Math.RND.sow([123, 456, 789]);
         // console.log(Phaser.Math.RND.state())
