@@ -18,7 +18,9 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
 
         this.safe_spots = []
         if (this.scene?.map?.safe_spots) this.safe_spots = [...this.safe_spots, ...this.scene.map.safe_spots]
-        if (scene.map_layer) this.map_collider = scene.physics.add.collider(this, scene.map_layer)
+        if (scene.map_layer) this.map_collider = scene.physics.add.collider(this, scene.map_layer, (obj1, tile) => {
+            this.scene.map.brake_tile(tile)
+        })
 
         this.setScale(0.58)
         this.body.immovable = true
@@ -68,12 +70,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         if (data.x) this.x = data.x
         if (data.y) this.y = data.y
     }
-    pick_up_tile() {
-        let tile = this.get_tile()
-        this.scene.map.set_map([[1, tile.x, tile.y]])
-        //console.log(tile)
 
-    }
     update() {
         let direction = this.data.direction
         this.scene.physics.world.collide(this, this.scene.collision_layer, (obj1, obj2) => {
@@ -100,8 +97,6 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         else this.anims.play('player_turn', true)
 
         this.depth = this.y + 20
-        if (this.scene.map.pickable_tiles.indexOf(this.get_tile().index) !== -1) this.pick_up_tile()
-
 
     }
 }

@@ -10,7 +10,7 @@ export class TileMap {
 
         this.collisions = [
             34, 20,// 20 = dark gray, 32 = dark blue
-            // 136, // dark brown
+            136, // dark brown
             80, // yellow
             122,// light brown
             104, // purple,
@@ -30,7 +30,7 @@ export class TileMap {
             [3, 11],
             [16, 3],
         ]
-        this.pickable_tiles = [
+        this.brakeable_tiles = [
             136,// brown box
         ]
 
@@ -39,6 +39,11 @@ export class TileMap {
         //this.map.replaceByIndex(57, 29)       
         this.init_map(this.def_map())
         this.set_map(data || {})
+    }
+    brake_tile(tile) {
+        if (!tile) tile = this.scene.player.get_tile()
+        if (this.scene.map.brakeable_tiles.indexOf(tile.index) === -1) return false
+        this.scene.map.set_map([[tile.index - 5, tile.x, tile.y]])
     }
     def_map() {
         return this.scene.sys.game.tile_layer_data
@@ -86,9 +91,9 @@ export class TileMap {
         }
     }
     update() {
-        if (this.pickable_tiles) {
+        if (this?.brakeable_tiles?.length) {
             let all_gone = true
-            this.get_map().data.map(t => { if (this.pickable_tiles.indexOf(t) !== -1) all_gone = false })
+            this.get_map().data.map(t => { if (this.brakeable_tiles.indexOf(t) !== -1) all_gone = false })
             if (all_gone) this.reset_map()
         }
         this.scene.net.send_cmd('set_data', { map_data: this.get_map() })
