@@ -3,6 +3,8 @@ export class TileMap {
     static preload(scene) {
         scene.load.tilemapTiledJSON('map', 'assets/json/map_prop.json')
         scene.load.image('tiles', 'assets/img/map.png')
+        //scene.load.scenePlugin('AnimatedTiles', 'assets/js/AnimatedTiles.min.js', 'animatedTiles', 'animatedTiles');
+
     }
     constructor(scene, data = {}) {
         this.scene = scene
@@ -11,9 +13,11 @@ export class TileMap {
         this.safe_spots = []
         this.brakeable_tiles = []
         this.spawn_tiles = []
+        this.animated_tiles = {}
         scene.cache.tilemap.get('map').data.tilesets[0].tiles.map(t => {
             if (t?.properties) {
                 let index = t.id + 1
+                if (t?.animation) this.animated_tiles[index] = { time: 0, frame: 0, frames: t.animation }
                 if (t.properties?.find(v => v.name === 'collision')?.value || false) this.collisions.push(index)
                 if (t.properties?.find(v => v.name === 'breakable')?.value || false) this.brakeable_tiles.push(index)
                 if (t.properties?.find(v => v.name === 'safe')?.value || false) this.safe_spots.push(index)
@@ -23,6 +27,7 @@ export class TileMap {
                 }
             }
         })
+
         this.init_map(this.def_map())
         this.set_map(data || {})
     }
@@ -50,8 +55,9 @@ export class TileMap {
         this.scene.game_layer.add([this.scene.map_layer])
         this.map.setCollision(this.collisions)
         this.init_data = this.get_map().data
-        this.init_spawns()
-        this.update()
+
+        this.sync_data()
+
     }
     reset_map() {
         this.set_map(this.init_data, false, false)
@@ -62,20 +68,24 @@ export class TileMap {
         let y = Math.floor(index / width)
         return [x, y]
     }
-    set_map(data, fill = false, update = true) {
+    set_map(data, fill = false, sync = true) {
         if (typeof data !== 'object') data = [data]
 
         let set_tile = (tile, index) => {
-            if (typeof tile === 'object') this.map.putTileAt(...tile)
-            else this.map.putTileAt(tile, ...this.get_x_y(index))
+            let t = (typeof tile === 'object') ? this.map.putTileAt(...tile) : this.map.putTileAt(tile, ...this.get_x_y(index))
+            t.oindex = t.index
+            return t
         }
         if (fill) Array(this.map.layers[0].width * this.map.layers[0].height).fill(fill).map((tile, index) => set_tile(tile, index))
         if (Array.isArray(data)) data.forEach((tile, index) => set_tile(tile, index))
-        if (update) this.update()
+        if (sync) this.sync_data()
     }
     get_map() {
         let data = []
-        this.map.layers[0].data.map(t => t.map(t2 => data.push(t2.index)))
+        this.map.layers[0].data.map(t => t.map(t2 => {
+            let i = t2.oindex || t2.index
+            data.push(i)
+        }))
 
         return {
             width: this.map.layers[0].width,
@@ -83,7 +93,12 @@ export class TileMap {
             data
         }
     }
-    update() {
+    get_tiles_by_index(index) {
+        return this.map.layers[0].data.reduce((a, t) => [...a, ...t.filter(v => v?.oindex == index)], [])
+    }
+    sync_data() {
+        this.init_spawns()
+
         clearTimeout(this.update_to)
         this.update_to = setTimeout(() => {
             if (this?.brakeable_tiles?.length) {
@@ -92,8 +107,28 @@ export class TileMap {
                 if (all_gone) this.reset_map()
             }
             this.scene.net.send_cmd('set_data', { map_data: this.get_map() })
-            this.init_spawns()
+            //this.scene.animatedTiles.init(this.map)
         })
+
+    }
+    update(time, delta) {
+        Object.keys(this.animated_tiles).map(index => {
+            let ani = this.animated_tiles[index]
+            if (!ani.frames.length) return false
+            let frame = ani.frames[ani.frame]
+            if (time - ani.time < frame.duration) return false
+            ani.time = time
+            ani.frame++
+            if (ani.frame >= ani.frames.length) ani.frame = 0
+
+            this.get_tiles_by_index(index).map(t => {
+                if (typeof t.oindex === 'undefined') return false
+                t.index = ani.frames[ani.frame].tileid + 1
+            })
+        })
+
+
+        // console.log(time / delta)
 
     }
 }

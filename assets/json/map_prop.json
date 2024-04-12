@@ -338,6 +338,23 @@
                         }]
                 }, 
                 {
+                 "animation":[
+                        {
+                         "duration":300,
+                         "tileid":35
+                        }, 
+                        {
+                         "duration":300,
+                         "tileid":34
+                        }, 
+                        {
+                         "duration":300,
+                         "tileid":35
+                        }, 
+                        {
+                         "duration":600,
+                         "tileid":29
+                        }],
                  "id":29,
                  "properties":[
                         {
