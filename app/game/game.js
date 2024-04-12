@@ -128,6 +128,11 @@ export class Game extends Phaser.Scene {
 
         this.net.send_cmd('set_data', this.player.data)
         if (this.game_camera) this.game_camera.startFollow(this.player)
+        setTimeout(() => {
+            let tile = this.player.get_tile()
+            if (tile?.properties?.spawn) tile?.animation?.play()
+        }, 200)
+
     }
 
     set_player(uid = 'default', data) {
@@ -135,6 +140,7 @@ export class Game extends Phaser.Scene {
         let player = this.players.get(uid) || new Player(this, uid, { x: -1000, y: -1000 })
         player.set_data(data)
         let tile = player.get_tile()
+        if (tile?.properties?.spawn) tile?.animation?.play()
 
         return player
     }

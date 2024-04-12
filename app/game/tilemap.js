@@ -114,21 +114,36 @@ export class TileMap {
     }
     update(time, delta) {
         Object.keys(this.animated_tiles).map(index => {
-            let ani = this.animated_tiles[index]
-            if (!ani.frames.length) return false
-            let frame = ani.frames[ani.frame]
-            if (time - ani.time < frame.duration) return false
-            ani.time = time
-            ani.frame++
-            if (ani.frame >= ani.frames.length) ani.frame = 0
-
             this.get_tiles_by_index(index).map(t => {
-                t.index = ani.frames[ani.frame].tileid + 1
+                if (!t.animation) {
+                    t.animation = Object.assign({
+                        play: (frame = 0, autoplay = false) => {
+                            t.animation.autoplay = autoplay
+                            t.animation.frame = frame
+                            if (t.animation.frame >= t.animation.frames.length) t.animation.frame = 0
+                            t.animation.playing = true
+                        },
+                        stop: () => {
+                            t.animation.autoplay = false
+                            t.animation.playing = false
+                        },
+                        update: (time, delta) => {
+                            if (!t.animation.playing) return false
+                            let frame = t.animation.frames[t.animation.frame]
+                            if (time - t.animation.time < frame.duration) return false
+                            t.animation.time = time
+                            t.animation.frame++
+                            if (t.animation.frame >= t.animation.frames.length) t.animation.frame = 0
+                            frame = t.animation.frames[t.animation.frame]
+                            t.index = frame.tileid + 1
+                            if (t.animation.frame === t.animation.frames.length - 1 && !t.animation.autoplay) t.animation.stop()
+                        }
+                    }, this.animated_tiles[index])
+                    let autoplay = t?.properties?.autoplay
+                    if (autoplay) t.animation.play(0, autoplay)
+                }
+                t.animation.update(time, delta)
             })
         })
-
-
-        // console.log(time / delta)
-
     }
 }
