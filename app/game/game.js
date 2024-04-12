@@ -48,6 +48,9 @@ export class Game extends Phaser.Scene {
                     this.players.get(cmd_data.data.user)[`action_${cmd_data.data.data}`]()
                 } catch (error) { }
                 break
+            case 'spawn':
+                this.players.get(cmd_data.data.user)?.get_tile()?.animation?.play()
+                break
             default:
                 //console.log(cmd_data)
                 break
@@ -128,20 +131,13 @@ export class Game extends Phaser.Scene {
 
         this.net.send_cmd('set_data', this.player.data)
         if (this.game_camera) this.game_camera.startFollow(this.player)
-        setTimeout(() => {
-            let tile = this.player.get_tile()
-            if (tile?.properties?.spawn) tile?.animation?.play()
-        }, 200)
-
+        this.net.send_cmd('spawn')
     }
 
     set_player(uid = 'default', data) {
         if (!data) data = {}
         let player = this.players.get(uid) || new Player(this, uid, { x: -1000, y: -1000 })
         player.set_data(data)
-        let tile = player.get_tile()
-        if (tile?.properties?.spawn) tile?.animation?.play()
-
         return player
     }
 

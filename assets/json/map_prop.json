@@ -200,22 +200,10 @@
                         }]
                 }, 
                 {
-                 "id":34,
-                 "properties":[
-                        {
-                         "name":"safe",
-                         "type":"bool",
-                         "value":true
-                        }]
+                 "id":34
                 }, 
                 {
-                 "id":35,
-                 "properties":[
-                        {
-                         "name":"safe",
-                         "type":"bool",
-                         "value":true
-                        }]
+                 "id":35
                 }, 
                 {
                  "id":36
@@ -261,22 +249,10 @@
                         }]
                 }, 
                 {
-                 "id":48,
-                 "properties":[
-                        {
-                         "name":"safe",
-                         "type":"bool",
-                         "value":true
-                        }]
+                 "id":48
                 }, 
                 {
-                 "id":49,
-                 "properties":[
-                        {
-                         "name":"safe",
-                         "type":"bool",
-                         "value":true
-                        }]
+                 "id":49
                 }, 
                 {
                  "id":50
@@ -355,22 +331,10 @@
                         }]
                 }, 
                 {
-                 "id":62,
-                 "properties":[
-                        {
-                         "name":"safe",
-                         "type":"bool",
-                         "value":true
-                        }]
+                 "id":62
                 }, 
                 {
-                 "id":63,
-                 "properties":[
-                        {
-                         "name":"safe",
-                         "type":"bool",
-                         "value":true
-                        }]
+                 "id":63
                 }, 
                 {
                  "id":64
@@ -475,22 +439,10 @@
                         }]
                 }, 
                 {
-                 "id":76,
-                 "properties":[
-                        {
-                         "name":"safe",
-                         "type":"bool",
-                         "value":true
-                        }]
+                 "id":76
                 }, 
                 {
-                 "id":77,
-                 "properties":[
-                        {
-                         "name":"safe",
-                         "type":"bool",
-                         "value":true
-                        }]
+                 "id":77
                 }, 
                 {
                  "id":78
@@ -597,22 +549,10 @@
                         }]
                 }, 
                 {
-                 "id":104,
-                 "properties":[
-                        {
-                         "name":"safe",
-                         "type":"bool",
-                         "value":true
-                        }]
+                 "id":104
                 }, 
                 {
-                 "id":105,
-                 "properties":[
-                        {
-                         "name":"safe",
-                         "type":"bool",
-                         "value":true
-                        }]
+                 "id":105
                 }, 
                 {
                  "id":106
@@ -697,18 +637,7 @@
                  "id":130
                 }, 
                 {
-                 "id":131,
-                 "properties":[
-                        {
-                         "name":"brakable",
-                         "type":"bool",
-                         "value":true
-                        }, 
-                        {
-                         "name":"collision",
-                         "type":"bool",
-                         "value":true
-                        }]
+                 "id":131
                 }, 
                 {
                  "id":132

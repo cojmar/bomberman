@@ -73,15 +73,13 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     action_respawn() {
         if (this.uid !== this.scene.net.me.info.user) return false
         this.scene.spawn_player(true)
-
-
     }
 
     update() {
         let direction = this.data.direction
         this.scene.physics.world.collide(this, this.scene.collision_layer, (obj1, obj2) => {
             let tile = this.get_tile()
-            if (this.safe_spots.indexOf(tile.index) !== -1) return
+            if (this.safe_spots.indexOf(tile.oindex) !== -1) return
 
             if (obj1.x > obj2.x) direction = direction.replace('l', '')
             else direction = direction.replace('r', '')
