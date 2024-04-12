@@ -154,6 +154,15 @@
                         }]
                 }, 
                 {
+                 "animation":[
+                        {
+                         "duration":500,
+                         "tileid":135
+                        }, 
+                        {
+                         "duration":500,
+                         "tileid":131
+                        }],
                  "id":135,
                  "properties":[
                         {
