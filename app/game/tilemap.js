@@ -84,8 +84,8 @@ export class TileMap {
     get_map() {
         let data = []
         this.map.layers[0].data.map(t => t.map(t2 => {
-            let i = t2.oindex || t2.index
-            data.push(i)
+            if (!t2.oindex) t2.oindex = t2.index
+            data.push(t2.oindex)
         }))
 
         return {
