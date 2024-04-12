@@ -36,7 +36,7 @@ export class UI {
             right: this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D),
         })
         this.scene.input.keyboard.on('keyup-' + 'SPACE', (event) => {
-            console.log('sp')
+            this.scene.net.send_cmd('action', 'respawn')
         })
     }
     init_cameras() {

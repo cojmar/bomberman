@@ -70,6 +70,12 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         if (data.x) this.x = data.x
         if (data.y) this.y = data.y
     }
+    action_respawn() {
+        if (this.uid !== this.scene.net.me.info.user) return false
+        this.scene.spawn_player(true)
+
+
+    }
 
     update() {
         let direction = this.data.direction

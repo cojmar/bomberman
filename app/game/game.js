@@ -43,6 +43,11 @@ export class Game extends Phaser.Scene {
                     }
                 }
                 break
+            case 'action':
+                try {
+                    this.players.get(cmd_data.data.user)[`action_${cmd_data.data.data}`]()
+                } catch (error) { }
+                break
             default:
                 //console.log(cmd_data)
                 break
@@ -113,7 +118,7 @@ export class Game extends Phaser.Scene {
     }
 
     spawn_player(random = false) {
-        let start_tile = this.get_user_spawn_tile(this.net.me.info.user)
+        let start_tile = this.get_user_spawn_tile(this.net.me.info.user, random)
         if (!start_tile) return false
         this.player = this.set_player(this.net.me.info.user, {
             x: start_tile.pixelX + (start_tile.baseWidth / 2),
@@ -161,12 +166,13 @@ export class Game extends Phaser.Scene {
             }, false)) direction += "d"
 
             // send direction
-            if (direction !== this.player.data.direction) {
-                this.player.set_data({ direction })
-                this.send_cmd('set_data', { direction, x: this.player.x, y: this.player.y })
+            if (this.player.data)
+                if (direction !== this.player.data.direction) {
+                    this.player.set_data({ direction })
+                    this.send_cmd('set_data', { direction, x: this.player.x, y: this.player.y })
 
-                if (this.game_camera) this.game_camera.startFollow(this.player)
-            }
+                    if (this.game_camera) this.game_camera.startFollow(this.player)
+                }
         }
 
         if (this.players) this.players.forEach(async player => player.update())
