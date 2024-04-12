@@ -33,7 +33,10 @@ export class UI {
             up: this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W),
             down: this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S),
             left: this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A),
-            right: this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D)
+            right: this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D),
+        })
+        this.scene.input.keyboard.on('keyup-' + 'SPACE', (event) => {
+            console.log('sp')
         })
     }
     init_cameras() {

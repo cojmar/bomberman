@@ -24,21 +24,26 @@ export class TileMap {
             57, 58,//green,
             71, 72,//light green
         ]
-        this.spawn_spots = [
-            [1, 1],
-            [14, 11],
-            [3, 11],
-            [16, 3],
-        ]
+
+
         this.brakeable_tiles = [
-            136,// brown box
+            // 136,// brown box
         ]
 
-        // Replace tiles in this.map
-        //this.map.putTileAt(57, 1, 1)
-        //this.map.replaceByIndex(57, 29)       
+        this.spawn_tiles = []
+        scene.cache.tilemap.get('map').data.tilesets[0].tiles.map((t, i) => {
+            if (t?.properties) {
+                if (t.properties?.find(v => v.name === 'breakable')?.value || false) this.brakeable_tiles.push(t.id + 1)
+                if (t.properties?.find(v => v.name === 'spawn')?.value || false) this.spawn_tiles.push(t.id + 1)
+            }
+        })
+
         this.init_map(this.def_map())
         this.set_map(data || {})
+    }
+    init_spawns() {
+        this.spawn_spots =
+            this.get_map().data.reduce((a, t, index) => (this.spawn_tiles.indexOf(t) !== -1) ? [...a, this.get_x_y(index)] : a, [])
     }
     brake_tile(tile) {
         if (!tile) tile = this.scene.player.get_tile()
@@ -60,21 +65,24 @@ export class TileMap {
         this.scene.game_layer.add([this.scene.map_layer])
         this.map.setCollision(this.collisions)
         this.init_data = this.get_map().data
+        this.init_spawns()
         this.update()
     }
     reset_map() {
         this.set_map(this.init_data)
     }
+    get_x_y(index) {
+        let width = this.map.layers[0].width
+        let x = index % width
+        let y = Math.floor(index / width)
+        return [x, y]
+    }
     set_map(data, fill = false) {
         if (typeof data !== 'object') data = [data]
-        let width = this.map.layers[0].width
+
         let set_tile = (tile, index) => {
             if (typeof tile === 'object') this.map.putTileAt(...tile)
-            else {
-                let x = index % width
-                let y = Math.floor(index / width)
-                this.map.putTileAt(tile, x, y)
-            }
+            else this.map.putTileAt(tile, ...this.get_x_y(index))
         }
         if (fill) Array(this.map.layers[0].width * this.map.layers[0].height).fill(fill).map((tile, index) => set_tile(tile, index))
         if (Array.isArray(data)) data.forEach((tile, index) => set_tile(tile, index))
@@ -91,11 +99,16 @@ export class TileMap {
         }
     }
     update() {
-        if (this?.brakeable_tiles?.length) {
-            let all_gone = true
-            this.get_map().data.map(t => { if (this.brakeable_tiles.indexOf(t) !== -1) all_gone = false })
-            if (all_gone) this.reset_map()
-        }
-        this.scene.net.send_cmd('set_data', { map_data: this.get_map() })
+        clearTimeout(this.update_to)
+        this.update_to = setTimeout(() => {
+            if (this?.brakeable_tiles?.length) {
+                let all_gone = true
+                this.get_map().data.map(t => { if (this.brakeable_tiles.indexOf(t) !== -1) all_gone = false })
+                if (all_gone) this.reset_map()
+            }
+            this.scene.net.send_cmd('set_data', { map_data: this.get_map() })
+            this.init_spawns()
+        })
+
     }
 }
