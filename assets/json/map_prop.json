@@ -63,7 +63,13 @@
                  "id":4
                 }, 
                 {
-                 "id":5
+                 "id":5,
+                 "properties":[
+                        {
+                         "name":"collision",
+                         "type":"bool",
+                         "value":true
+                        }]
                 }, 
                 {
                  "id":6
@@ -105,7 +111,13 @@
                  "id":18
                 }, 
                 {
-                 "id":19
+                 "id":19,
+                 "properties":[
+                        {
+                         "name":"collision",
+                         "type":"bool",
+                         "value":true
+                        }]
                 },
             
                 {
@@ -133,13 +145,24 @@
                  "id":27
                 }, 
                 {
-                 "id":28
+                 "id":28,
+                 "properties":[
+                        {
+                         "name":"safe",
+                         "type":"bool",
+                         "value":true
+                        }]
                 }, 
                 {
                  "id":135,
                  "properties":[
                         {
                          "name":"breakable",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
+                         "name":"collision",
                          "type":"bool",
                          "value":true
                         }]
@@ -154,7 +177,13 @@
                  "id":32
                 }, 
                 {
-                 "id":33
+                 "id":33,
+                 "properties":[
+                        {
+                         "name":"collision",
+                         "type":"bool",
+                         "value":true
+                        }]
                 }, 
                 {
                  "id":34
@@ -197,7 +226,13 @@
                  "id":46
                 }, 
                 {
-                 "id":47
+                 "id":47,
+                 "properties":[
+                        {
+                         "name":"collision",
+                         "type":"bool",
+                         "value":true
+                        }]
                 }, 
                 {
                  "id":48
@@ -224,7 +259,13 @@
                  "id":55
                 }, 
                 {
-                 "id":56
+                 "id":56,
+                 "properties":[
+                        {
+                         "name":"safe",
+                         "type":"bool",
+                         "value":true
+                        }]
                 }, 
                 {
                  "id":57,
@@ -246,7 +287,13 @@
                  "id":60
                 }, 
                 {
-                 "id":61
+                 "id":61,
+                 "properties":[
+                        {
+                         "name":"collision",
+                         "type":"bool",
+                         "value":true
+                        }]
                 }, 
                 {
                  "id":62
@@ -273,7 +320,13 @@
                  "id":69
                 }, 
                 {
-                 "id":70
+                 "id":70,
+                 "properties":[
+                        {
+                         "name":"safe",
+                         "type":"bool",
+                         "value":true
+                        }]
                 }, 
                 {
                  "id":71,
@@ -300,7 +353,13 @@
                  "id":74
                 }, 
                 {
-                 "id":75
+                 "id":75,
+                 "properties":[
+                        {
+                         "name":"collision",
+                         "type":"bool",
+                         "value":true
+                        }]
                 }, 
                 {
                  "id":76
@@ -343,7 +402,13 @@
                  "id":88
                 }, 
                 {
-                 "id":89
+                 "id":89,
+                 "properties":[
+                        {
+                         "name":"collision",
+                         "type":"bool",
+                         "value":true
+                        }]
                 }, 
                 {
                  "id":90
@@ -370,7 +435,13 @@
                  "id":97
                 }, 
                 {
-                 "id":98
+                 "id":98,
+                 "properties":[
+                        {
+                         "name":"safe",
+                         "type":"bool",
+                         "value":true
+                        }]
                 }, 
                 {
                  "id":72,
@@ -392,7 +463,13 @@
                  "id":102
                 }, 
                 {
-                 "id":103
+                 "id":103,
+                 "properties":[
+                        {
+                         "name":"collision",
+                         "type":"bool",
+                         "value":true
+                        }]
                 }, 
                 {
                  "id":104
@@ -434,7 +511,13 @@
                  "id":116
                 }, 
                 {
-                 "id":117
+                 "id":117,
+                 "properties":[
+                        {
+                         "name":"collision",
+                         "type":"bool",
+                         "value":true
+                        }]
                 }, 
                 {
                  "id":118
@@ -477,7 +560,13 @@
                  "id":130
                 }, 
                 {
-                 "id":131
+                 "id":131,
+                 "properties":[
+                        {
+                         "name":"collision",
+                         "type":"bool",
+                         "value":true
+                        }]
                 }, 
                 {
                  "id":132

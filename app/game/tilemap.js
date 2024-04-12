@@ -7,37 +7,22 @@ export class TileMap {
     constructor(scene, data = {}) {
         this.scene = scene
         if (!scene.sys.game.tile_layer_data) scene.sys.game.tile_layer_data = Object.assign({}, scene.cache.tilemap.get('map').data.layers[0])
-
-        this.collisions = [
-            34, 20,// 20 = dark gray, 32 = dark blue
-            136, // dark brown
-            80, // yellow
-            122,// light brown
-            104, // purple,
-            76,//light green
-            62,//green
-
-        ]
-        this.safe_spots = [
-            29, 30,// blue 
-            100, 99,// purple,
-            57, 58,//green,
-            71, 72,//light green
-        ]
-
-
-        this.brakeable_tiles = [
-            // 136,// brown box
-        ]
-
+        this.collisions = []
+        this.safe_spots = []
+        this.brakeable_tiles = []
         this.spawn_tiles = []
-        scene.cache.tilemap.get('map').data.tilesets[0].tiles.map((t, i) => {
+        scene.cache.tilemap.get('map').data.tilesets[0].tiles.map(t => {
             if (t?.properties) {
-                if (t.properties?.find(v => v.name === 'breakable')?.value || false) this.brakeable_tiles.push(t.id + 1)
-                if (t.properties?.find(v => v.name === 'spawn')?.value || false) this.spawn_tiles.push(t.id + 1)
+                let index = t.id + 1
+                if (t.properties?.find(v => v.name === 'collision')?.value || false) this.collisions.push(index)
+                if (t.properties?.find(v => v.name === 'breakable')?.value || false) this.brakeable_tiles.push(index)
+                if (t.properties?.find(v => v.name === 'safe')?.value || false) this.safe_spots.push(index)
+                if (t.properties?.find(v => v.name === 'spawn')?.value || false) {
+                    this.spawn_tiles.push(index)
+                    this.safe_spots.push(index)
+                }
             }
         })
-
         this.init_map(this.def_map())
         this.set_map(data || {})
     }
