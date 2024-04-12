@@ -20,6 +20,13 @@ export class Game extends Phaser.Scene {
         this.sys.game.resize = () => this.ui.init_screen()
         this.send_cmd = (cmd, data) => this.sys.game.net.send_cmd(cmd, data)
         this.init_game()
+        this.game.events.on('blur', () => {
+            this.idle = true
+        })
+
+        this.game.events.on('focus', () => {
+            this.idle = false
+        })
 
         //setTimeout(() => this.scene.switch('main'), 4000)
     }
