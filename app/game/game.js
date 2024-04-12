@@ -120,6 +120,7 @@ export class Game extends Phaser.Scene {
     spawn_player(random = false) {
         let start_tile = this.get_user_spawn_tile(this.net.me.info.user, random)
         if (!start_tile) return false
+
         this.player = this.set_player(this.net.me.info.user, {
             x: start_tile.pixelX + (start_tile.baseWidth / 2),
             y: start_tile.pixelY + (start_tile.baseHeight / 2)
@@ -133,6 +134,8 @@ export class Game extends Phaser.Scene {
         if (!data) data = {}
         let player = this.players.get(uid) || new Player(this, uid, { x: -1000, y: -1000 })
         player.set_data(data)
+        let tile = player.get_tile()
+
         return player
     }
 

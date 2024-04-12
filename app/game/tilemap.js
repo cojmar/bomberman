@@ -34,6 +34,7 @@ export class TileMap {
     init_spawns() {
         this.spawn_spots =
             this.get_map().data.reduce((a, t, index) => (this.spawn_tiles.indexOf(t) !== -1) ? [...a, this.get_x_y(index)] : a, [])
+
     }
     brake_tile(tile) {
         if (!tile) tile = this.scene.player.get_tile()
@@ -122,7 +123,6 @@ export class TileMap {
             if (ani.frame >= ani.frames.length) ani.frame = 0
 
             this.get_tiles_by_index(index).map(t => {
-                if (typeof t.oindex === 'undefined') return false
                 t.index = ani.frames[ani.frame].tileid + 1
             })
         })
