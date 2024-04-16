@@ -1,10 +1,41 @@
 
+class tileAnimation {
+    constructor(tile, frames) {
+        this.tile = tile
+        this.animation = {
+            time: 0, frame: 0,
+            frames
+        }
+        let autoplay = tile?.properties?.autoplay
+        if (autoplay) this.play(0, autoplay)
+    }
+    play(frame = 0, autoplay = false) {
+        this.animation.autoplay = autoplay
+        this.animation.frame = frame
+        if (this.animation.frame >= this.animation.frames.length) this.animation.frame = 0
+        this.animation.playing = true
+    }
+    stop() {
+        this.animation.autoplay = false
+        this.animation.playing = false
+    }
+    async update(time, delta) {
+        if (!this.animation.playing) return false
+        let frame = this.animation.frames[this.animation.frame]
+        if (time - this.animation.time < frame.duration) return false
+        this.animation.time = time
+        this.animation.frame++
+        if (this.animation.frame >= this.animation.frames.length) this.animation.frame = 0
+        frame = this.animation.frames[this.animation.frame]
+        this.tile.index = frame.tileid + 1
+        if (this.animation.frame === this.animation.frames.length - 1 && !this.animation.autoplay) this.stop()
+    }
+}
+
 export class TileMap {
     static preload(scene) {
         scene.load.tilemapTiledJSON('map', 'assets/json/map_prop.json')
         scene.load.image('tiles', 'assets/img/map.png')
-        //scene.load.scenePlugin('AnimatedTiles', 'assets/js/AnimatedTiles.min.js', 'animatedTiles', 'animatedTiles');
-
     }
     constructor(scene, data = {}) {
         this.scene = scene
@@ -17,7 +48,7 @@ export class TileMap {
         scene.cache.tilemap.get('map').data.tilesets[0].tiles.map(t => {
             if (t?.properties) {
                 let index = t.id + 1
-                if (t?.animation) this.animated_tiles[index] = { time: 0, frame: 0, frames: t.animation }
+                if (t?.animation) this.animated_tiles[index] = t.animation
                 if (t.properties?.find(v => v.name === 'collision')?.value || false) this.collisions.push(index)
                 if (t.properties?.find(v => v.name === 'breakable')?.value || false) this.brakeable_tiles.push(index)
                 if (t.properties?.find(v => v.name === 'safe')?.value || false) this.safe_spots.push(index)
@@ -56,10 +87,13 @@ export class TileMap {
         this.scene.map_layer = this.map.createLayer('Tile Layer 1', tileset, 0, 0)
         this.scene.game_layer.add([this.scene.map_layer])
         this.map.setCollision(this.collisions)
+
+        this.map.layers[0].data.map(l => l.map(t => {
+            t.oindex = t.index
+            t.animation = false
+        }))
         this.init_data = this.get_map().data
-
-        this.sync_data()
-
+        this.render()
     }
     reset_map() {
         this.set_map(this.init_data, false, false)
@@ -72,15 +106,15 @@ export class TileMap {
     }
     set_map(data, fill = false, sync = true) {
         if (typeof data !== 'object') data = [data]
-
         let set_tile = (tile, index) => {
             let t = (typeof tile === 'object') ? this.map.putTileAt(...tile) : this.map.putTileAt(tile, ...this.get_x_y(index))
             t.oindex = t.index
+            t.animation = false
             return t
         }
         if (fill) Array(this.map.layers[0].width * this.map.layers[0].height).fill(fill).map((tile, index) => set_tile(tile, index))
         if (Array.isArray(data)) data.forEach((tile, index) => set_tile(tile, index))
-        if (sync) this.sync_data()
+        this.render(sync)
     }
     get_map() {
         let data = []
@@ -98,9 +132,12 @@ export class TileMap {
     get_tiles_by_index(index) {
         return this.map.layers[0].data.reduce((a, t) => [...a, ...t.filter(v => v?.oindex == index)], [])
     }
-    sync_data() {
+    render(update = true) {
         this.init_spawns()
+        this.tiles_with_animation = Object.keys(this.animated_tiles).reduce((a, index) => [...a, ...this.get_tiles_by_index(index)], [])
+        this.tiles_with_animation.map(t => (!t.animation) ? t.animation = new tileAnimation(t, this.animated_tiles[t.oindex]) : false)
 
+        if (!update) return
         clearTimeout(this.update_to)
         this.update_to = setTimeout(() => {
             if (this?.brakeable_tiles?.length) {
@@ -109,42 +146,10 @@ export class TileMap {
                 if (all_gone) this.reset_map()
             }
             if (!this.scene.idle) this.scene.net.send_cmd('set_data', { map_data: this.get_map() })
-            //this.scene.animatedTiles.init(this.map)
         })
 
     }
-    update(time, delta) {
-        Object.keys(this.animated_tiles).map(index => {
-            this.get_tiles_by_index(index).map(t => {
-                if (!t.animation) {
-                    t.animation = Object.assign({
-                        play: (frame = 0, autoplay = false) => {
-                            t.animation.autoplay = autoplay
-                            t.animation.frame = frame
-                            if (t.animation.frame >= t.animation.frames.length) t.animation.frame = 0
-                            t.animation.playing = true
-                        },
-                        stop: () => {
-                            t.animation.autoplay = false
-                            t.animation.playing = false
-                        },
-                        update: (time, delta) => {
-                            if (!t.animation.playing) return false
-                            let frame = t.animation.frames[t.animation.frame]
-                            if (time - t.animation.time < frame.duration) return false
-                            t.animation.time = time
-                            t.animation.frame++
-                            if (t.animation.frame >= t.animation.frames.length) t.animation.frame = 0
-                            frame = t.animation.frames[t.animation.frame]
-                            t.index = frame.tileid + 1
-                            if (t.animation.frame === t.animation.frames.length - 1 && !t.animation.autoplay) t.animation.stop()
-                        }
-                    }, this.animated_tiles[index])
-                    let autoplay = t?.properties?.autoplay
-                    if (autoplay) t.animation.play(0, autoplay)
-                }
-                t.animation.update(time, delta)
-            })
-        })
+    async update(time, delta) {
+        if (this?.tiles_with_animation) this.tiles_with_animation.map(t => t.animation.update(time, delta))
     }
 }

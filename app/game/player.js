@@ -75,7 +75,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         this.scene.spawn_player(true)
     }
 
-    update() {
+    async update() {
         let direction = this.data.direction
         this.scene.physics.world.collide(this, this.scene.collision_layer, (obj1, obj2) => {
             let tile = this.get_tile()

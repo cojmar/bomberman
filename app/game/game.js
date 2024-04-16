@@ -187,7 +187,7 @@ export class Game extends Phaser.Scene {
                 }
         }
 
-        if (this.players) this.players.forEach(async player => player.update(time, delta))
+        if (this.players) this.players.forEach(player => player.update(time, delta))
         if (this.map) this.map.update(time, delta)
     }
 
