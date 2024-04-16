@@ -45,6 +45,7 @@ export class TileMap {
         this.brakeable_tiles = []
         this.spawn_tiles = []
         this.animated_tiles = {}
+        this.tiles_with_animation = []
         scene.cache.tilemap.get('map').data.tilesets[0].tiles.map(t => {
             if (t?.properties) {
                 let index = t.id + 1
@@ -150,6 +151,6 @@ export class TileMap {
 
     }
     async update(time, delta) {
-        if (this?.tiles_with_animation) this.tiles_with_animation.map(t => t.animation.update(time, delta))
+        this.tiles_with_animation.map(t => t.animation.update(time, delta))
     }
 }
