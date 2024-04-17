@@ -1,6 +1,7 @@
 import { Player } from './player.js'
 import { UI } from './ui.js'
 import { TileMap } from './tilemap.js'
+import { Bomb } from './bomb.js'
 
 export class Game extends Phaser.Scene {
     constructor() {
@@ -9,7 +10,9 @@ export class Game extends Phaser.Scene {
     }
     preload() {
         Player.preload(this)
+        Bomb.preload(this)
         TileMap.preload(this)
+
         this.ui = new UI(this)
     }
 
@@ -33,7 +36,7 @@ export class Game extends Phaser.Scene {
     net_cmd(cmd_data) {
         switch (cmd_data.cmd) {
             case 'room.user_leave':
-                this.players.get(cmd_data.data.user)?.destroy()
+                this.game_objects.get(cmd_data.data.user)?.destroy()
                 break
             case 'room.user_data':
                 if (cmd_data.data.user === this.net.me.info.user) return false
@@ -52,11 +55,11 @@ export class Game extends Phaser.Scene {
                 break
             case 'action':
                 try {
-                    this.players.get(cmd_data.data.user)[`action_${cmd_data.data.data}`]()
+                    this.game_objects.get(cmd_data.data.user)[`action_${cmd_data.data.data}`]()
                 } catch (error) { }
                 break
             case 'spawn':
-                this.players.get(cmd_data.data.user)?.get_tile()?.animation?.play()
+                this.game_objects.get(cmd_data.data.user)?.get_tile()?.animation?.play()
                 break
             default:
                 //console.log(cmd_data)
@@ -74,7 +77,7 @@ export class Game extends Phaser.Scene {
     }
 
     init_game() {
-        this.players = new Map()
+        this.game_objects = new Map()
         this.game_layer.getChildren().forEach(child => child.destroy())
         if (this.collision_layer) this.collision_layer.destroy()
         this.collision_layer = this.physics.add.group()
@@ -139,13 +142,21 @@ export class Game extends Phaser.Scene {
         this.net.send_cmd('set_data', this.player.data)
         if (this.game_camera) this.game_camera.startFollow(this.player)
         this.net.send_cmd('spawn')
+        this.spawn_object(Bomb, 'bomb 1', { x: this.player.x, y: this.player.y })
     }
 
     set_player(uid = 'default', data) {
         if (!data) data = {}
-        let player = this.players.get(uid) || new Player(this, uid, { x: -1000, y: -1000 })
+        let player = this.game_objects.get(uid) || this.spawn_object(Player, uid, { x: -1000, y: -1000 })
         player.set_data(data)
         return player
+    }
+
+    spawn_object(obj, uid = 'default', data) {
+        if (!data) data = {}
+        let r = new obj(this, uid, { x: -1000, y: -1000 })
+        r.set_data(data)
+        return r
     }
 
     update(time, delta) {
@@ -187,7 +198,7 @@ export class Game extends Phaser.Scene {
                 }
         }
 
-        if (this.players) this.players.forEach(player => player.update(time, delta))
+        if (this.game_objects) this.game_objects.forEach(player => player.update(time, delta))
         if (this.map) this.map.update(time, delta)
     }
 

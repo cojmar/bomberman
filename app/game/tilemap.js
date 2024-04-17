@@ -1,5 +1,5 @@
 
-class tileAnimation {
+class TileAnimation {
     constructor(tile, frames) {
         this.tile = tile
         this.animation = {
@@ -136,7 +136,7 @@ export class TileMap {
     render(update = true) {
         this.init_spawns()
         this.tiles_with_animation = Object.keys(this.animated_tiles).reduce((a, index) => [...a, ...this.get_tiles_by_index(index)], [])
-        this.tiles_with_animation.map(t => (!t.animation) ? t.animation = new tileAnimation(t, this.animated_tiles[t.oindex]) : false)
+        this.tiles_with_animation.map(t => (!t.animation) ? t.animation = new TileAnimation(t, this.animated_tiles[t.oindex]) : false)
 
         if (!update) return
         clearTimeout(this.update_to)

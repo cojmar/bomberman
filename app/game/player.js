@@ -1,46 +1,17 @@
-export class Player extends Phaser.Physics.Arcade.Sprite {
-    static preload(scene) {
-        scene.load.spritesheet('player', 'assets/img/dude.png', {
+import { GameObject } from "./game_object.js"
+export class Player extends GameObject {
+    static {
+        this.img_data = ['player', 'assets/img/dude.png', {
             frameWidth: 32,
             frameHeight: 48
-        })
+        }]
     }
-    constructor(scene, uid = 'default', data) {
-        super(scene, 0, 0, 'player')
-        if (!scene.players) scene.players = new Map()
-        if (scene.players.has(uid)) return false
-
-        this.uid = uid
-        scene.add.existing(this)
-        scene.game_layer.add(this)
-        scene.physics.add.existing(this)
-        scene.collision_layer.add(this)
-
+    create() {
         this.safe_spots = []
         if (this.scene?.map?.safe_spots) this.safe_spots = [...this.safe_spots, ...this.scene.map.safe_spots]
-        if (scene.map_layer) this.map_collider = scene.physics.add.collider(this, scene.map_layer, (obj1, tile) => {
+        if (this.scene.map_layer) this.map_collider = this.scene.physics.add.collider(this, this.scene.map_layer, (obj1, tile) => {
             this.scene.map.brake_tile(tile)
         })
-
-        this.setScale(0.58)
-        this.body.immovable = true
-        this.body.setSize(20, 30, true)
-        this.body.setOffset(6, 18)
-        this.data = {
-            "direction": "",
-            "x": 0,
-            "y": 0,
-            destroy: () => scene.players.delete(uid)
-        }
-        if (typeof data === 'object') this.set_data(data)
-        this.init_anims()
-        scene.players.set(uid, this)
-    }
-    get_tile(x, y) {
-        if (!x) x = this.x
-        if (!y) y = this.y
-        if (!this.scene.map_layer) return false
-        return this.scene.map_layer.getTileAtWorldXY(x, y) || false
     }
 
     init_anims() {
@@ -64,18 +35,13 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
             repeat: -1
         })
     }
-    set_data(data) {
-        if (typeof data !== "object") return false
-        Object.keys(data).map(k => { this.data[k] = data[k] })
-        if (data.x) this.x = data.x
-        if (data.y) this.y = data.y
-    }
+
     action_respawn() {
         if (this.uid !== this.scene.net.me.info.user) return false
         this.scene.spawn_player(true)
     }
 
-    async update() {
+    render() {
         let direction = this.data.direction
         this.scene.physics.world.collide(this, this.scene.collision_layer, (obj1, obj2) => {
             let tile = this.get_tile()
@@ -99,9 +65,6 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         if (this.data.direction.indexOf('l') !== -1) this.anims.play('player_left', true)
         else if (this.data.direction.indexOf('r') !== -1) this.anims.play('player_right', true)
         else this.anims.play('player_turn', true)
-
-        this.depth = this.y + 20
-
     }
 }
 
