@@ -33,7 +33,14 @@ export class GameObject extends Phaser.Physics.Arcade.Sprite {
         if (this.scene.game_objects.has(this.uid)) return false
         this.scene.game_objects.set(this.uid, this)
         this.init_anims()
+
+        if (this.scene.map_layer) this.map_collider = this.scene.physics.add.collider(this, this.scene.map_layer, (obj1, tile) => this.map_collision(tile))
+        this.safe_spots = []
+        if (this.scene?.map?.safe_spots) this.safe_spots = [...this.safe_spots, ...this.scene.map.safe_spots]
         this.create()
+
+    }
+    map_collision(tile) {
 
     }
     time() {
@@ -86,10 +93,11 @@ export class GameObject extends Phaser.Physics.Arcade.Sprite {
     }
 
     async update(time, delta) {
-        this.depth = this.y + 20
-        this.render(time, delta)
+
 
         try {
+            this.depth = this.y + 20
+            this.render(time, delta)
             let direction = this.data.direction
             if (direction.indexOf('l') !== -1) this.setVelocityX(-100)
             else if (direction.indexOf('r') !== -1) this.setVelocityX(100)

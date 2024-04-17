@@ -9,11 +9,8 @@ export class Player extends GameObject {
     create() {
         this.body.setSize(20, 30, true)
         this.body.setOffset(6, 18)
-        this.safe_spots = []
-        if (this.scene?.map?.safe_spots) this.safe_spots = [...this.safe_spots, ...this.scene.map.safe_spots]
-        if (this.scene.map_layer) this.map_collider = this.scene.physics.add.collider(this, this.scene.map_layer, (obj1, tile) => {
-            this.scene.map.brake_tile(tile)
-        })
+
+
     }
 
     init_anims() {
@@ -37,6 +34,9 @@ export class Player extends GameObject {
             repeat: -1
         })
     }
+    map_collision(tile) {
+        this.scene.map.brake_tile(tile)
+    }
 
     action_respawn() {
         if (this.uid !== this.scene.net.me.info.user) return false
@@ -46,7 +46,8 @@ export class Player extends GameObject {
     action_bomb(user) {
         let n = 0
         let oid = `${this.uid}-bomb-${n}`
-        this.scene.set_object('Bomb', oid, this.get_tile_center())
+        if (this.scene.world_data[oid]) return false
+        this.scene.set_object('Bomb', oid, Object.assign({ direction: this.data.direction }, this.get_tile_center()))
     }
 
     render() {
