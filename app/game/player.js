@@ -33,7 +33,10 @@ export class Player extends GameObject {
         })
     }
     map_collision(tile) {
-        this.scene.map.brake_tile(tile)
+        let tile_broken = this.scene.map.brake_tile(tile)
+
+        if (this.uid === this.scene.sys.game.net.me.info.user && tile_broken) this.scene.bombs++
+
     }
 
     action_respawn() {
@@ -42,11 +45,10 @@ export class Player extends GameObject {
     }
 
     action_bomb(user) {
-
-        if (this.data.bombs <= 0) return false
+        if (this.scene.bombs <= 0) return false
         if (this.uid === this.scene.sys.game.net.me.info.user) this.scene.bombs--
 
-        let n = this.data.bombs
+        let n = this.time()
         let oid = `${this.uid}-bomb-${n}`
         if (this.scene.world_data[oid]) return false
         this.scene.set_object('Bomb', oid, Object.assign({ player: this.uid, direction: this.data.direction }, this.get_tile_center()))

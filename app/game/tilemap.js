@@ -71,8 +71,8 @@ export class TileMap {
     brake_tile(tile) {
         if (!tile) tile = this.scene.player.get_tile()
         if (this.scene.map.brakeable_tiles.indexOf(tile.oindex) === -1) return false
-
         this.scene.map.set_map([[tile.oindex - 5, tile.x, tile.y]])
+        return true
     }
     def_map() {
         return this.scene.sys.game.tile_layer_data

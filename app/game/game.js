@@ -106,7 +106,7 @@ export class Game extends Phaser.Scene {
         })
 
         this.world_data = JSON.parse(this.host()?.data?.world_data || "{}")
-        this.bombs = 2
+        this.bombs = 1
         Object.keys(this.world_data).map(k => this.set_object(...this.world_data[k]))
         this.spawn_player()
 

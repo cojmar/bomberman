@@ -20,8 +20,8 @@ export class Bomb extends GameObject {
     render() {
         this.scene.physics.world.collide(this, this.scene.collision_layer, (obj1, obj2) => {
             let tile = this.get_tile()
-            if (this.safe_spots.indexOf(tile.oindex) !== -1) return
-            if (this.time() < 600) return
+            if (this.safe_spots.indexOf(tile.oindex) !== -1) return false
+            if (obj2?.uid === this.scene.sys.game.net.me.info.user) return false
             this.map_collision(tile)
         })
         if (this.time() > 10000) {
