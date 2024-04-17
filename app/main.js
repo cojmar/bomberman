@@ -29,6 +29,7 @@ net.on('auth.info', (data) => {
             default: 'arcade',
             arcade: {
                 gravity: { y: 0 },
+                fps: 60,
                 // debug: true // Show hitboxes
             }
         },
