@@ -108,7 +108,7 @@ export class Game extends Phaser.Scene {
         Object.keys(this.world_data).map(k => this.set_object(...this.world_data[k]))
         this.spawn_player()
 
-        this.set_object('Bomb', 'bomb 1', { x: this.player.x, y: this.player.y })
+        //this.set_object('Bomb', 'bomb 1', { x: this.player.x, y: this.player.y })
 
         this.input.on('gameobjectover', (pointer, gameObject) => {
             gameObject.setTint(0xff0000)
