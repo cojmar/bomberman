@@ -37,7 +37,7 @@ export class Bomb extends GameObject {
 
             tiles_to_brake.map(t => {
                 if (this.scene.map.brake_tile(t) && this.data.player === this.scene.sys.game.net.me.info.user) {
-                    this.scene.bombs++
+                    //this.scene.bombs++
                 }
             })
 
