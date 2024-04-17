@@ -136,7 +136,7 @@ export class Game extends Phaser.Scene {
         if (!this.map.spawn_spots.length) return false
         let index = Object.keys(this.net.room.users).indexOf(uid)
         let spawnIndex = (random) ? Math.floor(Math.random() * this.map.spawn_spots.length) : index % this.map.spawn_spots.length
-        spawnIndex = 0
+        // spawnIndex = 0
 
         return this.map_layer.getTileAt(...this.map.spawn_spots[spawnIndex])
     }
