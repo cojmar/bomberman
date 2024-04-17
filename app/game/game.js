@@ -106,6 +106,7 @@ export class Game extends Phaser.Scene {
         })
 
         this.world_data = JSON.parse(this.host()?.data?.world_data || "{}")
+        this.bombs = 2
         Object.keys(this.world_data).map(k => this.set_object(...this.world_data[k]))
         this.spawn_player()
 
@@ -146,7 +147,8 @@ export class Game extends Phaser.Scene {
 
         this.player = this.set_player(this.net.me.info.user, {
             x: start_tile.pixelX + (start_tile.baseWidth / 2),
-            y: start_tile.pixelY + (start_tile.baseHeight / 2)
+            y: start_tile.pixelY + (start_tile.baseHeight / 2),
+            bombs: this.bombs,
         })
 
         this.net.send_cmd('set_data', this.player.data)
@@ -219,9 +221,13 @@ export class Game extends Phaser.Scene {
                 //direction
                 if (direction !== this.player.data.direction) {
                     new_data = Object.assign(new_data, { direction, x: this.player.x, y: this.player.y })
-                    this.player.set_data({ direction })
+
                     if (this.game_camera) this.game_camera.startFollow(this.player)
                 }
+                if (this.bombs !== this.player.data.bombs) {
+                    new_data = Object.assign(new_data, { bombs: this.bombs })
+                }
+                this.player.set_data(new_data)
 
                 if (Object.keys(new_data).length) this.send_cmd('set_data', new_data)
             }

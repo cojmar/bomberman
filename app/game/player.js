@@ -9,8 +9,6 @@ export class Player extends GameObject {
     create() {
         this.body.setSize(20, 30, true)
         this.body.setOffset(6, 18)
-
-
     }
 
     init_anims() {
@@ -44,10 +42,14 @@ export class Player extends GameObject {
     }
 
     action_bomb(user) {
-        let n = 0
+
+        if (this.data.bombs <= 0) return false
+        if (this.uid === this.scene.sys.game.net.me.info.user) this.scene.bombs--
+
+        let n = this.data.bombs
         let oid = `${this.uid}-bomb-${n}`
         if (this.scene.world_data[oid]) return false
-        this.scene.set_object('Bomb', oid, Object.assign({ direction: this.data.direction }, this.get_tile_center()))
+        this.scene.set_object('Bomb', oid, Object.assign({ player: this.uid, direction: this.data.direction }, this.get_tile_center()))
     }
 
     render() {

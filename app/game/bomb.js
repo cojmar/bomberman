@@ -18,14 +18,17 @@ export class Bomb extends GameObject {
         this.setScale(1)
     }
     render() {
-        let direction = this.data.direction
         this.scene.physics.world.collide(this, this.scene.collision_layer, (obj1, obj2) => {
             let tile = this.get_tile()
             if (this.safe_spots.indexOf(tile.oindex) !== -1) return
             if (this.time() < 600) return
             this.map_collision(tile)
         })
-        if (this.time() > 10000) this.destroy()
+        if (this.time() > 10000) {
+            if (this?.data?.player === this.scene.sys.game.net.me.info.user) this.scene.bombs++
+            this.destroy()
+
+        }
     }
 
 }
