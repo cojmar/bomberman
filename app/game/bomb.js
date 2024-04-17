@@ -10,7 +10,6 @@ export class Bomb extends GameObject {
     map_collision(tile) {
         this.data.direction = ""
         this.set_data(this.get_tile_center())
-
     }
 
     create() {
@@ -21,7 +20,8 @@ export class Bomb extends GameObject {
         this.scene.physics.world.collide(this, this.scene.collision_layer, (obj1, obj2) => {
             let tile = this.get_tile()
             if (this.safe_spots.indexOf(tile.oindex) !== -1) return false
-            if (obj2?.uid === this.scene.sys.game.net.me.info.user) return false
+            if (obj2.uid === this.scene.sys.game.net.me.info.user) return false
+            if (obj2.uid === this.uid) return false
             this.map_collision(tile)
         })
         if (this.time() > 10000) {
