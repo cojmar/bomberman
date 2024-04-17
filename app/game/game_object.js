@@ -20,6 +20,7 @@ export class GameObject extends Phaser.Physics.Arcade.Sprite {
             "direction": "",
             "x": 0,
             "y": 0,
+            "creation_time": this.scene.sys.game.time(),
             destroy: () => this.on_destroy()
         }
 
@@ -35,6 +36,10 @@ export class GameObject extends Phaser.Physics.Arcade.Sprite {
         this.create()
 
     }
+    time() {
+        return this.scene.sys.game.time() - this.data.creation_time
+    }
+
     on_destroy() {
         this.scene.game_objects.delete(this.uid)
         if (this.scene?.world_data[this.uid]) this.scene.unset_world_object(this.uid)
@@ -84,16 +89,22 @@ export class GameObject extends Phaser.Physics.Arcade.Sprite {
         this.depth = this.y + 20
         this.render(time, delta)
 
-        let direction = this.data.direction
-        if (direction.indexOf('l') !== -1) this.setVelocityX(-100)
-        else if (direction.indexOf('r') !== -1) this.setVelocityX(100)
-        else this.setVelocityX(0)
+        try {
+            let direction = this.data.direction
+            if (direction.indexOf('l') !== -1) this.setVelocityX(-100)
+            else if (direction.indexOf('r') !== -1) this.setVelocityX(100)
+            else this.setVelocityX(0)
 
-        if (direction.indexOf('u') !== -1) this.setVelocityY(-100)
-        else if (direction.indexOf('d') !== -1) this.setVelocityY(100)
-        else this.setVelocityY(0)
+            if (direction.indexOf('u') !== -1) this.setVelocityY(-100)
+            else if (direction.indexOf('d') !== -1) this.setVelocityY(100)
+            else this.setVelocityY(0)
 
-        if (!this.data.destroy) this.data.destroy = () => this.on_destroy()
+            if (!this.data.destroy) this.data.destroy = () => this.on_destroy()
+        } catch (error) {
+
+        }
+
+
 
     }
 
