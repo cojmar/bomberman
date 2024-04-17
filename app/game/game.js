@@ -225,7 +225,7 @@ export class Game extends Phaser.Scene {
                     if (this.game_camera) this.game_camera.startFollow(this.player)
                 }
                 if (this.bombs !== this.player.data.bombs) {
-                    new_data = Object.assign(new_data, { bombs: this.bombs })
+                    //new_data = Object.assign(new_data, { bombs: this.bombs })
                 }
                 this.player.set_data(new_data)
 
