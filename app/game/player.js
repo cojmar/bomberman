@@ -59,7 +59,7 @@ export class Player extends GameObject {
         let n = this.time()
         let oid = `${this.uid}-bomb-${n}`
         if (this.scene.world_data[oid]) return false
-        this.scene.set_object('Bomb', oid, Object.assign({ player: this.uid, direction: this.data.direction }, this.get_tile_center()))
+        this.scene.set_object('Bomb', oid, Object.assign({ player: this.uid, direction: this.data.direction, time: 4, range: 2 }, this.get_tile_center()))
     }
 
     render() {

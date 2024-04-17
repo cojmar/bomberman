@@ -24,7 +24,7 @@ export class Bomb extends GameObject {
             if (obj2.uid === this.uid) return false
             this.map_collision(tile)
         })
-        if (this.time() > 10000) {
+        if (this.time() > this.data.time * 1000) {
             if (this?.data?.player === this.scene.sys.game.net.me.info.user) this.scene.bombs++
             this.destroy()
 
