@@ -45,6 +45,14 @@ export class Player extends GameObject {
     }
 
     action_bomb(user) {
+        let tc = JSON.stringify(this.get_tile_center())
+        let ok = true
+
+        Object.values(this.scene.world_data).map(wd => {
+            if (JSON.stringify(this.scene.game_objects.get(wd[1]).get_tile_center()) === tc) ok = false
+        })
+
+        if (!ok) return false
         if (this.scene.bombs <= 0) return false
         if (this.uid === this.scene.sys.game.net.me.info.user) this.scene.bombs--
 
