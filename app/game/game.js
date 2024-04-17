@@ -58,6 +58,11 @@ export class Game extends Phaser.Scene {
                     this.game_objects.get(cmd_data.data.user)[`action_${cmd_data.data.data}`]()
                 } catch (error) { }
                 break
+            case 'set_object':
+                if (cmd_data.data.user === this.net.me.info.user) return false
+                this.set_object(...cmd_data.data.data)
+
+                break
             case 'spawn':
                 this.game_objects.get(cmd_data.data.user)?.get_tile()?.animation?.play()
                 break
@@ -99,7 +104,11 @@ export class Game extends Phaser.Scene {
             this.set_player(user.info.user, user.data)
         })
 
+        this.world_data = this.host()?.data?.world_data || {}
+        Object.keys(this.world_data).map(k => this.set_object(...this.world_data[k]))
         this.spawn_player()
+
+        this.set_object('Bomb', 'bomb 1', { x: this.player.x, y: this.player.y })
 
         this.input.on('gameobjectover', (pointer, gameObject) => {
             gameObject.setTint(0xff0000)
@@ -142,17 +151,25 @@ export class Game extends Phaser.Scene {
         this.net.send_cmd('set_data', this.player.data)
         if (this.game_camera) this.game_camera.startFollow(this.player)
         this.net.send_cmd('spawn')
-        this.spawn_object(Bomb, 'bomb 1', { x: this.player.x, y: this.player.y })
     }
 
     set_player(uid = 'default', data) {
         if (!data) data = {}
-        let player = this.game_objects.get(uid) || this.spawn_object(Player, uid, { x: -1000, y: -1000 })
+        let player = this.game_objects.get(uid) || this.new_object(Player, uid)
         player.set_data(data)
         return player
     }
+    set_object(obj_type, uid = 'default', data) {
+        if (!data) data = {}
+        let obj = this.game_objects.get(uid) || this.new_object(eval(`${obj_type}`), uid)
+        obj.set_data(data)
+        this.world_data[uid] = [obj_type, uid, obj.get_data()]
+        this.send_cmd('set_data', { world_data: this.world_data })
+        this.send_cmd('set_object', this.world_data[uid])
+        return obj
+    }
 
-    spawn_object(obj, uid = 'default', data) {
+    new_object(obj, uid = 'default', data) {
         if (!data) data = {}
         let r = new obj(this, uid, { x: -1000, y: -1000 })
         r.set_data(data)
@@ -188,14 +205,20 @@ export class Game extends Phaser.Scene {
                 return r
             }, false)) direction += "d"
 
-            // send direction
-            if (this.player.data)
-                if (direction !== this.player.data.direction) {
-                    this.player.set_data({ direction })
-                    this.send_cmd('set_data', { direction, x: this.player.x, y: this.player.y })
 
+
+            if (this.player.data) {
+                // update data
+                let new_data = {}
+                //direction
+                if (direction !== this.player.data.direction) {
+                    new_data = Object.assign(new_data, { direction, x: this.player.x, y: this.player.y })
+                    this.player.set_data({ direction })
                     if (this.game_camera) this.game_camera.startFollow(this.player)
                 }
+
+                if (Object.keys(new_data).length) this.send_cmd('set_data', new_data)
+            }
         }
 
         if (this.game_objects) this.game_objects.forEach(player => player.update(time, delta))

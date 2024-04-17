@@ -10,7 +10,7 @@ export class Bomb extends GameObject {
 
     create() {
         this.setTexture('bomb')
-        setTimeout(() => this.destroy(), 1000)
+        //setTimeout(() => this.destroy(), 1000)
     }
 
 }

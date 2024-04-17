@@ -42,6 +42,11 @@ export class GameObject extends Phaser.Physics.Arcade.Sprite {
     create() {
 
     }
+    get_data() {
+        let r = Object.assign(this.data)
+        delete r.destroy
+        return r
+    }
     get_tile(x, y) {
         if (!x) x = this.x
         if (!y) y = this.y
@@ -63,6 +68,15 @@ export class GameObject extends Phaser.Physics.Arcade.Sprite {
     async update(time, delta) {
         this.depth = this.y + 20
         this.render(time, delta)
+
+        let direction = this.data.direction
+        if (direction.indexOf('l') !== -1) this.setVelocityX(-100)
+        else if (direction.indexOf('r') !== -1) this.setVelocityX(100)
+        else this.setVelocityX(0)
+
+        if (direction.indexOf('u') !== -1) this.setVelocityY(-100)
+        else if (direction.indexOf('d') !== -1) this.setVelocityY(100)
+        else this.setVelocityY(0)
 
     }
 }

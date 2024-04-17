@@ -52,15 +52,9 @@ export class Player extends GameObject {
 
             if (obj1.y > obj2.y) direction = direction.replace('u', '')
             else direction = direction.replace('d', '')
+
+            this.direction = direction
         })
-
-        if (direction.indexOf('l') !== -1) this.setVelocityX(-100)
-        else if (direction.indexOf('r') !== -1) this.setVelocityX(100)
-        else this.setVelocityX(0)
-
-        if (direction.indexOf('u') !== -1) this.setVelocityY(-100)
-        else if (direction.indexOf('d') !== -1) this.setVelocityY(100)
-        else this.setVelocityY(0)
 
         if (this.data.direction.indexOf('l') !== -1) this.anims.play('player_left', true)
         else if (this.data.direction.indexOf('r') !== -1) this.anims.play('player_right', true)
