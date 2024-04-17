@@ -104,7 +104,7 @@ export class Game extends Phaser.Scene {
             this.set_player(user.info.user, user.data)
         })
 
-        this.world_data = this.host()?.data?.world_data || {}
+        this.world_data = JSON.parse(this.host()?.data?.world_data || "{}")
         Object.keys(this.world_data).map(k => this.set_object(...this.world_data[k]))
         this.spawn_player()
 
@@ -134,7 +134,7 @@ export class Game extends Phaser.Scene {
         if (!this.map.spawn_spots.length) return false
         let index = Object.keys(this.net.room.users).indexOf(uid)
         let spawnIndex = (random) ? Math.floor(Math.random() * this.map.spawn_spots.length) : index % this.map.spawn_spots.length
-        // spawnIndex = 0
+        spawnIndex = 0
 
         return this.map_layer.getTileAt(...this.map.spawn_spots[spawnIndex])
     }
@@ -164,9 +164,14 @@ export class Game extends Phaser.Scene {
         let obj = this.game_objects.get(uid) || this.new_object(eval(`${obj_type}`), uid)
         obj.set_data(data)
         this.world_data[uid] = [obj_type, uid, obj.get_data()]
-        this.send_cmd('set_data', { world_data: this.world_data })
+        this.send_cmd('set_data', { world_data: JSON.stringify(this.world_data) })
         this.send_cmd('set_object', this.world_data[uid])
         return obj
+    }
+    unset_world_object(uid) {
+        if (!this.world_data[uid]) return false
+        delete this.world_data[uid]
+        this.send_cmd('set_data', { world_data: JSON.stringify(this.world_data) })
     }
 
     new_object(obj, uid = 'default', data) {

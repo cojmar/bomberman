@@ -7,6 +7,8 @@ export class Player extends GameObject {
         }]
     }
     create() {
+        this.body.setSize(20, 30, true)
+        this.body.setOffset(6, 18)
         this.safe_spots = []
         if (this.scene?.map?.safe_spots) this.safe_spots = [...this.safe_spots, ...this.scene.map.safe_spots]
         if (this.scene.map_layer) this.map_collider = this.scene.physics.add.collider(this, this.scene.map_layer, (obj1, tile) => {
@@ -41,6 +43,12 @@ export class Player extends GameObject {
         this.scene.spawn_player(true)
     }
 
+    action_bomb(user) {
+        let n = 0
+        let oid = `${this.uid}-bomb-${n}`
+        this.scene.set_object('Bomb', oid, this.get_tile_center())
+    }
+
     render() {
         let direction = this.data.direction
         this.scene.physics.world.collide(this, this.scene.collision_layer, (obj1, obj2) => {
@@ -53,7 +61,7 @@ export class Player extends GameObject {
             if (obj1.y > obj2.y) direction = direction.replace('u', '')
             else direction = direction.replace('d', '')
 
-            this.direction = direction
+            this.data.direction = direction
         })
 
         if (this.data.direction.indexOf('l') !== -1) this.anims.play('player_left', true)

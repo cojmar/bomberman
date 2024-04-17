@@ -20,13 +20,13 @@ export class GameObject extends Phaser.Physics.Arcade.Sprite {
             "direction": "",
             "x": 0,
             "y": 0,
-            destroy: () => scene.game_objects.delete(uid)
+            destroy: () => this.on_destroy()
         }
+
         if (typeof data === 'object') this.set_data(data)
         this.setScale(0.58)
         this.body.immovable = true
-        this.body.setSize(20, 30, true)
-        this.body.setOffset(6, 18)
+
 
         if (!this.scene.game_objects) this.scene.game_objects = new Map()
         if (this.scene.game_objects.has(this.uid)) return false
@@ -34,6 +34,10 @@ export class GameObject extends Phaser.Physics.Arcade.Sprite {
         this.init_anims()
         this.create()
 
+    }
+    on_destroy() {
+        this.scene.game_objects.delete(this.uid)
+        if (this.scene?.world_data[this.uid]) this.scene.unset_world_object(this.uid)
     }
     init_anims() {
 
@@ -54,11 +58,22 @@ export class GameObject extends Phaser.Physics.Arcade.Sprite {
         return this.scene.map_layer.getTileAtWorldXY(x, y) || false
     }
 
+    get_tile_center(x, y) {
+        let tile = this.get_tile(x, y)
+        return {
+            x: tile.pixelX + (tile.baseWidth / 2),
+            y: tile.pixelY + (tile.baseHeight / 2)
+
+        }
+    }
+
     set_data(data) {
+
         if (typeof data !== "object") return false
         Object.keys(data).map(k => { this.data[k] = data[k] })
         if (data.x) this.x = data.x
         if (data.y) this.y = data.y
+        this.data.destroy = () => this.on_destroy()
     }
 
     render(time, delta) {
@@ -78,7 +93,10 @@ export class GameObject extends Phaser.Physics.Arcade.Sprite {
         else if (direction.indexOf('d') !== -1) this.setVelocityY(100)
         else this.setVelocityY(0)
 
+        if (!this.data.destroy) this.data.destroy = () => this.on_destroy()
+
     }
+
 }
 
 

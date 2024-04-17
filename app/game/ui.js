@@ -36,6 +36,9 @@ export class UI {
             right: this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D),
         })
         this.scene.input.keyboard.on('keyup-' + 'SPACE', (event) => {
+            this.scene.net.send_cmd('action', 'bomb')
+        })
+        this.scene.input.keyboard.on('keyup-' + 'R', (event) => {
             this.scene.net.send_cmd('action', 'respawn')
         })
     }
