@@ -185,6 +185,10 @@ export class Game extends Phaser.Scene {
     }
 
     update(time, delta) {
+        if (!this.last_time) this.last_time = time
+        if (time - this.last_time < 16.6) return false
+        this.last_time = time
+
         if (this.ui_text) {
 
             try {
@@ -235,6 +239,8 @@ export class Game extends Phaser.Scene {
 
         if (this.game_objects) this.game_objects.forEach(player => player.update(time, delta))
         if (this.map) this.map.update(time, delta)
+
+
     }
 
 }

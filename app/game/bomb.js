@@ -25,8 +25,7 @@ export class Bomb extends GameObject {
             this.map_collision(tile)
         })
         if (this.time() > this.data.time * 1000) {
-            if (this.done) return false
-            this.done = true
+
             if (this?.data?.player === this.scene.sys.game.net.me.info.user) this.scene.bombs++
             let bomb_tile = this.get_tile()
 
@@ -37,7 +36,7 @@ export class Bomb extends GameObject {
 
             tiles_to_brake.map(t => {
                 if (this.scene.map.brake_tile(t) && this.data.player === this.scene.sys.game.net.me.info.user) {
-                    //this.scene.bombs++
+                    this.scene.bombs++
                 }
             })
 
