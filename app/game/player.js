@@ -46,6 +46,7 @@ export class Player extends GameObject {
     }
 
     action_bomb(user) {
+        if (this.uid === this.scene.sys.game.net.me.info.user) return false
         let tc = JSON.stringify(this.get_tile_center())
         let ok = true
 
@@ -55,7 +56,7 @@ export class Player extends GameObject {
 
         if (!ok) return false
         if (this.scene.bombs <= 0) return false
-        if (this.uid === this.scene.sys.game.net.me.info.user) this.scene.bombs--
+        this.scene.bombs--
 
         let n = this.time()
         let oid = `${this.uid}-bomb-${n}`
