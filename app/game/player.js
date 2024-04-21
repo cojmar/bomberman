@@ -46,7 +46,7 @@ export class Player extends GameObject {
     }
 
     action_bomb(user) {
-        if (this.uid === this.scene.sys.game.net.me.info.user) return false
+        if (this.uid !== this.scene.sys.game.net.me.info.user) return false
         let tc = JSON.stringify(this.get_tile_center())
         let ok = true
 
