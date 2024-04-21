@@ -187,11 +187,9 @@ export class Game extends Phaser.Scene {
     }
 
     update(time, delta) {
-        /*
         if (!this.last_time) this.last_time = time
         if (time - this.last_time < 16.6) return false
         this.last_time = time
-        */
 
         if (this.ui_text) {
 
