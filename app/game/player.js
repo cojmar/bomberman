@@ -62,7 +62,7 @@ export class Player extends GameObject {
 
         let n = this.time()
         let oid = `${this.uid}-bomb-${n}`
-        if (this.scene.world_data[oid]) return false
+        //if (this.scene.world_data[oid]) return false
         this.scene.set_object('Bomb', oid, Object.assign({ player: this.uid, direction: this.data.direction, time: 5, range: 1 }, this.get_tile_center()))
         this.get_tile().setTint(0xff0000)
     }

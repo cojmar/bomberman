@@ -60,8 +60,8 @@ export class Game extends Phaser.Scene {
                 break
             case 'set_object':
                 if (cmd_data.data.user === this.net.me.info.user) return false
-                this.set_object(...cmd_data.data.data)
-
+                console.log(cmd_data.data.data)
+                this.set_object(...cmd_data.data.data, false)
                 break
             case 'spawn':
                 this.game_objects.get(cmd_data.data.user)?.get_tile()?.animation?.play()
@@ -163,17 +163,17 @@ export class Game extends Phaser.Scene {
         player.set_data(data)
         return player
     }
-    set_object(obj_type, uid = 'default', data) {
+    set_object(obj_type, uid = 'default', data, emit = true) {
         if (!data) data = {}
         let obj = this.game_objects.get(uid) || this.new_object(eval(`${obj_type}`), uid)
         obj.set_data(data)
         this.world_data[uid] = [obj_type, uid, obj.get_data()]
         this.send_cmd('set_data', { world_data: JSON.stringify(this.world_data) })
-        this.send_cmd('set_object', this.world_data[uid])
+        if (emit) this.send_cmd('set_object', this.world_data[uid])
         return obj
     }
     unset_world_object(uid) {
-        //console.log(uid)
+        this.game_objects.delete(uid)
         if (!this.world_data[uid]) return false
         delete this.world_data[uid]
         this.send_cmd('set_data', { world_data: JSON.stringify(this.world_data) })

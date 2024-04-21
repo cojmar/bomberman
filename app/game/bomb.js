@@ -8,8 +8,11 @@ export class Bomb extends GameObject {
     }
 
     map_collision(tile) {
-        if (this.data.direction !== "") this.set_data(this.get_tile_center())
+        if (this.data.player !== this.scene.net.me.info.user) return false
+        if (this.data.direction === "") return false
+        this.set_data(this.get_tile_center())
         this.data.direction = ""
+        this.scene.set_object('Bomb', this.uid, this.data)
 
     }
 
@@ -44,10 +47,7 @@ export class Bomb extends GameObject {
                     this.scene.player.set_data({ bombs: this.scene.player.data.bombs + 1 })
                 }
             })
-
-
             this.destroy()
-
         }
     }
 
