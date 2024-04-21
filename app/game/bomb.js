@@ -8,8 +8,9 @@ export class Bomb extends GameObject {
     }
 
     map_collision(tile) {
+        if (this.data.direction !== "") this.set_data(this.get_tile_center())
         this.data.direction = ""
-        this.set_data(this.get_tile_center())
+
     }
 
     create() {
@@ -17,6 +18,7 @@ export class Bomb extends GameObject {
         this.setScale(1)
     }
     render() {
+
         this.scene.physics.world.collide(this, this.scene.collision_layer, (obj1, obj2) => {
             let tile = this.get_tile()
             if (this.safe_spots.indexOf(tile.oindex) !== -1) return false
@@ -26,7 +28,10 @@ export class Bomb extends GameObject {
         })
         if (this.time() > this.data.time * 1000) {
 
-            if (this?.data?.player === this.scene.sys.game.net.me.info.user) this.scene.bombs++
+            //console.log(this.data)
+
+
+            if (this.data.player === this.scene.net.me.info.user) this.scene.player.set_data({ bombs: this.scene.player.data.bombs + 1 })
             let bomb_tile = this.get_tile()
 
             let tiles_to_brake = []
@@ -35,8 +40,8 @@ export class Bomb extends GameObject {
             for (let y = bomb_tile.y - this.data.range; y <= bomb_tile.y + this.data.range; y++) tiles_to_brake.push(this.scene.map.map.getTileAt(bomb_tile.x, y))
 
             tiles_to_brake.map(t => {
-                if (this.scene.map.brake_tile(t) && this.data.player === this.scene.sys.game.net.me.info.user) {
-                    this.scene.bombs++
+                if (this.scene.map.brake_tile(t) && this.data.player === this.scene.net.me.info.user) {
+                    this.scene.player.set_data({ bombs: this.scene.player.data.bombs + 1 })
                 }
             })
 

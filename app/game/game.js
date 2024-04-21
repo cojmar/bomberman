@@ -106,9 +106,11 @@ export class Game extends Phaser.Scene {
         })
 
         this.world_data = JSON.parse(this.host()?.data?.world_data || "{}")
-        this.bombs = 1
+
         Object.keys(this.world_data).map(k => this.set_object(...this.world_data[k]))
         this.spawn_player()
+
+        this.set_player(this.net.me.info.user, { bombs: 1 })
 
         //this.set_object('Bomb', 'bomb 1', { x: this.player.x, y: this.player.y })
 
@@ -147,8 +149,7 @@ export class Game extends Phaser.Scene {
 
         this.player = this.set_player(this.net.me.info.user, {
             x: start_tile.pixelX + (start_tile.baseWidth / 2),
-            y: start_tile.pixelY + (start_tile.baseHeight / 2),
-            bombs: this.bombs,
+            y: start_tile.pixelY + (start_tile.baseHeight / 2)
         })
 
         this.net.send_cmd('set_data', this.player.data)
@@ -172,6 +173,7 @@ export class Game extends Phaser.Scene {
         return obj
     }
     unset_world_object(uid) {
+        //console.log(uid)
         if (!this.world_data[uid]) return false
         delete this.world_data[uid]
         this.send_cmd('set_data', { world_data: JSON.stringify(this.world_data) })
@@ -193,7 +195,7 @@ export class Game extends Phaser.Scene {
 
             try {
                 let tile = this.player.get_tile()
-                this.ui_text.text = ` Players ${Object.keys(this.net.room.users).length} T:${tile?.oindex} \n X:${tile.x} Y:${tile.y} B:${this.bombs}`
+                this.ui_text.text = ` Players ${Object.keys(this.net.room.users).length} T:${tile?.oindex} \n X:${tile.x} Y:${tile.y} B:${this?.player?.data?.bombs || 0}`
             } catch (error) { }
         }
         // calculate movment direction
