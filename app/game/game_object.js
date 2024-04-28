@@ -83,6 +83,16 @@ export class GameObject extends Phaser.Physics.Arcade.Sprite {
                 y: 0
             }
     }
+    delete() {
+        try {
+            this.destroy()
+        } catch (error) {
+            this.scene.game_objects.delete(this.uid)
+            if (this.scene?.world_data[this.uid]) this.scene.unset_world_object(this.uid)
+            delete this
+
+        }
+    }
 
     set_data(data) {
         if (!this?.data) return false
@@ -92,6 +102,9 @@ export class GameObject extends Phaser.Physics.Arcade.Sprite {
         if (data.x) this.x = data.x
         if (data.y) this.y = data.y
 
+
+        if (this.uid === this.scene.net.me.info.user && Object.keys(data).length) this.scene.send_cmd('set_data', data)
+
     }
 
     render(time, delta) {
@@ -100,14 +113,8 @@ export class GameObject extends Phaser.Physics.Arcade.Sprite {
 
     update(time, delta) {
         this.depth = this.y + 20
+        this.render(time, delta)
 
-        try {
-            this.render(time, delta)
-        } catch (error) {
-            this.scene.game_objects.delete(this.uid)
-            if (this.scene?.world_data[this.uid]) this.scene.unset_world_object(this.uid)
-            delete this
-        }
         if (!this.data) return
 
         let direction = this.data.direction

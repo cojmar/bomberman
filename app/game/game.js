@@ -36,7 +36,7 @@ export class Game extends Phaser.Scene {
     net_cmd(cmd_data) {
         switch (cmd_data.cmd) {
             case 'room.user_leave':
-                this.game_objects.get(cmd_data.data.user)?.destroy()
+                this.game_objects.get(cmd_data.data.user)?.delete()
                 break
             case 'room.user_data':
                 if (cmd_data.data.user === this.net.me.info.user) return false
@@ -110,7 +110,7 @@ export class Game extends Phaser.Scene {
         Object.keys(this.world_data).map(k => this.set_object(...this.world_data[k]))
         this.spawn_player()
 
-        this.set_player(this.net.me.info.user, { bombs: 1 })
+        this.set_player(this.net.me.info.user, { bombs: 1, range: 1 })
 
         //this.set_object('Bomb', 'bomb 1', { x: this.player.x, y: this.player.y })
 
@@ -194,7 +194,7 @@ export class Game extends Phaser.Scene {
 
             try {
                 let tile = this.player.get_tile()
-                this.ui_text.text = ` Players ${Object.keys(this.net.room.users).length} T:${tile?.oindex} \n X:${tile.x} Y:${tile.y} B:${this?.player?.data?.bombs || 0}`
+                this.ui_text.text = ` Players ${Object.keys(this.net.room.users).length} T:${tile?.oindex} \n X:${tile.x} Y:${tile.y} B:${this?.player?.data?.bombs || 0} R:${this?.player?.data?.range || 0}`
             } catch (error) { }
         }
         // calculate movment direction
@@ -220,24 +220,13 @@ export class Game extends Phaser.Scene {
 
 
 
-            if (this.player.data) {
-                // update data
-                let new_data = {}
-                //direction
-                if (direction !== this.player.data.direction) {
-                    new_data = Object.assign(new_data, { direction, x: this.player.x, y: this.player.y })
-                    if (this.game_camera) this.game_camera.startFollow(this.player)
-                }
-                if (this.bombs !== this.player.data.bombs) {
-                    new_data = Object.assign(new_data, { bombs: this.player.data.bombs })
-                }
-                this.player.set_data(new_data)
-
-                if (Object.keys(new_data).length) this.send_cmd('set_data', new_data)
+            if (this.player.data && direction !== this.player.data.direction) {
+                this.player.set_data({ direction, x: this.player.x, y: this.player.y })
+                if (this.game_camera) this.game_camera.startFollow(this.player)
             }
         }
 
-        if (this.game_objects) this.game_objects.forEach(player => player.update(time, delta))
+        if (this.game_objects) this.game_objects.forEach(async obj => obj.update(time, delta))
         if (this.map) this.map.update(time, delta)
 
 
