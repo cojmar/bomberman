@@ -20,7 +20,7 @@ export class GameObject extends Phaser.Physics.Arcade.Sprite {
             "direction": "",
             "x": 0,
             "y": 0,
-            "speed": 70,
+            "speed": 80,
             "creation_time": this.scene.sys.game.time(),
             destroy: () => {
                 this.scene.game_objects.delete(this.uid)
