@@ -124,7 +124,9 @@ export class Bomb extends GameObject {
     render() {
         this.scene.physics.world.collide(this, this.scene.collision_layer, (obj1, obj2) => {
             if (this.data.player === obj2.uid) {
-                this.moved = (JSON.stringify(this.scene.game_objects.get(this.data.player).get_tile_center()) === this.init_tile && !this.moved) ? false : true
+                if (!this.last_colision) this.last_colision = this.time()
+                if (this.time() - this.last_colision > 100 && !this.moved) this.moved = true
+                this.last_colision = this.time()
                 return
             }
             this.data.direction = ""
