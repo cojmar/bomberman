@@ -29,10 +29,7 @@ export class GameObject extends Phaser.Physics.Arcade.Sprite {
         }
 
         if (typeof data === 'object') this.set_data(data)
-        this.setScale(0.58)
         this.body.immovable = true
-
-
         if (!this.scene.game_objects) this.scene.game_objects = new Map()
         if (this.scene.game_objects.has(this.uid)) return false
         this.scene.game_objects.set(this.uid, this)

@@ -23,10 +23,6 @@ export class Bomb extends GameObject {
     create() {
         this.setTexture('bomb')
         this.body.setSize(20, 20, true)
-        this.setScale(1)
-
-
-
     }
     explode() {
         if (this.done) return false
