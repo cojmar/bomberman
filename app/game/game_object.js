@@ -112,6 +112,8 @@ export class GameObject extends Phaser.Physics.Arcade.Sprite {
     }
 
     update(time, delta) {
+        if (this.updateing) return false
+        this.updateing = true
         this.depth = this.y + 20
         this.render(time, delta)
 
@@ -132,7 +134,7 @@ export class GameObject extends Phaser.Physics.Arcade.Sprite {
         }
 
 
-
+        this.updateing = false
     }
 
 }

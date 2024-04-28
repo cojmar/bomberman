@@ -110,7 +110,7 @@ export class Game extends Phaser.Scene {
         Object.keys(this.world_data).map(k => this.set_object(...this.world_data[k]))
         this.spawn_player()
 
-        this.set_player(this.net.me.info.user, { bombs: 1, range: 1 })
+        this.set_player(this.net.me.info.user, { bombs: 1, range: 1, kills: 0 })
 
         //this.set_object('Bomb', 'bomb 1', { x: this.player.x, y: this.player.y })
 
@@ -186,15 +186,18 @@ export class Game extends Phaser.Scene {
     }
 
     update(time, delta) {
-        if (!this.last_time) this.last_time = time
-        if (time - this.last_time < 16.6) return false
-        this.last_time = time
-
+        if (this.updateing) return false
+        this.updateing = true
+        /*
+                if (!this.last_time) this.last_time = time
+                if (time - this.last_time < 16.6) return false
+                this.last_time = time
+        */
         if (this.ui_text) {
 
             try {
                 let tile = this.player.get_tile()
-                this.ui_text.text = ` Players ${Object.keys(this.net.room.users).length} T:${tile?.oindex} \n X:${tile.x} Y:${tile.y} B:${this?.player?.data?.bombs || 0} R:${this?.player?.data?.range || 0}`
+                this.ui_text.text = ` P:${Object.keys(this.net.room.users).length} T:${tile?.oindex} X:${tile.x} Y:${tile.y} \n B:${this?.player?.data?.bombs || 0} R:${this?.player?.data?.range || 0} K:${this?.player?.data?.kills || 0}`
             } catch (error) { }
         }
         // calculate movment direction
@@ -228,7 +231,7 @@ export class Game extends Phaser.Scene {
 
         if (this.game_objects) this.game_objects.forEach(async obj => obj.update(time, delta))
         if (this.map) this.map.update(time, delta)
-
+        this.updateing = false
 
     }
 

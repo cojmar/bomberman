@@ -10,7 +10,10 @@ export class Player extends GameObject {
         this.body.setSize(20, 30, true)
         this.body.setOffset(6, 18)
     }
-
+    explode() {
+        this.action_respawn()
+        setTimeout(() => this.set_data({ bombs: 1, range: 1 }))
+    }
     init_anims() {
         if (!this.scene.anims.anims.entries['player_left']) this.scene.anims.create({
             key: 'player_left',
