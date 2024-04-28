@@ -30,7 +30,7 @@ net.on('auth.info', (data) => {
             arcade: {
                 gravity: { y: 0 },
                 fps: 60,
-                // debug: true // Show hitboxes
+                debug: true // Show hitboxes
             }
         },
         scene: [Main, Game]

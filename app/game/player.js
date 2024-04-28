@@ -63,14 +63,14 @@ export class Player extends GameObject {
         let n = this.time()
         let oid = `${this.uid}-bomb-${n}`
         //if (this.scene.world_data[oid]) return false
-        this.scene.set_object('Bomb', oid, Object.assign({ player: this.uid, direction: this.data.direction, time: 5, range: 1 }, this.get_tile_center()))
+        this.scene.set_object('Bomb', oid, Object.assign({ player: this.uid, direction: this.data.direction, time: 5, range: 1, speed: 100 }, this.get_tile_center()))
         this.get_tile().setTint(0xff0000)
     }
 
     render() {
         let direction = this.data.direction
         this.scene.physics.world.collide(this, this.scene.collision_layer, (obj1, obj2) => {
-            if (obj2.time() < 200) return
+
             let tile = this.get_tile()
             if (this.safe_spots.indexOf(tile.oindex) !== -1) return
 
