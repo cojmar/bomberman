@@ -9,7 +9,6 @@ export class Bomb extends GameObject {
     static preload(scene) {
         scene.load.spritesheet(...this.img_data)
         scene.load.atlas('flares', 'assets/img/flares.png', 'assets/json/flares.json')
-
     }
 
     map_collision(tile) {
@@ -23,6 +22,7 @@ export class Bomb extends GameObject {
     create() {
         this.setTexture('bomb')
         this.body.setSize(20, 20, true)
+        this.init_tile = JSON.stringify(this.get_tile_center())
     }
     explode() {
         if (this.done) return false
@@ -123,7 +123,10 @@ export class Bomb extends GameObject {
     }
     render() {
         this.scene.physics.world.collide(this, this.scene.collision_layer, (obj1, obj2) => {
-            if (this.data.player === obj2.uid) return
+            if (this.data.player === obj2.uid) {
+                this.moved = (JSON.stringify(this.scene.game_objects.get(this.data.player).get_tile_center()) === this.init_tile && !this.moved) ? false : true
+                return
+            }
             this.data.direction = ""
             this.set_data(this.get_tile_center())
         })
