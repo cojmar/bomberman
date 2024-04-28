@@ -29,7 +29,7 @@ export class Bomb extends GameObject {
         this.done = true
 
         let player = this.scene.game_objects.get(this.data.player)
-        let update = { bombs: player?.data.bombs || 0, range: player?.data.range || 0, kills: player?.data.kills }
+        let update = { bombs: player?.data.bombs || 0, range: player?.data.range || 0, kills: player?.data.kills || 0 }
         update.bombs++
 
         let bomb_tile = this.get_tile()

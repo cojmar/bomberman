@@ -110,7 +110,7 @@ export class Game extends Phaser.Scene {
         Object.keys(this.world_data).map(k => this.set_object(...this.world_data[k]))
         this.spawn_player()
 
-        this.set_player(this.net.me.info.user, { bombs: 1, range: 1, kills: 0 })
+        this.set_player(this.net.me.info.user, { bombs: 1, range: 1, kills: 0, deaths: 0 })
 
         //this.set_object('Bomb', 'bomb 1', { x: this.player.x, y: this.player.y })
 
@@ -197,7 +197,7 @@ export class Game extends Phaser.Scene {
 
             try {
                 let tile = this.player.get_tile()
-                this.ui_text.text = ` P:${Object.keys(this.net.room.users).length} T:${tile?.oindex} X:${tile.x} Y:${tile.y} \n B:${this?.player?.data?.bombs || 0} R:${this?.player?.data?.range || 0} K:${this?.player?.data?.kills || 0}`
+                this.ui_text.text = ` P:${Object.keys(this.net.room.users).length} T:${tile?.oindex} X:${tile.x} Y:${tile.y} \n B:${this?.player?.data?.bombs || 0} R:${this?.player?.data?.range || 0} K:${this?.player?.data?.kills || 0}/D:${this?.player?.data?.deaths || 0}`
             } catch (error) { }
         }
         // calculate movment direction

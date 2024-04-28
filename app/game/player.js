@@ -13,7 +13,7 @@ export class Player extends GameObject {
     }
     explode() {
         this.action_respawn()
-        setTimeout(() => this.set_data({ bombs: 1, range: 1 }))
+        setTimeout(() => this.set_data({ bombs: 1, range: 1, deaths: this.data.deaths + 1 }))
     }
     init_anims() {
         if (!this.scene.anims.anims.entries['player_left']) this.scene.anims.create({
