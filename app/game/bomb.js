@@ -12,8 +12,8 @@ export class Bomb extends GameObject {
         this.data.direction = ""
         this.set_data(this.get_tile_center())
         setTimeout(() => this.set_data(this.get_tile_center()))
-        if (this.data.player !== this.scene.net.me.info.user) return false
-        this.scene.set_object('Bomb', this.uid, this.data)
+        if (this.data.player === this.scene.net.me.info.user) this.scene.set_object('Bomb', this.uid, this.data)
+
     }
 
     create() {
@@ -39,12 +39,11 @@ export class Bomb extends GameObject {
         this.destroy()
     }
     render() {
-
-
         this.scene.physics.world.collide(this, this.scene.collision_layer, (obj1, obj2) => {
             if (this.data.player === obj2.uid) return
             this.data.direction = ""
             this.set_data(this.get_tile_center())
+            if (this.data.player === this.scene.net.me.info.user) this.scene.set_object('Bomb', this.uid, this.data)
         })
         if (this.time() > this.data.time * 1000) this.explode()
     }
