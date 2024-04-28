@@ -73,6 +73,7 @@ export class TileMap {
         let br = this.scene.map.brakeable_tiles.indexOf(tile.oindex) === -1
         if (br && tile.index !== 1) return false
         this.scene.map.set_map([[(tile.index !== 1) ? tile.oindex - 5 : 5, tile.x, tile.y]])
+        tile.broken = true
 
         return !br
     }
@@ -113,6 +114,7 @@ export class TileMap {
             let t = (typeof tile === 'object') ? this.map.putTileAt(...tile) : this.map.putTileAt(tile, ...this.get_x_y(index))
             t.oindex = t.index
             t.animation = false
+            t.broken = false
             return t
         }
         if (fill) Array(this.map.layers[0].width * this.map.layers[0].height).fill(fill).map((tile, index) => set_tile(tile, index))

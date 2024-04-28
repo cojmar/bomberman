@@ -42,7 +42,7 @@ export class Bomb extends GameObject {
         for (let x = bomb_tile.x; x <= bomb_tile.x + this.data.range; x++) {
             let t = this.scene.map.map.getTileAt(x, bomb_tile.y)
             if (!t) break
-            if (this.scene.map.brakeable_tiles.includes(t.oindex) && t.index !== 1) {
+            if (this.scene.map.brakeable_tiles.includes(t.oindex) && !t.broken) {
                 tiles_to_brake.push(t)
                 break
             } else {
@@ -55,7 +55,7 @@ export class Bomb extends GameObject {
         for (let x = bomb_tile.x - 1; x >= bomb_tile.x - this.data.range; x--) {
             let t = this.scene.map.map.getTileAt(x, bomb_tile.y)
             if (!t) break
-            if (this.scene.map.brakeable_tiles.includes(t.oindex) && t.index !== 1) {
+            if (this.scene.map.brakeable_tiles.includes(t.oindex) && !t.broken) {
                 tiles_to_brake.push(t)
                 break
             } else {
@@ -67,7 +67,7 @@ export class Bomb extends GameObject {
         for (let y = bomb_tile.y + 1; y <= bomb_tile.y + this.data.range; y++) {
             let t = this.scene.map.map.getTileAt(bomb_tile.x, y)
             if (!t) break
-            if (this.scene.map.brakeable_tiles.includes(t.oindex) && t.index !== 1) {
+            if (this.scene.map.brakeable_tiles.includes(t.oindex) && !t.broken) {
                 tiles_to_brake.push(t)
                 break
             } else {
@@ -79,7 +79,7 @@ export class Bomb extends GameObject {
         for (let y = bomb_tile.y - 1; y >= bomb_tile.y - this.data.range; y--) {
             let t = this.scene.map.map.getTileAt(bomb_tile.x, y)
             if (!t) break
-            if (this.scene.map.brakeable_tiles.includes(t.oindex) && t.index !== 1) {
+            if (this.scene.map.brakeable_tiles.includes(t.oindex) && !t.broken) {
                 tiles_to_brake.push(t)
                 break
             } else {
