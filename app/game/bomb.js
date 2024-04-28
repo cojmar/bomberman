@@ -43,7 +43,6 @@ export class Bomb extends GameObject {
             if (this.data.player === obj2.uid) return
             this.data.direction = ""
             this.set_data(this.get_tile_center())
-            if (this.data.player === this.scene.net.me.info.user) this.scene.set_object('Bomb', this.uid, this.data)
         })
         if (this.time() > this.data.time * 1000) this.explode()
     }
