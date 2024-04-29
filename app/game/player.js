@@ -13,7 +13,7 @@ export class Player extends GameObject {
     }
     explode() {
         this.action_respawn()
-        setTimeout(() => this.set_data({ bombs: 1, range: 1, deaths: this.data.deaths + 1 }))
+        setTimeout(() => this.set_data({ bombs: 1, range: 1, deaths: this.ndata.deaths + 1 }))
     }
     init_anims() {
         if (!this.scene.anims.anims.entries['player_left']) this.scene.anims.create({
@@ -60,21 +60,22 @@ export class Player extends GameObject {
         })
 
         if (!ok) return false
-        if (this.data.bombs <= 0) return false
-        this.set_data({ bombs: this.data.bombs - 1 })
+        if (this.ndata.bombs <= 0) return false
+        this.set_data({ bombs: this.ndata.bombs - 1 })
 
 
         let n = this.time()
         let oid = `${this.uid}-bomb-${n}`
         //if (this.scene.world_data[oid]) return false
-        this.scene.set_object('Bomb', oid, Object.assign({ player: this.uid, direction: this.data.direction, time: 5, range: this.data.range, speed: 100 }, this.get_tile_center()))
+        this.scene.set_object('Bomb', oid, Object.assign({ player: this.uid, direction: this.ndata.direction, time: 5, range: this.ndata.range, speed: 100 }, this.get_tile_center()))
         this.get_tile().setTint(0xff0000)
     }
 
     render() {
-        let direction = this.data.direction
+        let direction = this.ndata.direction
         this.scene.physics.world.collide(this, this.scene.collision_layer, (obj1, obj2) => {
             if (obj2.constructor.name === 'Bomb' && !obj2.moved) return false
+
             let tile = this.get_tile()
             if (this.safe_spots.indexOf(tile.oindex) !== -1) return
 
@@ -84,11 +85,11 @@ export class Player extends GameObject {
             if (obj1.y > obj2.y) direction = direction.replace('u', '')
             else direction = direction.replace('d', '')
 
-            this.data.direction = direction
+            this.ndata.direction = direction
         })
 
-        if (this.data.direction.indexOf('l') !== -1) this.anims.play('player_left', true)
-        else if (this.data.direction.indexOf('r') !== -1) this.anims.play('player_right', true)
+        if (this.ndata.direction.indexOf('l') !== -1) this.anims.play('player_left', true)
+        else if (this.ndata.direction.indexOf('r') !== -1) this.anims.play('player_right', true)
         else this.anims.play('player_turn', true)
     }
 }

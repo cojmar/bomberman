@@ -12,10 +12,10 @@ export class Bomb extends GameObject {
     }
 
     map_collision(tile) {
-        this.data.direction = ""
+        this.ndata.direction = ""
         this.set_data(this.get_tile_center())
         setTimeout(() => this.set_data(this.get_tile_center()))
-        if (this.data.player === this.scene.net.me.info.user) this.scene.set_object('Bomb', this.uid, this.data)
+        if (this.ndata.player === this.scene.net.me.info.user) this.scene.set_object('Bomb', this.uid, this.ndata)
 
     }
 
@@ -27,7 +27,7 @@ export class Bomb extends GameObject {
         this.scene.game_layer.add(this.text)
         this.text.postFX.addGlow(0xffffff, 0, 0, false, 0.1, 24).outerStrength = 4
 
-        this.p_deaths = this.scene.game_objects.get(this.data.player)?.data?.deaths || 0
+        this.p_deaths = this.scene.game_objects.get(this.ndata.player)?.ndata?.deaths || 0
 
         let fx1 = this.postFX.addGlow(0xffffff, 0, 0, false, 0.1, 24)
 
@@ -45,7 +45,7 @@ export class Bomb extends GameObject {
     update_text() {
         this.text.depth = this.depth + 1
         this.text.setPosition(this.x + this.body.velocity.x / 50, this.y + this.body.velocity.y / 50)
-        this.text.text = Math.trunc(((this.data.time * 1000) - this.time()) / 1000) + 1
+        this.text.text = Math.trunc(((this.ndata.time * 1000) - this.time()) / 1000) + 1
 
     }
     on_destroy() {
@@ -56,7 +56,7 @@ export class Bomb extends GameObject {
         if (this.done) return false
         this.done = true
 
-        let player = this.scene.game_objects.get(this.data.player)
+        let player = this.scene.game_objects.get(this.ndata.player)
         let update = { bombs: 1, range: 0, kills: 0 }
 
         let bomb_tile = this.get_tile()
@@ -64,7 +64,7 @@ export class Bomb extends GameObject {
         if (!this.scene.map.safe_spots.includes(bomb_tile.oindex)) tiles_to_brake.push(bomb_tile)
 
 
-        for (let x = bomb_tile.x + 1; x <= bomb_tile.x + this.data.range; x++) {
+        for (let x = bomb_tile.x + 1; x <= bomb_tile.x + this.ndata.range; x++) {
             let t = this.scene.map.map.getTileAt(x, bomb_tile.y)
             if (!t) break
             if (this.scene.map.brakeable_tiles.includes(t.oindex) && !t.broken) {
@@ -77,7 +77,7 @@ export class Bomb extends GameObject {
             }
         }
 
-        for (let x = bomb_tile.x - 1; x >= bomb_tile.x - this.data.range; x--) {
+        for (let x = bomb_tile.x - 1; x >= bomb_tile.x - this.ndata.range; x--) {
             let t = this.scene.map.map.getTileAt(x, bomb_tile.y)
             if (!t) break
             if (this.scene.map.brakeable_tiles.includes(t.oindex) && !t.broken) {
@@ -89,7 +89,7 @@ export class Bomb extends GameObject {
                 tiles_to_brake.push(t)
             }
         }
-        for (let y = bomb_tile.y + 1; y <= bomb_tile.y + this.data.range; y++) {
+        for (let y = bomb_tile.y + 1; y <= bomb_tile.y + this.ndata.range; y++) {
             let t = this.scene.map.map.getTileAt(bomb_tile.x, y)
             if (!t) break
             if (this.scene.map.brakeable_tiles.includes(t.oindex) && !t.broken) {
@@ -101,7 +101,7 @@ export class Bomb extends GameObject {
                 tiles_to_brake.push(t)
             }
         }
-        for (let y = bomb_tile.y - 1; y >= bomb_tile.y - this.data.range; y--) {
+        for (let y = bomb_tile.y - 1; y >= bomb_tile.y - this.ndata.range; y--) {
             let t = this.scene.map.map.getTileAt(bomb_tile.x, y)
             if (!t) break
             if (this.scene.map.brakeable_tiles.includes(t.oindex) && !t.broken) {
@@ -143,15 +143,15 @@ export class Bomb extends GameObject {
             return r
         }, [])
         obj_hit.map(obj => {
-            if (obj.constructor.name === 'Player' && this.data.player !== obj.uid) update.kills++
+            if (obj.constructor.name === 'Player' && this.ndata.player !== obj.uid) update.kills++
             if (typeof obj.explode === 'function') obj.explode()
         })
         if (player) {
-            update.kills += player.data.kills
-            update.bombs += player.data.bombs
-            update.range += player.data.range
+            update.kills += player.ndata.kills
+            update.bombs += player.ndata.bombs
+            update.range += player.ndata.range
 
-            if (player.data.deaths !== this.p_deaths) update = { kills: update.kills }
+            if (player.ndata.deaths !== this.p_deaths) update = { kills: update.kills }
             player.set_data(update)
         }
         let t = this.get_tile()
@@ -175,16 +175,16 @@ export class Bomb extends GameObject {
     render() {
         this.update_text()
         this.scene.physics.world.collide(this, this.scene.collision_layer, (obj1, obj2) => {
-            if (this.data.player === obj2.uid) {
+            if (this.ndata.player === obj2.uid) {
                 if (!this.last_colision) this.last_colision = this.time()
                 if (this.time() - this.last_colision > 100 && !this.moved) this.moved = true
                 this.last_colision = this.time()
                 return
             }
-            this.data.direction = ""
+            this.ndata.direction = ""
             this.set_data(this.get_tile_center())
         })
-        if (this.time() > this.data.time * 1000) this.explode()
+        if (this.time() > this.ndata.time * 1000) this.explode()
     }
 
 }

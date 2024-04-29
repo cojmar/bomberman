@@ -64,7 +64,7 @@ export class Game extends Phaser.Scene {
                 this.set_object(...cmd_data.data.data, false)
                 break
             case 'spawn':
-                this.game_objects.get(cmd_data.data.user)?.get_tile()?.animation?.play()
+                //this.game_objects.get(cmd_data.data.user)?.get_tile()?.animation?.play()
                 break
             default:
                 //console.log(cmd_data)
@@ -88,11 +88,11 @@ export class Game extends Phaser.Scene {
         if (this.collision_layer) this.collision_layer.destroy()
         this.collision_layer = this.physics.add.group()
         //console.log(this.host())
-        this.map = new TileMap(this, this.host()?.data?.map_data?.data || {})
-        /*
-                this.map.spawn_tiles.push(1)
-                this.map.init_map({ width: 5, height: 5, data: [20, 20, 20, 20, 20] })
-        */
+        this.map = new TileMap(this, this.host()?.ndata?.map_data?.data || {})
+
+        //this.map.spawn_tiles.push(1)
+        //this.map.init_map({ width: 5, height: 5, data: [20, 20, 20, 20, 20, 20, 1, 1, 1, 20, 20, 1, 1, 1, 20, 20, 1, 1, 1, 20, 20, 20, 20, 20, 20] })
+
 
 
         Object.values(this.net.room.users).map(user => {
@@ -105,7 +105,7 @@ export class Game extends Phaser.Scene {
             this.set_player(user.info.user, user.data)
         })
 
-        this.world_data = JSON.parse(this.host()?.data?.world_data || "{}")
+        this.world_data = JSON.parse(this.host()?.ndata?.world_data || "{}")
 
         Object.keys(this.world_data).map(k => this.set_object(...this.world_data[k]))
         this.spawn_player()
@@ -147,12 +147,13 @@ export class Game extends Phaser.Scene {
         let start_tile = this.get_user_spawn_tile(this.net.me.info.user, random)
         if (!start_tile) return false
 
+
         this.player = this.set_player(this.net.me.info.user, {
             x: start_tile.pixelX + (start_tile.baseWidth / 2),
             y: start_tile.pixelY + (start_tile.baseHeight / 2)
         })
 
-        this.net.send_cmd('set_data', this.player.data)
+        this.net.send_cmd('set_data', this.player.ndata)
         if (this.game_camera) this.game_camera.startFollow(this.player)
         this.net.send_cmd('spawn')
     }
@@ -197,7 +198,7 @@ export class Game extends Phaser.Scene {
 
             try {
                 let tile = this.player.get_tile()
-                this.ui_text.text = ` P:${Object.keys(this.net.room.users).length} T:${tile?.oindex} X:${tile.x} Y:${tile.y} \n B:${this?.player?.data?.bombs || 0} R:${this?.player?.data?.range || 0} K:${this?.player?.data?.kills || 0}/D:${this?.player?.data?.deaths || 0}`
+                this.ui_text.text = ` P:${Object.keys(this.net.room.users).length} T:${tile?.oindex} X:${tile.x} Y:${tile.y} \n B:${this?.player?.ndata?.bombs || 0} R:${this?.player?.ndata?.range || 0} K:${this?.player?.ndata?.kills || 0}/D:${this?.player?.ndata?.deaths || 0}`
             } catch (error) { }
         }
         // calculate movment direction
@@ -223,7 +224,7 @@ export class Game extends Phaser.Scene {
 
 
 
-            if (this.player.data && direction !== this.player.data.direction) {
+            if (this.player.ndata && direction !== this.player.ndata.direction) {
                 this.player.set_data({ direction, x: this.player.x, y: this.player.y })
                 if (this.game_camera) this.game_camera.startFollow(this.player)
             }
