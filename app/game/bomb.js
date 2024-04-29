@@ -29,24 +29,9 @@ export class Bomb extends GameObject {
         //save player deaths that he had at creation so at explosion if he died don't give him candy
         this.p_deaths = this.scene.game_objects.get(this.ndata.player)?.ndata?.deaths || 0
 
-        //animation targets
-        let targets = [this]
-
-        //add postFX to animation (experimental)
-        this.use_postFX = (window.location.hash.indexOf('fx') !== -1)
-        if (this.use_postFX) {
-            try {
-                let fx1 = this.postFX.addGlow(0xffffff, 0, 0, false, 0.1, 24)
-                targets = [this, fx1]
-            } catch (error) {
-                targets = [this]
-            }
-        }
-
         //tween
         this.tween = this.scene.tweens.add({
-            targets: targets,
-            outerStrength: 2,
+            targets: [this],
             duration: 500,
             scale: 1.15,
             yoyo: true,
@@ -81,19 +66,20 @@ export class Bomb extends GameObject {
     }
     on_destroy() {
         if (this.tween) this.tween.remove()
-        this.emitter.destroy()
+        if (this.emitter) this.emitter.destroy()
         this.text.destroy()
     }
     explode() {
         if (this.done) return false
         this.done = true
-
+        this.emitter.destroy()
         let player = this.scene.game_objects.get(this.ndata.player)
         let update = { bombs: 1, range: 0, kills: 0 }
 
         let bomb_tile = this.get_tile()
         let tiles_to_brake = []
-        if (!this.scene.map.safe_spots.includes(bomb_tile.oindex)) tiles_to_brake.push(bomb_tile)
+        //if (!this.scene.map.safe_spots.includes(bomb_tile.oindex)) 
+        tiles_to_brake.push(bomb_tile)
 
 
         for (let x = bomb_tile.x + 1; x <= bomb_tile.x + this.ndata.range; x++) {
@@ -146,12 +132,32 @@ export class Bomb extends GameObject {
             }
         }
 
+
+        let flame = this.scene.add.particles(bomb_tile.pixelX + (bomb_tile.baseWidth / 2), bomb_tile.pixelY + (bomb_tile.baseHeight / 2), 'flares',
+            {
+                frame: 'white',
+                // color: [0xfacc22, 0xf89800, 0xf83600, 0x9f0404],
+                colorEase: 'quad.out',
+                lifespan: 500,
+                scale: { start: 0.70, end: 0, ease: 'sine.out' },
+                speed: 10,
+                advance: 500,
+                frequency: 500,
+                blendMode: 'ADD',
+                duration: 100,
+            })
+        this.scene.game_layer.add(flame)
+        flame.once("complete", () => {
+            flame.destroy()
+            this.delete()
+        })
+
         let obj_hit = tiles_to_brake.reduce((r, t) => {
             this.scene.game_objects.forEach(obj => {
                 if (obj.uid === this.uid) return r
                 let tile = obj.get_tile()
                 if (!tile) return r
-                if (tile.x === t.x && tile.y === t.y) r.push(obj)
+                if (tile.x === t.x && tile.y === t.y && !this.scene.map.safe_spots.includes(t.oindex)) r.push(obj)
             })
             if (this.scene.map.brake_tile(t)) {
                 update.bombs++
@@ -174,6 +180,7 @@ export class Bomb extends GameObject {
             flame.once("complete", () => flame.destroy())
             return r
         }, [])
+
         obj_hit.map(obj => {
             if (obj.constructor.name === 'Player' && this.ndata.player !== obj.uid) update.kills++
             if (typeof obj.explode === 'function') obj.explode()
@@ -186,23 +193,10 @@ export class Bomb extends GameObject {
             if (player.ndata.deaths !== this.p_deaths) update = { kills: update.kills }
             player.set_data(update)
         }
-        let t = this.get_tile()
-        let flame = this.scene.add.particles(t.pixelX + (t.baseWidth / 2), t.pixelY + (t.baseHeight / 2), 'flares',
-            {
-                frame: (tiles_to_brake.length > 0) ? 'white' : 'blue',
-                // color: [0xfacc22, 0xf89800, 0xf83600, 0x9f0404],
-                colorEase: 'quad.out',
-                lifespan: 500,
-                scale: { start: 0.70, end: 0, ease: 'sine.out' },
-                speed: 10,
-                advance: 500,
-                frequency: 500,
-                blendMode: 'ADD',
-                duration: 100,
-            })
-        this.scene.game_layer.add(flame)
-        flame.once("complete", () => flame.destroy())
-        this.delete()
+
+
+
+
     }
     render() {
         this.update_text()
