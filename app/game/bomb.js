@@ -27,6 +27,7 @@ export class Bomb extends GameObject {
         this.scene.game_layer.add(this.text)
         this.text.postFX.addGlow(0xffffff, 0, 0, false, 0.1, 24).outerStrength = 4
 
+        this.p_deaths = this.scene.game_objects.get(this.data.player)?.data?.deaths || 0
     }
     update_text() {
         this.text.depth = this.depth + 1
@@ -134,6 +135,8 @@ export class Bomb extends GameObject {
             update.kills += player.data.kills
             update.bombs += player.data.bombs
             update.range += player.data.range
+
+            if (player.data.deaths !== this.p_deaths) update = { kills: update.kills }
             player.set_data(update)
         }
         this.delete()
