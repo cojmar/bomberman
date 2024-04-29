@@ -29,10 +29,10 @@ export class Bomb extends GameObject {
 
         this.p_deaths = this.scene.game_objects.get(this.ndata.player)?.ndata?.deaths || 0
 
-        let fx1 = this.postFX.addGlow(0xffffff, 0, 0, false, 0.1, 24)
+        //let fx1 = this.postFX.addGlow(0xffffff, 0, 0, false, 0.1, 24)
 
         this.tween = this.scene.tweens.add({
-            targets: [fx1, this],
+            targets: [this],
             outerStrength: 2,
             duration: 500,
             scale: 1.15,
@@ -49,7 +49,7 @@ export class Bomb extends GameObject {
 
     }
     on_destroy() {
-        this.tween.remove()
+        if (this.tween) this.tween.remove()
         this.text.destroy()
     }
     explode() {
