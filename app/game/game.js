@@ -64,7 +64,10 @@ export class Game extends Phaser.Scene {
                 this.set_object(...cmd_data.data.data, false)
                 break
             case 'spawn':
-                this.game_objects.get(cmd_data.data.user)?.get_tile()?.animation?.play()
+                let t = this.game_objects.get(cmd_data.data.user)?.get_tile()?.animation
+                if (t) t.play()
+                let p = this.game_objects.get(cmd_data.data.user)
+                if (p) p.visible = true
                 break
             default:
                 //console.log(cmd_data)

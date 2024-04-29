@@ -104,7 +104,7 @@ export class GameObject extends Phaser.Physics.Arcade.Sprite {
         if (data.x) this.x = data.x
         if (data.y) this.y = data.y
         if (typeof data.visible !== 'undefined') this.visible = data.visible
-        if (this.uid === this.scene.net.me.info.user && Object.keys(data).length) this.scene.send_cmd('set_data', data)
+        if (this.scene && this.uid === this.scene.net.me.info.user && Object.keys(data).length) this.scene.send_cmd('set_data', data)
     }
 
     render(time, delta) {
@@ -114,11 +114,9 @@ export class GameObject extends Phaser.Physics.Arcade.Sprite {
     update(time, delta) {
         if (this.updateing) return false
         this.updateing = true
-        if (!this.ndata) return
+        if (!this.ndata) return this.updateing = false
         this.depth = this.y + 20
         this.render(time, delta)
-
-
 
         let direction = this.ndata.direction
         if (direction.indexOf('l') !== -1) this.setVelocityX(-this.ndata.speed)
@@ -128,8 +126,6 @@ export class GameObject extends Phaser.Physics.Arcade.Sprite {
         if (direction.indexOf('u') !== -1) this.setVelocityY(-this.ndata.speed)
         else if (direction.indexOf('d') !== -1) this.setVelocityY(this.ndata.speed)
         else this.setVelocityY(0)
-
-
 
         this.updateing = false
     }

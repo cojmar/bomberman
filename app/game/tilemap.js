@@ -95,6 +95,7 @@ export class TileMap {
         this.map.layers[0].data.map(l => l.map(t => {
             t.oindex = t.index
             t.animation = false
+            t.broken = false
         }))
         this.init_data = this.get_map().data
         this.render()

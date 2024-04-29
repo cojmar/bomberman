@@ -78,6 +78,7 @@ export class Player extends GameObject {
     render() {
         let direction = this.ndata.direction
         this.scene.physics.world.collide(this, this.scene.collision_layer, (obj1, obj2) => {
+            if (!obj2.visible) return
             if (obj2.constructor.name === 'Bomb' && !obj2.moved) return false
 
             let tile = this.get_tile()

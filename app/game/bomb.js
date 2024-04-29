@@ -77,10 +77,7 @@ export class Bomb extends GameObject {
         let update = { bombs: 1, range: 0, kills: 0 }
 
         let bomb_tile = this.get_tile()
-        let tiles_to_brake = []
-        //if (!this.scene.map.safe_spots.includes(bomb_tile.oindex)) 
-        tiles_to_brake.push(bomb_tile)
-
+        let tiles_to_brake = [bomb_tile]
 
         for (let x = bomb_tile.x + 1; x <= bomb_tile.x + this.ndata.range; x++) {
             let t = this.scene.map.map.getTileAt(x, bomb_tile.y)
@@ -132,7 +129,6 @@ export class Bomb extends GameObject {
             }
         }
 
-
         let flame = this.scene.add.particles(bomb_tile.pixelX + (bomb_tile.baseWidth / 2), bomb_tile.pixelY + (bomb_tile.baseHeight / 2), 'flares',
             {
                 frame: 'white',
@@ -182,6 +178,7 @@ export class Bomb extends GameObject {
         }, [])
 
         obj_hit.map(obj => {
+            if (!obj.visible) return
             if (obj.constructor.name === 'Player' && this.ndata.player !== obj.uid) update.kills++
             if (typeof obj.explode === 'function') obj.explode()
         })
