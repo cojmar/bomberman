@@ -28,6 +28,19 @@ export class Bomb extends GameObject {
         this.text.postFX.addGlow(0xffffff, 0, 0, false, 0.1, 24).outerStrength = 4
 
         this.p_deaths = this.scene.game_objects.get(this.data.player)?.data?.deaths || 0
+
+        let fx1 = this.postFX.addGlow(0xffffff, 0, 0, false, 0.1, 24)
+
+        this.tween = this.scene.tweens.add({
+            targets: [fx1, this],
+            outerStrength: 2,
+            duration: 500,
+            scale: 1.15,
+            yoyo: true,
+            loop: -1,
+            ease: 'sine.inout'
+        })
+
     }
     update_text() {
         this.text.depth = this.depth + 1
@@ -36,7 +49,7 @@ export class Bomb extends GameObject {
 
     }
     on_destroy() {
-
+        this.tween.remove()
         this.text.destroy()
     }
     explode() {
