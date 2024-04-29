@@ -23,23 +23,29 @@ export class Bomb extends GameObject {
         this.setTexture('bomb')
         this.body.setSize(20, 20, true)
         this.init_tile = JSON.stringify(this.get_tile_center())
-        this.text = this.scene.add.text(this.x, this.y, '5', { font: '20px monospace', fill: '#000000', fontStyle: 'bold', align: 'center' }).setOrigin(0.5, 0.5)
+        this.text = this.scene.add.text(this.x, this.y, '5', { font: '17px monospace', fill: '#010e1b', fontStyle: 'bold', align: 'center', strokeThickness: 3, stroke: '#ffffff' }).setOrigin(0.5, 0.5)
         this.scene.game_layer.add(this.text)
 
+        //save player deaths that he had at creation so at explosion if he died don't give him candy
         this.p_deaths = this.scene.game_objects.get(this.ndata.player)?.ndata?.deaths || 0
 
-        let t = [this]
-        try {
-            this.text.postFX.addGlow(0xffffff, 0, 0, false, 0.1, 24).outerStrength = 4
-            let fx1 = this.postFX.addGlow(0xffffff, 0, 0, false, 0.1, 24)
-            t = [this, fx1]
-        } catch (error) {
-            this.text.setColor('#ffffff')
-            t = [this]
+        //animation targets
+        let targets = [this]
+
+        //add postFX to animation (experimental)
+        this.use_postFX = (window.location.hash.indexOf('fx') !== -1)
+        if (this.use_postFX) {
+            try {
+                let fx1 = this.postFX.addGlow(0xffffff, 0, 0, false, 0.1, 24)
+                targets = [this, fx1]
+            } catch (error) {
+                targets = [this]
+            }
         }
 
+        //tween
         this.tween = this.scene.tweens.add({
-            targets: t,
+            targets: targets,
             outerStrength: 2,
             duration: 500,
             scale: 1.15,
