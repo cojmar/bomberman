@@ -23,13 +23,27 @@ export class Bomb extends GameObject {
         this.setTexture('bomb')
         this.body.setSize(20, 20, true)
         this.init_tile = JSON.stringify(this.get_tile_center())
+        this.text = this.scene.add.text(this.x, this.y, '5', { font: '20px monospace', fill: '#000000', fontStyle: 'bold', align: 'center' }).setOrigin(0.5, 0.5)
+        this.scene.game_layer.add(this.text)
+        this.text.postFX.addGlow(0xffffff, 0, 0, false, 0.1, 24).outerStrength = 4
+
+    }
+    update_text() {
+        this.text.depth = this.depth + 1
+        this.text.setPosition(this.x + this.body.velocity.x / 50, this.y + this.body.velocity.y / 50)
+        this.text.text = Math.trunc(((this.data.time * 1000) - this.time()) / 1000) + 1
+
+    }
+    on_destroy() {
+
+        this.text.destroy()
     }
     explode() {
         if (this.done) return false
         this.done = true
 
         let player = this.scene.game_objects.get(this.data.player)
-        let update = { bombs: player?.data.bombs || 0, range: player?.data.range || 0, kills: player?.data.kills || 0 }
+        let update = { bombs: 0, range: 0, kills: 0 }
         update.bombs++
 
         let bomb_tile = this.get_tile()
@@ -99,7 +113,7 @@ export class Bomb extends GameObject {
             let flame = this.scene.add.particles(t.pixelX + (t.baseWidth / 2), t.pixelY + (t.baseHeight / 2), 'flares',
                 {
                     frame: 'white',
-                    color: [0xfacc22, 0xf89800, 0xf83600, 0x9f0404],
+                    // color: [0xfacc22, 0xf89800, 0xf83600, 0x9f0404],
                     colorEase: 'quad.out',
                     lifespan: 500,
                     scale: { start: 0.70, end: 0, ease: 'sine.out' },
@@ -116,12 +130,16 @@ export class Bomb extends GameObject {
             if (obj.constructor.name === 'Player' && this.data.player !== obj.uid) update.kills++
             if (typeof obj.explode === 'function') obj.explode()
         })
-        if (player) player.set_data(update)
-
-
+        if (player) {
+            update.kills += player.data.kills
+            update.bombs += player.data.bombs
+            update.range += player.data.range
+            player.set_data(update)
+        }
         this.delete()
     }
     render() {
+        this.update_text()
         this.scene.physics.world.collide(this, this.scene.collision_layer, (obj1, obj2) => {
             if (this.data.player === obj2.uid) {
                 if (!this.last_colision) this.last_colision = this.time()

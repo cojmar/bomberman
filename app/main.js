@@ -21,7 +21,7 @@ net.on('connect', () => net.send_cmd('auth', { 'user': '', 'room': 'bomb-main' }
 
 net.on('auth.info', (data) => {
     const game = new Phaser.Game({
-        type: Phaser.CANVAS,
+        type: Phaser.AUTO,
         width: window.innerWidth,
         height: window.innerHeight,
         parent: window,
@@ -45,3 +45,4 @@ net.on('auth.info', (data) => {
 })
 
 net.connect('wss://ws.emupedia.net/ws/')
+window.u_network = net

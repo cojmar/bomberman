@@ -39,6 +39,7 @@ export class GameObject extends Phaser.Physics.Arcade.Sprite {
         this.safe_spots = []
         if (this.scene?.map?.safe_spots) this.safe_spots = [...this.safe_spots, ...this.scene.map.safe_spots]
 
+
         this.create()
 
     }
@@ -80,7 +81,11 @@ export class GameObject extends Phaser.Physics.Arcade.Sprite {
                 y: 0
             }
     }
+    on_destroy() {
+
+    }
     delete() {
+        this.on_destroy()
         try {
             this.destroy()
         } catch (error) {
