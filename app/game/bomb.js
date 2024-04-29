@@ -54,6 +54,23 @@ export class Bomb extends GameObject {
             ease: 'sine.inout'
         })
 
+        //particles
+        this.emitter = this.scene.add.particles(this.x, this.y, 'flares', {
+            frame: 'white',
+            // color: [0xfacc22, 0xf89800, 0xf83600, 0x9f0404],
+            colorEase: 'quad.out',
+            lifespan: 500,
+            scale: { start: 0.70, end: 0, ease: 'sine.out' },
+            speed: 100,
+            advance: 500,
+            frequency: 50,
+            blendMode: 'ADD',
+            duration: 1000,
+            alpha: 0.5,
+        })
+
+        this.emitter.on('complete', () => this.emitter.start())
+        this.scene.game_layer.add(this.emitter)
     }
     update_text() {
         this.text.depth = this.depth + 1
@@ -64,6 +81,7 @@ export class Bomb extends GameObject {
     }
     on_destroy() {
         if (this.tween) this.tween.remove()
+        this.emitter.destroy()
         this.text.destroy()
     }
     explode() {
@@ -178,7 +196,7 @@ export class Bomb extends GameObject {
                 scale: { start: 0.70, end: 0, ease: 'sine.out' },
                 speed: 10,
                 advance: 500,
-                frequency: 50,
+                frequency: 500,
                 blendMode: 'ADD',
                 duration: 100,
             })
@@ -188,6 +206,8 @@ export class Bomb extends GameObject {
     }
     render() {
         this.update_text()
+        this.emitter.x = this.x
+        this.emitter.y = this.y
         this.scene.physics.world.collide(this, this.scene.collision_layer, (obj1, obj2) => {
             if (this.ndata.player === obj2.uid) {
                 if (!this.last_colision) this.last_colision = this.time()
