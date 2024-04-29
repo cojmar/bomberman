@@ -153,7 +153,7 @@ export class UI {
         }
         // text zone
         if (this.scene.ui_text) this.scene.ui_text.destroy()
-        this.scene.ui_text = this.scene.add.text(10, 176, '', { font: '16px monospace', fill: '#d1cdcd' })
+        this.scene.ui_text = this.scene.add.text(10, 174, '', { font: '16px monospace', fill: '#d1cdcd' })
 
         this.scene.ui_layer.add([this.scene.ui_text])
 
