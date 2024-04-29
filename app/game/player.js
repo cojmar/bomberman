@@ -12,8 +12,11 @@ export class Player extends GameObject {
         this.setScale(0.58)
     }
     explode() {
-        this.action_respawn()
-        setTimeout(() => this.set_data({ bombs: 1, range: 1, deaths: this.ndata.deaths + 1 }))
+        this.visible = false
+        setTimeout(() => {
+            this.set_data({ bombs: 1, range: 1, deaths: this.ndata.deaths + 1 })
+            this.action_respawn()
+        }, 500)
     }
     init_anims() {
         if (!this.scene.anims.anims.entries['player_left']) this.scene.anims.create({

@@ -64,7 +64,7 @@ export class Game extends Phaser.Scene {
                 this.set_object(...cmd_data.data.data, false)
                 break
             case 'spawn':
-                //this.game_objects.get(cmd_data.data.user)?.get_tile()?.animation?.play()
+                this.game_objects.get(cmd_data.data.user)?.get_tile()?.animation?.play()
                 break
             default:
                 //console.log(cmd_data)
@@ -152,6 +152,7 @@ export class Game extends Phaser.Scene {
             x: start_tile.pixelX + (start_tile.baseWidth / 2),
             y: start_tile.pixelY + (start_tile.baseHeight / 2)
         })
+        this.player.visible = true
 
         this.net.send_cmd('set_data', this.player.ndata)
         if (this.game_camera) this.game_camera.startFollow(this.player)
