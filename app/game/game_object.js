@@ -98,6 +98,7 @@ export class GameObject extends Phaser.Physics.Arcade.Sprite {
     }
 
     set_data(data) {
+        //console.log(data)
         if (!this?.ndata) return false
 
         if (typeof data !== "object") return false

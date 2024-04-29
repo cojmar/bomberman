@@ -25,14 +25,21 @@ export class Bomb extends GameObject {
         this.init_tile = JSON.stringify(this.get_tile_center())
         this.text = this.scene.add.text(this.x, this.y, '5', { font: '20px monospace', fill: '#000000', fontStyle: 'bold', align: 'center' }).setOrigin(0.5, 0.5)
         this.scene.game_layer.add(this.text)
-        this.text.postFX.addGlow(0xffffff, 0, 0, false, 0.1, 24).outerStrength = 4
 
         this.p_deaths = this.scene.game_objects.get(this.ndata.player)?.ndata?.deaths || 0
 
-        //let fx1 = this.postFX.addGlow(0xffffff, 0, 0, false, 0.1, 24)
+        let t = [this]
+        try {
+            this.text.postFX.addGlow(0xffffff, 0, 0, false, 0.1, 24).outerStrength = 4
+            let fx1 = this.postFX.addGlow(0xffffff, 0, 0, false, 0.1, 24)
+            t = [this, fx1]
+        } catch (error) {
+            this.text.setColor('#ffffff')
+            t = [this]
+        }
 
         this.tween = this.scene.tweens.add({
-            targets: [this],
+            targets: t,
             outerStrength: 2,
             duration: 500,
             scale: 1.15,
@@ -45,7 +52,8 @@ export class Bomb extends GameObject {
     update_text() {
         this.text.depth = this.depth + 1
         this.text.setPosition(this.x + this.body.velocity.x / 50, this.y + this.body.velocity.y / 50)
-        this.text.text = Math.trunc(((this.ndata.time * 1000) - this.time()) / 1000) + 1
+        let new_text = `${Math.trunc(((this.ndata.time * 1000) - this.time()) / 1000) + 1}`
+        if (this.text.text !== new_text) this.text.text = new_text
 
     }
     on_destroy() {

@@ -7,6 +7,7 @@ export class Player extends GameObject {
         }]
     }
     create() {
+
         this.body.setSize(20, 30, true)
         this.body.setOffset(6, 18)
         this.setScale(0.58)

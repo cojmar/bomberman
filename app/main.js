@@ -21,7 +21,7 @@ net.on('connect', () => net.send_cmd('auth', { 'user': '', 'room': 'bomb-main' }
 
 net.on('auth.info', (data) => {
     const game = new Phaser.Game({
-        type: Phaser.AUTO,
+        type: (window.location.hash.indexOf('gpu') !== -1) ? Phaser.AUTO : Phaser.CANVAS,
         width: window.innerWidth,
         height: window.innerHeight,
         parent: window,
