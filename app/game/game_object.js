@@ -25,7 +25,6 @@ export class GameObject extends Phaser.Physics.Arcade.Sprite {
             "creation_time": this.scene.sys.game.time(),
 
         }
-
         if (typeof data === 'object') this.set_data(data)
         this.body.immovable = true
         if (!this.scene.game_objects) this.scene.game_objects = new Map()
@@ -100,15 +99,12 @@ export class GameObject extends Phaser.Physics.Arcade.Sprite {
     set_data(data) {
         //console.log(data)
         if (!this?.ndata) return false
-
         if (typeof data !== "object") return false
         Object.keys(data).map(k => { this.ndata[k] = data[k] })
         if (data.x) this.x = data.x
         if (data.y) this.y = data.y
-
-
+        if (typeof data.visible !== 'undefined') this.visible = data.visible
         if (this.uid === this.scene.net.me.info.user && Object.keys(data).length) this.scene.send_cmd('set_data', data)
-
     }
 
     render(time, delta) {

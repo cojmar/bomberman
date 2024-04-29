@@ -150,9 +150,9 @@ export class Game extends Phaser.Scene {
 
         this.player = this.set_player(this.net.me.info.user, {
             x: start_tile.pixelX + (start_tile.baseWidth / 2),
-            y: start_tile.pixelY + (start_tile.baseHeight / 2)
+            y: start_tile.pixelY + (start_tile.baseHeight / 2),
+            visible: true
         })
-        this.player.visible = true
 
         this.net.send_cmd('set_data', this.player.ndata)
         if (this.game_camera) this.game_camera.startFollow(this.player)

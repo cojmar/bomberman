@@ -13,7 +13,7 @@ export class Player extends GameObject {
         this.setScale(0.58)
     }
     explode() {
-        this.visible = false
+        this.set_data({ visible: false })
         setTimeout(() => {
             this.set_data({ bombs: 1, range: 1, deaths: this.ndata.deaths + 1 })
             this.action_respawn()
