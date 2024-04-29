@@ -44,13 +44,14 @@ export class Bomb extends GameObject {
         this.done = true
 
         let player = this.scene.game_objects.get(this.data.player)
-        let update = { bombs: 0, range: 0, kills: 0 }
-        update.bombs++
+        let update = { bombs: 1, range: 0, kills: 0 }
 
         let bomb_tile = this.get_tile()
         let tiles_to_brake = []
+        if (!this.scene.map.safe_spots.includes(bomb_tile.oindex)) tiles_to_brake.push(bomb_tile)
 
-        for (let x = bomb_tile.x; x <= bomb_tile.x + this.data.range; x++) {
+
+        for (let x = bomb_tile.x + 1; x <= bomb_tile.x + this.data.range; x++) {
             let t = this.scene.map.map.getTileAt(x, bomb_tile.y)
             if (!t) break
             if (this.scene.map.brakeable_tiles.includes(t.oindex) && !t.broken) {
@@ -125,6 +126,7 @@ export class Bomb extends GameObject {
                     duration: 100,
                 })
             this.scene.game_layer.add(flame)
+            flame.once("complete", () => flame.destroy())
             return r
         }, [])
         obj_hit.map(obj => {
@@ -139,6 +141,22 @@ export class Bomb extends GameObject {
             if (player.data.deaths !== this.p_deaths) update = { kills: update.kills }
             player.set_data(update)
         }
+        let t = this.get_tile()
+        let flame = this.scene.add.particles(t.pixelX + (t.baseWidth / 2), t.pixelY + (t.baseHeight / 2), 'flares',
+            {
+                frame: (tiles_to_brake.length > 0) ? 'white' : 'blue',
+                // color: [0xfacc22, 0xf89800, 0xf83600, 0x9f0404],
+                colorEase: 'quad.out',
+                lifespan: 500,
+                scale: { start: 0.70, end: 0, ease: 'sine.out' },
+                speed: 10,
+                advance: 500,
+                frequency: 50,
+                blendMode: 'ADD',
+                duration: 100,
+            })
+        this.scene.game_layer.add(flame)
+        flame.once("complete", () => flame.destroy())
         this.delete()
     }
     render() {
