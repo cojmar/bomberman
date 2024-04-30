@@ -69,12 +69,14 @@ export class Bomb extends GameObject {
         if (this.emitter) this.emitter.destroy()
         this.text.destroy()
     }
-    explode() {
+    explode(uid) {
         if (this.done) return false
+        if (!uid) uid = this.ndata.player
+
         this.done = true
         this.emitter.destroy()
         let player = this.scene.game_objects.get(this.ndata.player)
-        let update = { bombs: 1, bomb_range: 0, kills: 0 }
+        let update = { bombs: 1, bomb_range: 0 }
 
         let bomb_tile = this.get_tile()
         let tiles_to_brake = [bomb_tile]
@@ -179,16 +181,16 @@ export class Bomb extends GameObject {
 
         obj_hit.map(obj => {
             if (!obj.visible) return
-            if (obj.constructor.name === 'Player' && this.ndata.player !== obj.uid) update.kills++
-            if (typeof obj.explode === 'function') obj.explode()
+            if (obj.constructor.name === 'Player' && uid !== obj.uid && uid === this.scene.player.uid) {
+                //kill
+                this.scene.player.set_data({ kills: this.scene.player.ndata.kills + 1 })
+            }
+            if (typeof obj.explode === 'function') obj.explode(this.ndata.player)
         })
         if (player) {
-            update.kills += player.ndata.kills
             update.bombs += player.ndata.bombs
             update.bomb_range += player.ndata.bomb_range
-
-            if (player.ndata.deaths !== this.p_deaths) update = { kills: update.kills }
-            player.set_data(update)
+            if (player.ndata.deaths === this.p_deaths) player.set_data(update)
         }
 
 
