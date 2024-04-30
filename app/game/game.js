@@ -147,7 +147,7 @@ export class Game extends Phaser.Scene {
         if (!this.map.spawn_spots.length) return false
         let index = Object.keys(this.net.room.users).indexOf(uid)
         let spawnIndex = (random) ? Math.floor(Math.random() * this.map.spawn_spots.length) : index % this.map.spawn_spots.length
-        spawnIndex = 0
+        //spawnIndex = 0
 
         return this.map_layer.getTileAt(...this.map.spawn_spots[spawnIndex])
     }
@@ -155,7 +155,6 @@ export class Game extends Phaser.Scene {
     spawn_player(random = false) {
         let start_tile = this.get_user_spawn_tile(this.net.me.info.user, random)
         if (!start_tile) return false
-
 
         this.player = this.set_player(this.net.me.info.user, {
             x: start_tile.pixelX + (start_tile.baseWidth / 2),
