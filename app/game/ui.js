@@ -144,8 +144,8 @@ export class UI {
             this.scene.ui_layer.fixed_ui.fillRectShape(new Phaser.Geom.Rectangle(9, 8, 200, 152))
             this.scene.ui_layer.fixed_ui.fillRectShape(new Phaser.Geom.Rectangle(200, 90, 50, 25))
 
-            this.scene.ui_layer.fixed_ui.fillRectShape(new Phaser.Geom.Rectangle(9, 168, 200, 60))
-            this.scene.ui_layer.fixed_ui2.fillRectShape(new Phaser.Geom.Rectangle(13, 172, 192, 52))
+            this.scene.ui_layer.fixed_ui.fillRectShape(new Phaser.Geom.Rectangle(59, 168, 150, 180))
+            this.scene.ui_layer.fixed_ui2.fillRectShape(new Phaser.Geom.Rectangle(63, 172, 142, 172))
             this.scene.ui_layer.fixed_ui.fillRectShape(new Phaser.Geom.Rectangle(200, 185, 50, 25))
 
             this.scene.ui_layer.add([this.scene.ui_layer.fixed_ui, this.scene.ui_layer.fixed_ui2])
@@ -153,7 +153,7 @@ export class UI {
         }
         // text zone
         if (this.scene.ui_text) this.scene.ui_text.destroy()
-        this.scene.ui_text = this.scene.add.text(10, 174, '', { font: '16px monospace', fill: '#d1cdcd' })
+        this.scene.ui_text = this.scene.add.text(16, 178, '', { font: '16px monospace', fill: '#d1cdcd', align: 'right' })
 
         this.scene.ui_layer.add([this.scene.ui_text])
 

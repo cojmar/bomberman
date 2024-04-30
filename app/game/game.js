@@ -207,7 +207,19 @@ export class Game extends Phaser.Scene {
 
             try {
                 let tile = this.player.get_tile()
-                let new_text = ` P:${Object.keys(this.net.room.users).length} T:${tile?.oindex} X:${tile.x} Y:${tile.y} \n B:${this?.player?.ndata?.bombs || 0} R:${this?.player?.ndata?.range || 0} K:${this?.player?.ndata?.kills || 0}/D:${this?.player?.ndata?.deaths || 0} \n FPS:${Math.floor(this.sys.game.loop.actualFps)}`
+                let new_text =
+                    [
+                        `FPS: ${Math.floor(this.sys.game.loop.actualFps)}`,
+                        `Players: ${Object.keys(this.net.room.users).length}`,
+                        ``,
+                        `Bombs: ${this?.player?.ndata?.bombs || 0}`,
+                        `Range: ${this?.player?.ndata?.range || 0}`,
+                        `Kills: ${this?.player?.ndata?.kills || 0}`,
+                        `Deaths: ${this?.player?.ndata?.deaths || 0}`,
+                        `                    `,
+                        `Tile type: ${tile?.oindex}`,
+                        `X:${tile.x} Y:${tile.y}`,
+                    ].join('\n')
                 if (this.ui_text.text !== new_text) this.ui_text.text = new_text
             } catch (error) { }
         }
