@@ -57,6 +57,9 @@ export class Game extends Phaser.Scene {
                     }
                 }
                 break
+            case 'random':
+                console.log(this.random())
+                break
             case 'action':
                 try {
                     this.game_objects.get(cmd_data.data.user)[`action_${cmd_data.data.data}`]()
@@ -88,7 +91,11 @@ export class Game extends Phaser.Scene {
         return (uid === this.host().info.user)
     }
     random() {
-        return this.get_time()
+        let seed = `${this.get_time()}`.split('').splice(-8, 5).join('') / 1
+        Phaser.Math.RND.sow([seed])
+
+        //console.log(seed)
+        return Phaser.Math.RND.frac()
     }
 
     init_game() {
@@ -100,10 +107,12 @@ export class Game extends Phaser.Scene {
         this.world_data = JSON.parse(this.host()?.data?.world_data || "{}")
 
         this.map = new TileMap(this, this.host()?.data?.map_data?.data || {})
+        /*
         setInterval(() => {
-
-            //console.log(this.random())
+            if (!this.is_host()) return
+            this.send_cmd('random')            
         }, 1000);
+        */
 
         //this.map.spawn_tiles.push(1)
         //this.map.init_map({ width: 5, height: 5, data: [20, 20, 20, 20, 20, 20, 1, 1, 1, 20, 20, 1, 1, 1, 20, 20, 1, 1, 1, 20, 20, 20, 20, 20, 20] })
@@ -134,15 +143,7 @@ export class Game extends Phaser.Scene {
         })
 
 
-        // // Set a seed for the random number generator
-        // Phaser.Math.RND.sow([123, 456, 789]);
-        // console.log(Phaser.Math.RND.state())
-        // // Now, Phaser.Math.RND will return the same sequence of random numbers
-        // console.log(Phaser.Math.RND.frac()); // 0.123
-        // console.log(Phaser.Math.RND.frac()); // 0.456
-        // Phaser.Math.RND.sow([123, 456, 789])
-        // console.log(Phaser.Math.RND.frac()); // 0.789
-        // console.log(Phaser.Math.RND.frac()); // 0.789
+
     }
 
     get_user_spawn_tile(uid, random = false) {
