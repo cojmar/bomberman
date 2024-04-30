@@ -221,7 +221,7 @@ export class Game extends Phaser.Scene {
                         `X:${tile.x} Y:${tile.y}`,
                     ].join('\n')
                 if (this.ui_text.text !== new_text) this.ui_text.text = new_text
-            } catch (error) { }
+            } catch (error) { console.log(error) }
         }
         // calculate movment direction
         if (this.player) {

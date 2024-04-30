@@ -25,7 +25,7 @@ export class Bomb extends GameObject {
         this.init_tile = JSON.stringify(this.get_tile_center())
         this.text = this.scene.add.text(this.x, this.y, '5', { font: '17px monospace', fill: '#010e1b', fontStyle: 'bold', align: 'center', strokeThickness: 3, stroke: '#ffffff' }).setOrigin(0.5, 0.5)
         this.scene.game_layer.add(this.text)
-
+        if (!this.ndata.time) this.ndata.time = 0
         //save player deaths that he had at creation so at explosion if he died don't give him candy
         this.p_deaths = this.scene.game_objects.get(this.ndata.player)?.ndata?.deaths || 0
 
