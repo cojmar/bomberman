@@ -98,6 +98,9 @@ export class TileMap {
             t.broken = false
         }))
         this.init_data = this.get_map().data
+
+        this.map_has_brakable_tiles = false
+        this.get_map().data.map(t => { if (this.brakeable_tiles.indexOf(t) !== -1) this.map_has_brakable_tiles = true })
         this.render()
     }
     reset_map() {
@@ -146,7 +149,7 @@ export class TileMap {
         if (!update) return
         clearTimeout(this.update_to)
         this.update_to = setTimeout(() => {
-            if (this?.brakeable_tiles?.length) {
+            if (this.map_has_brakable_tiles) {
                 let all_gone = true
                 this.get_map().data.map(t => { if (this.brakeable_tiles.indexOf(t) !== -1) all_gone = false })
                 if (all_gone) this.reset_map()

@@ -114,8 +114,8 @@ export class Game extends Phaser.Scene {
                 }, 1000);
         */
 
-        //this.map.spawn_tiles.push(1)
-        //this.map.init_map({ width: 5, height: 5, data: [20, 20, 20, 20, 20, 20, 1, 1, 1, 20, 20, 1, 1, 1, 20, 20, 1, 1, 1, 20, 20, 20, 20, 20, 20] })
+        // this.map.spawn_tiles.push(1)
+        // this.map.init_map({ width: 5, height: 5, data: [20, 20, 20, 20, 20, 20, 1, 1, 1, 20, 20, 1, 1, 1, 20, 20, 1, 1, 1, 20, 20, 20, 20, 20, 20] })
 
         Object.values(this.net.room.users).map(user => {
             if (!user.data.x) {
@@ -129,10 +129,9 @@ export class Game extends Phaser.Scene {
 
         Object.keys(this.world_data).map(k => this.set_object(...this.world_data[k]))
         this.spawn_player()
-
         this.set_player(this.net.me.info.user, { bombs: 1, bomb_range: 1, kills: 0, deaths: 0, bomb_speed: 100, bomb_time: 5 })
 
-        //this.set_object('Bomb', 'bomb 1', { x: this.player.x, y: this.player.y })
+        //this.set_object('Bomb', 'bomb 1', { x: this.player.x, y: this.player.y, time: 10 })
 
         this.input.on('gameobjectover', (pointer, gameObject) => {
             gameObject.setTint(0xff0000)
@@ -141,8 +140,6 @@ export class Game extends Phaser.Scene {
         this.input.on('gameobjectout', (pointer, gameObject) => {
             gameObject.clearTint()
         })
-
-
 
     }
 
@@ -205,7 +202,6 @@ export class Game extends Phaser.Scene {
         if (!this.player_to_display) this.player_to_display = this.player
 
         if (this.ui_text) {
-            (this?.player?.ndata?.kills || 0) + (this?.player?.ndata?.bomb_range || 0)
             try {
                 let tile = this?.player_to_display.get_tile()
                 let new_text =
@@ -215,7 +211,7 @@ export class Game extends Phaser.Scene {
                         ``,
                         `User ${this.net.room.users[this.player_to_display.uid].info.user.split('-').pop()}`,
                         `Score ${this?.player_to_display.get_score() || 0}`,
-                        `Ladder ${this?.player_to_display.get_ladder().join('/') || ''}`,
+                        `Ladder ${this?.player_to_display.get_ladder().shift()}/${Object.keys(this.net.room.users).length}`,
                         ``,
                         `Kills ${this?.player_to_display.ndata?.kills || 0}`,
                         `Deaths ${this?.player_to_display.ndata?.deaths || 0}`,
