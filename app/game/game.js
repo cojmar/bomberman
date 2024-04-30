@@ -207,25 +207,24 @@ export class Game extends Phaser.Scene {
         if (this.ui_text) {
             (this?.player?.ndata?.kills || 0) + (this?.player?.ndata?.bomb_range || 0)
             try {
-                let tile = this.player_to_display.get_tile()
-                let score = 0
+                let tile = this?.player_to_display.get_tile()
                 let new_text =
                     [
                         `FPS ${Math.floor(this.sys.game.loop.actualFps)} ${(this.game.renderer instanceof Phaser.Renderer.WebGL.WebGLRenderer) ? 'GPU' : 'CPU'}`,
                         `Players ${Object.keys(this.net.room.users).length}`,
                         ``,
                         `User ${this.net.room.users[this.player_to_display.uid].info.user.split('-').pop()}`,
-                        `Score ${this?.player_to_display?.get_score() || 0}`,
-                        `Ladder 0/${Object.keys(this.net.room.users).length}`,
+                        `Score ${this?.player_to_display.get_score() || 0}`,
+                        `Ladder ${this?.player_to_display.get_ladder().join('/') || ''}`,
                         ``,
-                        `Kills ${this?.player_to_display?.ndata?.kills || 0}`,
-                        `Deaths ${this?.player_to_display?.ndata?.deaths || 0}`,
+                        `Kills ${this?.player_to_display.ndata?.kills || 0}`,
+                        `Deaths ${this?.player_to_display.ndata?.deaths || 0}`,
                         `Move Speed ${this?.player_to_display?.ndata?.speed || 0}`,
                         ``,
-                        `Bombs ${this?.player_to_display?.ndata?.bombs || 0}`,
-                        `Bomb Range ${this?.player_to_display?.ndata?.bomb_range || 0}`,
-                        `Bomb Time ${this?.player_to_display?.ndata?.bomb_time || 0}`,
-                        `Bomb Speed ${this?.player_to_display?.ndata?.bomb_speed || 0}`,
+                        `Bombs ${this?.player_to_display.ndata?.bombs || 0}`,
+                        `Bomb Range ${this?.player_to_display.ndata?.bomb_range || 0}`,
+                        `Bomb Time ${this?.player_to_display.ndata?.bomb_time || 0}`,
+                        `Bomb Speed ${this?.player_to_display.ndata?.bomb_speed || 0}`,
                         `                    `,
                         `Tile Type ${tile?.oindex}`,
                         `X:${tile.x} Y:${tile.y}`,

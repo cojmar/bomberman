@@ -58,6 +58,12 @@ export class Player extends GameObject {
         if (!this.init_score) this.init_score = score
         return score - this?.init_score || 0
     }
+    get_ladder() {
+        let players = []
+        this.scene.game_objects.forEach(obj => (obj.constructor.name === 'Player') ? players.push({ uid: obj.uid, score: obj.get_score() }) : false)
+        players.sort((a, b) => b.score - a.score)
+        return [players.findIndex(v => v.uid === this.uid) + 1, players.length]
+    }
 
     action_bomb(user) {
         if (this.uid !== this.scene.net.me.info.user) return false
