@@ -19,7 +19,6 @@ export class Game extends Phaser.Scene {
     create() {
         this.net = this.sys.game.net
         this.sys.game.net_cmd = (data) => this.net_cmd(data)
-        this.world_time = 0
 
         this.sys.game.resize = () => this.ui.init_screen()
         this.send_cmd = (cmd, data) => this.sys.game.net.send_cmd(cmd, data)
@@ -36,7 +35,7 @@ export class Game extends Phaser.Scene {
     }
     get_time() {
 
-        return Math.round(this.time.now / 1) + this.world_time
+        return this.sys.game.time()
     }
     net_cmd(cmd_data) {
         switch (cmd_data.cmd) {
@@ -65,7 +64,6 @@ export class Game extends Phaser.Scene {
                 break
             case 'set_object':
                 if (cmd_data.data.user === this.net.me.info.user) return false
-                //console.log(cmd_data.data.data)
                 this.set_object(...cmd_data.data.data, false)
                 break
             case 'spawn':
@@ -89,6 +87,9 @@ export class Game extends Phaser.Scene {
         if (!uid) uid = this.net.me.info.user
         return (uid === this.host().info.user)
     }
+    random() {
+        return this.get_time()
+    }
 
     init_game() {
         this.game_objects = new Map()
@@ -97,12 +98,11 @@ export class Game extends Phaser.Scene {
         this.collision_layer = this.physics.add.group()
         //console.log(this.host())
         this.world_data = JSON.parse(this.host()?.data?.world_data || "{}")
-        this.world_time = this.host()?.data?.world_time || 0
 
         this.map = new TileMap(this, this.host()?.data?.map_data?.data || {})
         setInterval(() => {
-            //console.log(this.host()?.data?.world_time || 0)
-            console.log(this.get_time())
+
+            //console.log(this.random())
         }, 1000);
 
         //this.map.spawn_tiles.push(1)
@@ -149,7 +149,7 @@ export class Game extends Phaser.Scene {
         if (!this.map.spawn_spots.length) return false
         let index = Object.keys(this.net.room.users).indexOf(uid)
         let spawnIndex = (random) ? Math.floor(Math.random() * this.map.spawn_spots.length) : index % this.map.spawn_spots.length
-        // spawnIndex = 0
+        spawnIndex = 0
 
         return this.map_layer.getTileAt(...this.map.spawn_spots[spawnIndex])
     }
@@ -180,7 +180,7 @@ export class Game extends Phaser.Scene {
         if (!data) data = {}
         let obj = this.game_objects.get(uid) || this.new_object(eval(`${obj_type}`), uid, data)
         this.world_data[uid] = [obj_type, uid, obj.get_data()]
-        this.send_cmd('set_data', { world_data: JSON.stringify(this.world_data), world_time: this.get_time() })
+        this.send_cmd('set_data', { world_data: JSON.stringify(this.world_data) })
         if (emit) this.send_cmd('set_object', this.world_data[uid])
         return obj
     }
@@ -188,7 +188,7 @@ export class Game extends Phaser.Scene {
         this.game_objects.delete(uid)
         if (!this.world_data[uid]) return false
         delete this.world_data[uid]
-        this.send_cmd('set_data', { world_data: JSON.stringify(this.world_data), world_time: this.get_time() })
+        this.send_cmd('set_data', { world_data: JSON.stringify(this.world_data) })
     }
 
     new_object(obj, uid = 'default', data) {
@@ -201,15 +201,6 @@ export class Game extends Phaser.Scene {
     update(time, delta) {
         if (this.updateing) return false
         this.updateing = true
-        let host = this.host()
-        /*
-        if (host.info.user === this.net.me.info.user) {
-            if (host.data.world_time !== this.get_time()) {
-                this.player.set_data({ world_time: this.get_time() })
-            }
-            console.log(host.data.world_time === this.get_time())
-        }
-        */
 
         if (this.ui_text) {
 

@@ -50,6 +50,7 @@ export class Player extends GameObject {
 
     action_respawn() {
         if (this.uid !== this.scene.net.me.info.user) return false
+        this.set_data({ visible: true })
         this.scene.spawn_player(true)
     }
 

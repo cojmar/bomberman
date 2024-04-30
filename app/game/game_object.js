@@ -105,7 +105,7 @@ export class GameObject extends Phaser.Physics.Arcade.Sprite {
         if (data.x) this.x = data.x
         if (data.y) this.y = data.y
         if (typeof data.visible !== 'undefined') this.visible = data.visible
-        if (this.scene && this.uid === this.scene.net.me.info.user && Object.keys(data).length) this.scene.send_cmd('set_data', Object.assign(data, { world_time: this.scene.get_time() }))
+        if (this.scene && this.uid === this.scene.net.me.info.user && Object.keys(data).length) this.scene.send_cmd('set_data', data)
     }
 
     render(time, delta) {

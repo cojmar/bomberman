@@ -35,10 +35,10 @@ net.on('auth.info', (data) => {
         },
         scene: [Main, Game]
     })
-    game.time_dif = Date.now() - new Date(net.me.info.last_login_date).getTime()
-    game.time = () => {
-        return Date.now() + game.time_dif
-    }
+    let net_time = new Date(net.me.info.last_login_date).getTime()
+    let now_time = Date.now()
+    game.time = () => net_time + (Date.now() - now_time)
+
     game.net = net
     game.net.on("cmd", (data) => { if (game.net_cmd) game.net_cmd(data) })
     window.addEventListener("resize", () => game?.resize())
