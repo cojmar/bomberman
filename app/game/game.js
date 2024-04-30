@@ -200,11 +200,19 @@ export class Game extends Phaser.Scene {
         r.set_data(data)
         return r
     }
+    get_max_score() {
+        return 15 + (Object.keys(this.net.room.users).length * 5)
+    }
 
     update(time, delta) {
         if (this.updateing) return false
         this.updateing = true
         if (!this.player_to_display) this.player_to_display = this.player
+        if (this.player.get_ladder().pop() >= this.get_max_score() && this.is_host() && !this.restarting) {
+            this.restarting = true
+            setTimeout(() => this.restarting = false)
+            this.send_cmd('reset_game')
+        }
 
         if (this.ui_text) {
             try {
@@ -215,7 +223,7 @@ export class Game extends Phaser.Scene {
                         `Players ${Object.keys(this.net.room.users).length}`,
                         ``,
                         `User ${this.net.room.users[this.player_to_display.uid].info.user.split('-').pop()}`,
-                        `Score ${this?.player_to_display.get_score() || 0}`,
+                        `Score ${this?.player_to_display.get_score() || 0}/${this.get_max_score()}`,
                         `Ladder ${this?.player_to_display.get_ladder().shift()}/${Object.keys(this.net.room.users).length}`,
                         ``,
                         `Kills ${this?.player_to_display.ndata?.kills || 0}`,
