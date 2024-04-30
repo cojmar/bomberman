@@ -10,6 +10,7 @@ export class Player extends GameObject {
         this.body.setSize(20, 30, true)
         this.body.setOffset(6, 18)
         this.setScale(0.58)
+        this.init_score = this.get_score()
     }
     explode() {
         this.set_data({ visible: false })
@@ -51,6 +52,11 @@ export class Player extends GameObject {
         if (this.uid !== this.scene.net.me.info.user) return false
         this.set_data({ visible: true })
         this.scene.spawn_player(true)
+    }
+    get_score() {
+        let score = Array.from(['speed', 'bomb_speed', 'bomb_range', 'kills']).reduce((r, k) => r + this.ndata[k], 0)
+        if (!this.init_score) this.init_score = score
+        return score - this?.init_score || 0
     }
 
     action_bomb(user) {

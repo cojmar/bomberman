@@ -90,9 +90,9 @@ export class Game extends Phaser.Scene {
         if (!uid) uid = this.net.me.info.user
         return (uid === this.host().info.user)
     }
-    random() {
+    random(seed2 = 'asd') {
         let seed = `${this.get_time()}`.split('').splice(-8, 5).join('') / 1
-        Phaser.Math.RND.sow([seed])
+        Phaser.Math.RND.sow([seed, seed2])
 
         //console.log(seed)
         return Phaser.Math.RND.frac()
@@ -108,10 +108,10 @@ export class Game extends Phaser.Scene {
 
         this.map = new TileMap(this, this.host()?.data?.map_data?.data || {})
         /*
-        setInterval(() => {
-            if (!this.is_host()) return
-            this.send_cmd('random')            
-        }, 1000);
+                setInterval(() => {
+                    if (!this.is_host()) return
+                    this.send_cmd('random')
+                }, 1000);
         */
 
         //this.map.spawn_tiles.push(1)
@@ -202,28 +202,30 @@ export class Game extends Phaser.Scene {
     update(time, delta) {
         if (this.updateing) return false
         this.updateing = true
+        if (!this.player_to_display) this.player_to_display = this.player
 
         if (this.ui_text) {
             (this?.player?.ndata?.kills || 0) + (this?.player?.ndata?.bomb_range || 0)
             try {
-                let tile = this.player.get_tile()
+                let tile = this.player_to_display.get_tile()
                 let score = 0
                 let new_text =
                     [
                         `FPS ${Math.floor(this.sys.game.loop.actualFps)} ${(this.game.renderer instanceof Phaser.Renderer.WebGL.WebGLRenderer) ? 'GPU' : 'CPU'}`,
-                        ``,
                         `Players ${Object.keys(this.net.room.users).length}`,
-                        `Score ${score}`,
+                        ``,
+                        `User ${this.net.room.users[this.player_to_display.uid].info.user.split('-').pop()}`,
+                        `Score ${this?.player_to_display?.get_score() || 0}`,
                         `Ladder 0/${Object.keys(this.net.room.users).length}`,
                         ``,
-                        `Kills ${this?.player?.ndata?.kills || 0}`,
-                        `Deaths ${this?.player?.ndata?.deaths || 0}`,
-                        `Move Speed ${this?.player?.ndata?.speed || 0}`,
+                        `Kills ${this?.player_to_display?.ndata?.kills || 0}`,
+                        `Deaths ${this?.player_to_display?.ndata?.deaths || 0}`,
+                        `Move Speed ${this?.player_to_display?.ndata?.speed || 0}`,
                         ``,
-                        `Bombs ${this?.player?.ndata?.bombs || 0}`,
-                        `Bomb Range ${this?.player?.ndata?.bomb_range || 0}`,
-                        `Bomb Time ${this?.player?.ndata?.bomb_time || 0}`,
-                        `Bomb Speed ${this?.player?.ndata?.bomb_speed || 0}`,
+                        `Bombs ${this?.player_to_display?.ndata?.bombs || 0}`,
+                        `Bomb Range ${this?.player_to_display?.ndata?.bomb_range || 0}`,
+                        `Bomb Time ${this?.player_to_display?.ndata?.bomb_time || 0}`,
+                        `Bomb Speed ${this?.player_to_display?.ndata?.bomb_speed || 0}`,
                         `                    `,
                         `Tile Type ${tile?.oindex}`,
                         `X:${tile.x} Y:${tile.y}`,
