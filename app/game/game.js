@@ -210,7 +210,7 @@ export class Game extends Phaser.Scene {
                 let score = 0
                 let new_text =
                     [
-                        `FPS: ${Math.floor(this.sys.game.loop.actualFps)}`,
+                        `FPS: ${Math.floor(this.sys.game.loop.actualFps)} ${(this.game.renderer instanceof Phaser.Renderer.WebGL.WebGLRenderer) ? 'GPU' : 'CPU'}`,
                         ``,
                         `Players: ${Object.keys(this.net.room.users).length}`,
                         `Score: ${score}`,
