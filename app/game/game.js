@@ -130,7 +130,7 @@ export class Game extends Phaser.Scene {
         Object.keys(this.world_data).map(k => this.set_object(...this.world_data[k]))
         this.spawn_player()
 
-        this.set_player(this.net.me.info.user, { bombs: 1, range: 1, kills: 0, deaths: 0 })
+        this.set_player(this.net.me.info.user, { bombs: 1, bomb_range: 1, kills: 0, deaths: 0, bomb_speed: 100, bomb_time: 5 })
 
         //this.set_object('Bomb', 'bomb 1', { x: this.player.x, y: this.player.y })
 
@@ -204,18 +204,26 @@ export class Game extends Phaser.Scene {
         this.updateing = true
 
         if (this.ui_text) {
-
+            (this?.player?.ndata?.kills || 0) + (this?.player?.ndata?.bomb_range || 0)
             try {
                 let tile = this.player.get_tile()
+                let score = 0
                 let new_text =
                     [
                         `FPS: ${Math.floor(this.sys.game.loop.actualFps)}`,
-                        `Players: ${Object.keys(this.net.room.users).length}`,
                         ``,
-                        `Bombs: ${this?.player?.ndata?.bombs || 0}`,
-                        `Range: ${this?.player?.ndata?.range || 0}`,
+                        `Players: ${Object.keys(this.net.room.users).length}`,
+                        `Score: ${score}`,
+                        `Ladder : 0/${Object.keys(this.net.room.users).length}`,
+                        ``,
                         `Kills: ${this?.player?.ndata?.kills || 0}`,
                         `Deaths: ${this?.player?.ndata?.deaths || 0}`,
+                        `Move Speed: ${this?.player?.ndata?.speed || 0}`,
+                        ``,
+                        `Bombs: ${this?.player?.ndata?.bombs || 0}`,
+                        `Bomb Range: ${this?.player?.ndata?.bomb_range || 0}`,
+                        `Bomb Time:  ${this?.player?.ndata?.bomb_time || 0}`,
+                        `Bomb Speed: ${this?.player?.ndata?.bomb_speed || 0}`,
                         `                    `,
                         `Tile type: ${tile?.oindex}`,
                         `X:${tile.x} Y:${tile.y}`,

@@ -74,12 +74,12 @@ export class Bomb extends GameObject {
         this.done = true
         this.emitter.destroy()
         let player = this.scene.game_objects.get(this.ndata.player)
-        let update = { bombs: 1, range: 0, kills: 0 }
+        let update = { bombs: 1, bomb_range: 0, kills: 0 }
 
         let bomb_tile = this.get_tile()
         let tiles_to_brake = [bomb_tile]
 
-        for (let x = bomb_tile.x + 1; x <= bomb_tile.x + this.ndata.range; x++) {
+        for (let x = bomb_tile.x + 1; x <= bomb_tile.x + this.ndata.bomb_range; x++) {
             let t = this.scene.map.map.getTileAt(x, bomb_tile.y)
             if (!t) break
             if (this.scene.map.brakeable_tiles.includes(t.oindex) && !t.broken) {
@@ -92,7 +92,7 @@ export class Bomb extends GameObject {
             }
         }
 
-        for (let x = bomb_tile.x - 1; x >= bomb_tile.x - this.ndata.range; x--) {
+        for (let x = bomb_tile.x - 1; x >= bomb_tile.x - this.ndata.bomb_range; x--) {
             let t = this.scene.map.map.getTileAt(x, bomb_tile.y)
             if (!t) break
             if (this.scene.map.brakeable_tiles.includes(t.oindex) && !t.broken) {
@@ -104,7 +104,7 @@ export class Bomb extends GameObject {
                 tiles_to_brake.push(t)
             }
         }
-        for (let y = bomb_tile.y + 1; y <= bomb_tile.y + this.ndata.range; y++) {
+        for (let y = bomb_tile.y + 1; y <= bomb_tile.y + this.ndata.bomb_range; y++) {
             let t = this.scene.map.map.getTileAt(bomb_tile.x, y)
             if (!t) break
             if (this.scene.map.brakeable_tiles.includes(t.oindex) && !t.broken) {
@@ -116,7 +116,7 @@ export class Bomb extends GameObject {
                 tiles_to_brake.push(t)
             }
         }
-        for (let y = bomb_tile.y - 1; y >= bomb_tile.y - this.ndata.range; y--) {
+        for (let y = bomb_tile.y - 1; y >= bomb_tile.y - this.ndata.bomb_range; y--) {
             let t = this.scene.map.map.getTileAt(bomb_tile.x, y)
             if (!t) break
             if (this.scene.map.brakeable_tiles.includes(t.oindex) && !t.broken) {
@@ -157,7 +157,7 @@ export class Bomb extends GameObject {
             })
             if (this.scene.map.brake_tile(t)) {
                 update.bombs++
-                update.range++
+                update.bomb_range++
             }
             let flame = this.scene.add.particles(t.pixelX + (t.baseWidth / 2), t.pixelY + (t.baseHeight / 2), 'flares',
                 {
@@ -185,7 +185,7 @@ export class Bomb extends GameObject {
         if (player) {
             update.kills += player.ndata.kills
             update.bombs += player.ndata.bombs
-            update.range += player.ndata.range
+            update.bomb_range += player.ndata.bomb_range
 
             if (player.ndata.deaths !== this.p_deaths) update = { kills: update.kills }
             player.set_data(update)

@@ -7,7 +7,6 @@ export class Player extends GameObject {
         }]
     }
     create() {
-
         this.body.setSize(20, 30, true)
         this.body.setOffset(6, 18)
         this.setScale(0.58)
@@ -15,7 +14,7 @@ export class Player extends GameObject {
     explode() {
         this.set_data({ visible: false })
         setTimeout(() => {
-            this.set_data({ bombs: 1, range: 1, deaths: this.ndata.deaths + 1 })
+            this.set_data({ bombs: 1, bomb_range: 1, deaths: this.ndata.deaths + 1 })
             this.action_respawn()
         }, 500)
     }
@@ -72,7 +71,7 @@ export class Player extends GameObject {
         let n = this.time()
         let oid = `${this.uid}-bomb-${n}`
         //if (this.scene.world_data[oid]) return false
-        this.scene.set_object('Bomb', oid, Object.assign({ player: this.uid, direction: this.ndata.direction, time: 5, range: this.ndata.range, speed: 100 }, this.get_tile_center()))
+        this.scene.set_object('Bomb', oid, Object.assign({ player: this.uid, direction: this.ndata.direction, time: this.ndata.bomb_time, bomb_range: this.ndata.bomb_range, speed: this.ndata.bomb_speed }, this.get_tile_center()))
         this.get_tile().setTint(0xff0000)
     }
 
