@@ -26,7 +26,6 @@ export class Game extends Phaser.Scene {
         this.game.events.on('blur', () => {
             this.idle = true
         })
-
         this.game.events.on('focus', () => {
             this.idle = false
         })
@@ -57,8 +56,16 @@ export class Game extends Phaser.Scene {
                     }
                 }
                 break
+            case 'room.user_join':
+                if (Object.keys(this.net.room.users).length === 2 && this.is_host()) this.send_cmd('reset_game')
+                break
+            case 'reset_game':
+                this.reset_game()
+                break
             case 'random':
-                console.log(this.random())
+                console.log(this.game_objects.get(this.host().info.user).random().frac())
+                console.log(this.game_objects.get(this.host().info.user).random().pick(['a', 'b', 'c']))
+
                 break
             case 'action':
                 try {
@@ -90,29 +97,28 @@ export class Game extends Phaser.Scene {
         if (!uid) uid = this.net.me.info.user
         return (uid === this.host().info.user)
     }
-    random(seed2 = 'asd') {
+    random(seedn = []) {
         let seed = `${this.get_time()}`.split('').splice(-8, 5).join('') / 1
-        Phaser.Math.RND.sow([seed, seed2])
-
-        //console.log(seed)
-        return Phaser.Math.RND.frac()
+        Phaser.Math.RND.sow([seed, ...seedn])
+        return Phaser.Math.RND
+    }
+    reset_game() {
+        this.map.reset_map()
+        this.spawn_player()
+        this.set_player(this.net.me.info.user, this.default_player_data)
     }
 
     init_game() {
+        this.default_player_data = { bombs: 1, bomb_range: 1, kills: 0, deaths: 0, bomb_speed: 100, bomb_time: 5 }
         this.game_objects = new Map()
         this.game_layer.getChildren().forEach(child => child.destroy())
         if (this.collision_layer) this.collision_layer.destroy()
         this.collision_layer = this.physics.add.group()
-        //console.log(this.host())
-        this.world_data = JSON.parse(this.host()?.data?.world_data || "{}")
 
+        this.world_data = JSON.parse(this.host()?.data?.world_data || "{}")
         this.map = new TileMap(this, this.host()?.data?.map_data?.data || {})
-        /*
-                setInterval(() => {
-                    if (!this.is_host()) return
-                    this.send_cmd('random')
-                }, 1000);
-        */
+
+        // setInterval(() => (this.is_host()) ? this.send_cmd('random') : '', 1000)
 
         // this.map.spawn_tiles.push(1)
         // this.map.init_map({ width: 5, height: 5, data: [20, 20, 20, 20, 20, 20, 1, 1, 1, 20, 20, 1, 1, 1, 20, 20, 1, 1, 1, 20, 20, 20, 20, 20, 20] })
@@ -129,7 +135,7 @@ export class Game extends Phaser.Scene {
 
         Object.keys(this.world_data).map(k => this.set_object(...this.world_data[k]))
         this.spawn_player()
-        this.set_player(this.net.me.info.user, { bombs: 1, bomb_range: 1, kills: 0, deaths: 0, bomb_speed: 100, bomb_time: 5 })
+        this.set_player(this.net.me.info.user, this.default_player_data)
 
         //this.set_object('Bomb', 'bomb 1', { x: this.player.x, y: this.player.y, time: 10 })
 

@@ -35,10 +35,10 @@ export class GameObject extends Phaser.Physics.Arcade.Sprite {
         if (this.scene.map_layer) this.map_collider = this.scene.physics.add.collider(this, this.scene.map_layer, (obj1, tile) => this.map_collision(tile))
         this.safe_spots = []
         if (this.scene?.map?.safe_spots) this.safe_spots = [...this.safe_spots, ...this.scene.map.safe_spots]
-
-
         this.create()
-
+    }
+    random(seedn = []) {
+        return this.scene.random([this.uid, ...seedn])
     }
     map_collision(tile) {
 
