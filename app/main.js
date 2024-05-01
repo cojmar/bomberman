@@ -19,8 +19,10 @@ class Main extends Phaser.Scene {
         this.add_text(10, 160, 20, [
             'CONTROLS',
             '   WASD or ARROWS to move',
-            '   SPACE to place bomb'].join('\n'))
-        this.add_text(10, 260, 20, [
+            '   SPACE to place bomb',
+            '   ESC exit game'
+        ].join('\n'))
+        this.add_text(10, 280, 20, [
             'GAME PLAY',
             '   SCORING POINTS',
             '       KILL other players',

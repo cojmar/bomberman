@@ -42,6 +42,11 @@ export class UI {
             if (!this.scene.cheats) return false
             this.scene.net.send_cmd('action', 'respawn')
         })
+
+        this.scene.input.keyboard.on('keyup-' + 'ESC', (event) => {
+            this.scene.scene.start('main')
+            this.scene.scene.stop('game')
+        })
     }
     init_cameras() {
         //main camera
