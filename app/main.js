@@ -37,13 +37,6 @@ class Main extends Phaser.Scene {
             yoyo: true,
             loop: -1
         })
-
-
-        // text.setOrigin(0.5, 0.5)
-        // text.setScale(0.1)
-
-
-
     }
     on_resize() {
         this.start_text.x = window.innerWidth / 2
@@ -63,8 +56,8 @@ class Main extends Phaser.Scene {
         //console.log(data)
     }
     join_game(game) {
-        this.tween.remove()
         this.net.send_cmd('join', game)
+        this.scene.stop('main')
         this.scene.start('game')
     }
 }
