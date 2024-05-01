@@ -41,8 +41,8 @@ export class Player extends GameObject {
         })
     }
     map_collision(tile) {
-        let tile_broken
-        tile_broken = this.scene.map.brake_tile(tile)
+        if (!this.scene.cheats) return false
+        let tile_broken = this.scene.map.brake_tile(tile)
         if (tile_broken) this.set_data({ broken_tiles: this.ndata.broken_tiles + 1 })
 
     }

@@ -135,6 +135,7 @@ export class Game extends Phaser.Scene {
     }
 
     init_game() {
+        // this.cheats = true
         this.default_player_data = { bombs: 1, bomb_range: 1, kills: 0, deaths: 0, bomb_speed: 100, bomb_time: 5, broken_tiles: 0 }
         this.game_objects = new Map()
         this.game_layer.getChildren().forEach(child => child.destroy())
@@ -227,7 +228,7 @@ export class Game extends Phaser.Scene {
         return r
     }
     get_max_score() {
-        return 1
+        //return 1
         return 5 + (Object.keys(this.net.room.users).length * 5)
     }
 
@@ -238,7 +239,7 @@ export class Game extends Phaser.Scene {
         if (!this.player_to_display) this.player_to_display = this.player
         if (this.player.get_ladder().pop() >= this.get_max_score() && this.is_host() && !this.restarting) {
             this.restarting = true
-            setTimeout(() => this.restarting = false, 1000)
+            setTimeout(() => this.restarting = false, 10000)
             this.send_cmd('game_over')
         }
 
@@ -257,13 +258,14 @@ export class Game extends Phaser.Scene {
                         `Kills ${this?.player_to_display.ndata?.kills || 0}`,
                         `Deaths ${this?.player_to_display.ndata?.deaths || 0}`,
                         `Move Speed ${this?.player_to_display?.ndata?.speed || 0}`,
+                        `Broken Tiles ${this?.player_to_display?.ndata?.broken_tiles || 0}`,
                         ``,
                         `Bombs ${this?.player_to_display.ndata?.bombs || 0}`,
                         `Bomb Range ${this?.player_to_display.ndata?.bomb_range || 0}`,
                         `Bomb Time ${this?.player_to_display.ndata?.bomb_time || 0}`,
                         `Bomb Speed ${this?.player_to_display.ndata?.bomb_speed || 0}`,
                         `                    `,
-                        `Tile Type ${tile?.oindex}`,
+                        //`Tile Type ${tile?.oindex}`,
                         `X:${tile.x} Y:${tile.y}`,
                     ].join('\n')
                 if (this.ui_text.text !== new_text) this.ui_text.text = new_text

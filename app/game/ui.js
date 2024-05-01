@@ -39,6 +39,7 @@ export class UI {
             this.scene.net.send_cmd('action', 'bomb')
         })
         this.scene.input.keyboard.on('keyup-' + 'R', (event) => {
+            if (!this.scene.cheats) return false
             this.scene.net.send_cmd('action', 'respawn')
         })
     }
