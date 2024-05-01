@@ -130,7 +130,7 @@ export class Game extends Phaser.Scene {
         this.game_objects.forEach(obj => (obj.constructor.name !== 'Player') ? obj.delete() : obj.visible = true)
         this.game_done = false
         this.map.reset_map()
-        this.spawn_player(true)
+        this.spawn_player()
         this.set_player(this.net.me.info.user, this.default_player_data)
     }
 
