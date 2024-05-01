@@ -44,8 +44,9 @@ export class UI {
         })
 
         this.scene.input.keyboard.on('keyup-' + 'ESC', (event) => {
-            this.scene.scene.start('main')
             this.scene.scene.stop('game')
+            this.scene.scene.start('main')
+
         })
     }
     init_cameras() {
