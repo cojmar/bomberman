@@ -30,7 +30,7 @@ export class Game extends Phaser.Scene {
             this.idle = false
         })
 
-        //setTimeout(() => this.scene.switch('main'), 4000)
+        // setTimeout(() => this.scene.switch('main'), 4000)
     }
     get_time() {
 
@@ -135,6 +135,7 @@ export class Game extends Phaser.Scene {
         this.map.reset_map()
         this.spawn_player()
         this.set_player(this.net.me.info.user, this.default_player_data)
+        this.player_to_display = this.player
     }
 
     init_game() {
@@ -164,8 +165,10 @@ export class Game extends Phaser.Scene {
         })
 
         Object.keys(this.world_data).map(k => this.set_object(...this.world_data[k]))
+
         this.spawn_player()
         this.set_player(this.net.me.info.user, Object.assign(this.default_player_data, { wins: this.player.get_data()?.wins || 0 }))
+        this.player_to_display = this.player
 
         //this.set_object('Bomb', 'bomb 1', { x: this.player.x, y: this.player.y, time: 10 })
 
