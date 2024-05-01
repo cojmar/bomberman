@@ -59,8 +59,11 @@ class Main extends Phaser.Scene {
     }
     join_game(game) {
         this.net.send_cmd('join', game)
-        this.scene.stop('main')
-        this.scene.start('game')
+        setTimeout(() => {
+            this.scene.stop('main')
+            this.scene.start('game')
+        }, 200)
+
     }
 }
 

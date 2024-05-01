@@ -148,7 +148,7 @@ export class Game extends Phaser.Scene {
         this.cheats = (window.location.hash.indexOf('cheats') !== -1)
         this.default_player_data = { bombs: 1, bomb_range: 1, kills: 0, deaths: 0, bomb_speed: 100, bomb_time: 5, broken_tiles: 0 }
         this.game_objects = new Map()
-        this.game_layer.getChildren().forEach(child => child.destroy())
+        this.game_layer.getChildren().forEach(child => child.delete())
         if (this.collision_layer) this.collision_layer.destroy()
         this.collision_layer = this.physics.add.group()
 
