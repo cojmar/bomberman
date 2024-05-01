@@ -60,7 +60,6 @@ export class Game extends Phaser.Scene {
                 if (Object.keys(this.net.room.users).length === 2 && this.is_host()) this.send_cmd('new_game')
                 break
             case 'new_game':
-                this.ui.message('New Game')
                 this.reset_game()
                 break
             case 'game_over':
@@ -123,6 +122,7 @@ export class Game extends Phaser.Scene {
         this.reset_game()
     }
     reset_game() {
+        this.ui.message('New Game')
         if (Object.keys(this.world_data).length) {
             this.world_data = {}
             this.send_cmd('set_data', { world_data: JSON.stringify(this.world_data) })
