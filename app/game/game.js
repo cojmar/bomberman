@@ -108,6 +108,10 @@ export class Game extends Phaser.Scene {
         Phaser.Math.RND.sow([seed, ...seedn])
         return Phaser.Math.RND
     }
+    exit_game() {
+        this.scene.stop('game')
+        this.scene.start('main')
+    }
     async game_over() {
         if (this.game_done) return false
         this.game_done = true

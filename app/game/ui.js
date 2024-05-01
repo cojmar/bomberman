@@ -43,11 +43,7 @@ export class UI {
             this.scene.net.send_cmd('action', 'respawn')
         })
 
-        this.scene.input.keyboard.on('keyup-' + 'ESC', (event) => {
-            this.scene.scene.stop('game')
-            this.scene.scene.start('main')
-
-        })
+        this.scene.input.keyboard.on('keyup-' + 'ESC', (event) => this.scene.exit_game())
     }
     init_cameras() {
         //main camera
