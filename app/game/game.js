@@ -119,6 +119,9 @@ export class Game extends Phaser.Scene {
             'Game Over',
             `You ${(this.player.get_score() === this.player.get_ladder().pop()) ? 'win' : 'loose'}`
         ].join('\n'))
+        let wins = (this.player.get_score() === this.player.get_ladder().pop()) ? (this.player.ndata.wins || 0) + 1 : this.player.ndata.wins || 0
+
+        setTimeout(() => this.set_player(this.net.me.info.user, { wins }))
         this.reset_game()
     }
     reset_game() {
@@ -162,7 +165,7 @@ export class Game extends Phaser.Scene {
 
         Object.keys(this.world_data).map(k => this.set_object(...this.world_data[k]))
         this.spawn_player()
-        this.set_player(this.net.me.info.user, this.default_player_data)
+        this.set_player(this.net.me.info.user, Object.assign(this.default_player_data, { wins: this.player.get_data()?.wins || 0 }))
 
         //this.set_object('Bomb', 'bomb 1', { x: this.player.x, y: this.player.y, time: 10 })
 
@@ -228,7 +231,7 @@ export class Game extends Phaser.Scene {
         return r
     }
     get_max_score() {
-        //return 1
+        return 1
         return 5 + (Object.keys(this.net.room.users).length * 5)
     }
 
@@ -239,7 +242,7 @@ export class Game extends Phaser.Scene {
         if (!this.player_to_display) this.player_to_display = this.player
         if (this.player.get_ladder().pop() >= this.get_max_score() && this.is_host() && !this.restarting) {
             this.restarting = true
-            setTimeout(() => this.restarting = false, 10000)
+            setTimeout(() => this.restarting = false, 5000)
             this.send_cmd('game_over')
         }
 
@@ -252,21 +255,22 @@ export class Game extends Phaser.Scene {
                         `Players ${Object.keys(this.net.room.users).length}`,
                         ``,
                         `User ${this.net.room.users[this.player_to_display.uid].info.user.split('-').pop()}`,
+                        `Wins ${this?.player_to_display.ndata?.wins || 0}`,
                         `Score ${this?.player_to_display.get_score() || 0}/${this.get_max_score()}`,
-                        `Ladder ${this?.player_to_display.get_ladder().shift()}/${Object.keys(this.net.room.users).length}`,
+                        `Top ${this?.player_to_display.get_ladder().shift()}/${Object.keys(this.net.room.users).length}`,
                         ``,
                         `Kills ${this?.player_to_display.ndata?.kills || 0}`,
                         `Deaths ${this?.player_to_display.ndata?.deaths || 0}`,
                         `Move Speed ${this?.player_to_display?.ndata?.speed || 0}`,
                         `Broken Tiles ${this?.player_to_display?.ndata?.broken_tiles || 0}`,
+                        `X:${tile.x} Y:${tile.y}`,
                         ``,
                         `Bombs ${this?.player_to_display.ndata?.bombs || 0}`,
                         `Bomb Range ${this?.player_to_display.ndata?.bomb_range || 0}`,
                         `Bomb Time ${this?.player_to_display.ndata?.bomb_time || 0}`,
                         `Bomb Speed ${this?.player_to_display.ndata?.bomb_speed || 0}`,
                         `                    `,
-                        //`Tile Type ${tile?.oindex}`,
-                        `X:${tile.x} Y:${tile.y}`,
+
                     ].join('\n')
                 if (this.ui_text.text !== new_text) this.ui_text.text = new_text
             } catch (error) { console.log(error) }
