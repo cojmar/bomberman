@@ -7,18 +7,63 @@ class Main extends Phaser.Scene {
     }
     create() {
         this.sys.game.net_cmd = (data) => this.net_cmd(data)
+        this.sys.game.resize = () => this.on_resize()
         this.net = this.sys.game.net
         this.net.send_cmd('join', 'lobby')
+        let game_to_join = 'bomb-main'
+
+        this.input.keyboard.on('keyup', e => this.join_game(game_to_join))
+        this.input.on('pointerdown', e => this.join_game(game_to_join))
+        this.add_text(10, 10, 40, 'BOMBERMAN BETA')
+        this.add_text(10, 50, 12, 'MADE BY COJMAR (2024)')
+        this.add_text(10, 160, 20, [
+            'CONTROLS',
+            '   WASD or ARROWS to move',
+            '   SPACE to place bomb'].join('\n'))
+        this.add_text(10, 260, 20, [
+            'GAME PLAY',
+            '   SCORING POINTS',
+            '       KILL other players',
+            '       BRAKE TILES',
+            '       INCREASE POWERS',
+            `   PLAYER WHO GETS FIRST TO MAX SCORE WINS`
+        ].join('\n'))
+        this.start_text = this.add_text(window.innerWidth / 2, 120, 30, 'PRESS ANY KEY TO START')
+        this.start_text.setOrigin(0.5, 0.5)
+        this.tween = this.tweens.add({
+            targets: [this.start_text],
+            scale: 0.8,
+            ease: 'sine.inout',
+            yoyo: true,
+            loop: -1
+        })
 
 
-        //this.net.send_cmd("list")
-        this.join_game('bomb-main')
+        // text.setOrigin(0.5, 0.5)
+        // text.setScale(0.1)
 
+
+
+    }
+    on_resize() {
+        this.start_text.x = window.innerWidth / 2
+        this.sys.game.scale.resize(window.innerWidth, window.innerHeight)
+    }
+    add_text(x, y, size, data) {
+        const text = this.add.text(x, y, data, { fontFamily: 'Arial Black', fontSize: size, strokeThickness: 3, stroke: '#ffffff', align: 'left' })
+        const gradient = text.context.createLinearGradient(0, 0, 0, text.height)
+        gradient.addColorStop(0, '#f26522')
+        gradient.addColorStop(0.5, '#fff200')
+        gradient.addColorStop(0.5, '#f7941d')
+        gradient.addColorStop(1, '#ed1c24')
+        text.setFill(gradient)
+        return text
     }
     net_cmd(data) {
         //console.log(data)
     }
     join_game(game) {
+        this.tween.remove()
         this.net.send_cmd('join', game)
         this.scene.start('game')
     }

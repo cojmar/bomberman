@@ -124,9 +124,9 @@ export class UI {
     message_text(msg) {
         return new Promise((r) => {
             let x = (window.innerWidth + this.scene.game_padding[0] - this.scene.game_padding[4]) / 2
-            const text = this.scene.add.text(x, 100, msg, { fontFamily: 'Arial Black', fontSize: 80, strokeThickness: 3, stroke: '#ffffff', align: 'center' });
+            const text = this.scene.add.text(x, 100, msg, { fontFamily: 'Arial Black', fontSize: 80, strokeThickness: 3, stroke: '#ffffff', align: 'center' })
 
-            const gradient = text.context.createLinearGradient(0, 0, 0, text.height);
+            const gradient = text.context.createLinearGradient(0, 0, 0, text.height)
 
             gradient.addColorStop(0, '#f26522')
             gradient.addColorStop(0.5, '#fff200')
