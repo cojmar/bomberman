@@ -266,7 +266,7 @@ export class Game extends Phaser.Scene {
                         `Deaths ${this?.player_to_display.ndata?.deaths || 0}`,
                         `Move Speed ${this?.player_to_display?.ndata?.speed || 0}`,
                         `Broken Tiles ${this?.player_to_display?.ndata?.broken_tiles || 0}`,
-                        `X:${tile.x} Y:${tile.y}`,
+                        `X:${tile?.x || 0} Y:${tile?.y || 0}`,
                         ``,
                         `Bombs ${this?.player_to_display.ndata?.bombs || 0}`,
                         `Bomb Range ${this?.player_to_display.ndata?.bomb_range || 0}`,
