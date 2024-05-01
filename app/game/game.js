@@ -17,8 +17,9 @@ export class Game extends Phaser.Scene {
     }
 
     create() {
-        this.net = this.sys.game.net
         this.sys.game.net_cmd = (data) => this.net_cmd(data)
+        this.net = this.sys.game.net
+
 
         this.sys.game.resize = () => this.ui.init_screen()
         this.send_cmd = (cmd, data) => this.sys.game.net.send_cmd(cmd, data)
@@ -56,7 +57,7 @@ export class Game extends Phaser.Scene {
                     }
                 }
                 break
-            case 'room.user_join':
+            case 'player_joined':
                 if (Object.keys(this.net.room.users).length === 2 && this.is_host()) this.send_cmd('new_game')
                 break
             case 'new_game':
@@ -169,6 +170,8 @@ export class Game extends Phaser.Scene {
         this.spawn_player()
         this.set_player(this.net.me.info.user, Object.assign(this.default_player_data, { wins: this.player.get_data()?.wins || 0 }))
         this.player_to_display = this.player
+
+        this.net.send_cmd('player_joined')
 
         //this.set_object('Bomb', 'bomb 1', { x: this.player.x, y: this.player.y, time: 10 })
 

@@ -6,13 +6,21 @@ class Main extends Phaser.Scene {
         super({ key: 'main' })
     }
     create() {
-        this.net = this.sys.game.net
         this.sys.game.net_cmd = (data) => this.net_cmd(data)
+        this.net = this.sys.game.net
+        this.net.send_cmd('join', 'lobby')
+
+
         //this.net.send_cmd("list")
-        this.scene.start('game')
+        this.join_game('bomb-main')
+
     }
     net_cmd(data) {
         //console.log(data)
+    }
+    join_game(game) {
+        this.net.send_cmd('join', game)
+        this.scene.start('game')
     }
 }
 
@@ -41,7 +49,7 @@ net.on('auth.info', (data) => {
 
     game.net = net
     game.net.on("cmd", (data) => { if (game.net_cmd) game.net_cmd(data) })
-    window.addEventListener("resize", () => game?.resize())
+    window.addEventListener("resize", () => (game.resize) ? game.resize() : false)
 })
 
 net.connect('wss://ws.emupedia.net/ws/')
