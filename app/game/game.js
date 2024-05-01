@@ -231,8 +231,8 @@ export class Game extends Phaser.Scene {
         return r
     }
     get_max_score() {
-        return 1
-        return 5 + (Object.keys(this.net.room.users).length * 5)
+        // return 1
+        return 10 + (Object.keys(this.net.room.users).length * 20)
     }
 
     update(time, delta) {
