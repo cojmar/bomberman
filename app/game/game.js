@@ -99,6 +99,7 @@ export class Game extends Phaser.Scene {
         return (this.net.room.host) ? this.net.room.users[this.net.room.host] : Object.values(this.net.room.users).shift() || false
     }
     is_host(uid = false) {
+        if (!this.host()) return false
         if (!uid) uid = this.net.me.info.user
         return (uid === this.host().info.user)
     }
