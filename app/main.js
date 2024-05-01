@@ -55,15 +55,13 @@ class Main extends Phaser.Scene {
         return text
     }
     net_cmd(data) {
-        //console.log(data)
+        if (data.cmd === 'room.info' && data.data.name !== 'lobby') {
+            this.scene.stop('main')
+            this.scene.start('game')
+        }
     }
     join_game(game) {
         this.net.send_cmd('join', game)
-        setTimeout(() => {
-            this.scene.stop('main')
-            this.scene.start('game')
-        }, 200)
-
     }
 }
 
