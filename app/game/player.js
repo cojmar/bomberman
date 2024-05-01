@@ -41,20 +41,20 @@ export class Player extends GameObject {
         })
     }
     map_collision(tile) {
-        return false
-        let tile_broken = this.scene.map.brake_tile(tile)
-
-        if (this.uid === this.scene.sys.game.net.me.info.user && tile_broken) this.scene.bombs++
+        let tile_broken
+        tile_broken = this.scene.map.brake_tile(tile)
+        if (tile_broken) this.set_data({ broken_tiles: this.ndata.broken_tiles + 1 })
 
     }
 
     action_respawn() {
+        if (this.scene.game_done) return false
         if (this.uid !== this.scene.net.me.info.user) return false
         this.set_data({ visible: true })
         this.scene.spawn_player(true)
     }
     get_score() {
-        let score = Array.from(['speed', 'bomb_speed', 'bomb_range', 'kills']).reduce((r, k) => r + this.ndata[k], 0)
+        let score = Array.from(['speed', 'bomb_speed', 'bomb_range', 'kills', 'broken_tiles']).reduce((r, k) => r + this.ndata[k], 0)
         if (!this.init_score) this.init_score = score
         return score - this?.init_score || 0
     }

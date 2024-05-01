@@ -57,10 +57,14 @@ export class Game extends Phaser.Scene {
                 }
                 break
             case 'room.user_join':
-                if (Object.keys(this.net.room.users).length === 2 && this.is_host()) this.send_cmd('reset_game')
+                if (Object.keys(this.net.room.users).length === 2 && this.is_host()) this.send_cmd('new_game')
                 break
-            case 'reset_game':
+            case 'new_game':
+                this.ui.message('New Game')
                 this.reset_game()
+                break
+            case 'game_over':
+                this.game_over()
                 break
             case 'random':
                 console.log(this.game_objects.get(this.host().info.user).random().frac())
@@ -68,6 +72,7 @@ export class Game extends Phaser.Scene {
 
                 break
             case 'action':
+                if (this.game_done) return false
                 try {
                     this.game_objects.get(cmd_data.data.user)[`action_${cmd_data.data.data}`]()
                 } catch (error) { }
@@ -102,14 +107,35 @@ export class Game extends Phaser.Scene {
         Phaser.Math.RND.sow([seed, ...seedn])
         return Phaser.Math.RND
     }
+    async game_over() {
+        if (this.game_done) return false
+        this.game_done = true
+
+        this.player.set_data({ direction: "" })
+        this.player.update()
+        this.world_data = {}
+        this.send_cmd('set_data', { world_data: JSON.stringify(this.world_data) })
+        this.game_objects.forEach(obj => (obj.constructor.name !== 'Player') ? obj.delete() : obj.visible = false)
+        await this.ui.message([
+            'Game Over',
+            `You ${(this.player.get_score() === this.player.get_ladder().pop()) ? 'win' : 'loose'}`
+        ].join('\n'))
+        this.reset_game()
+    }
     reset_game() {
+        if (Object.keys(this.world_data).length) {
+            this.world_data = {}
+            this.send_cmd('set_data', { world_data: JSON.stringify(this.world_data) })
+        }
+        this.game_objects.forEach(obj => (obj.constructor.name !== 'Player') ? obj.delete() : obj.visible = true)
+        this.game_done = false
         this.map.reset_map()
-        this.spawn_player()
+        this.spawn_player(true)
         this.set_player(this.net.me.info.user, this.default_player_data)
     }
 
     init_game() {
-        this.default_player_data = { bombs: 1, bomb_range: 1, kills: 0, deaths: 0, bomb_speed: 100, bomb_time: 5 }
+        this.default_player_data = { bombs: 1, bomb_range: 1, kills: 0, deaths: 0, bomb_speed: 100, bomb_time: 5, broken_tiles: 0 }
         this.game_objects = new Map()
         this.game_layer.getChildren().forEach(child => child.destroy())
         if (this.collision_layer) this.collision_layer.destroy()
@@ -152,7 +178,7 @@ export class Game extends Phaser.Scene {
     get_user_spawn_tile(uid, random = false) {
         if (!this.map.spawn_spots.length) return false
         let index = Object.keys(this.net.room.users).indexOf(uid)
-        let spawnIndex = (random) ? Math.floor(Math.random() * this.map.spawn_spots.length) : index % this.map.spawn_spots.length
+        let spawnIndex = (random) ? Math.floor(this.random().frac() * this.map.spawn_spots.length) : index % this.map.spawn_spots.length
         //spawnIndex = 0
 
         return this.map_layer.getTileAt(...this.map.spawn_spots[spawnIndex])
@@ -201,17 +227,19 @@ export class Game extends Phaser.Scene {
         return r
     }
     get_max_score() {
-        return 15 + (Object.keys(this.net.room.users).length * 5)
+        return 1
+        return 5 + (Object.keys(this.net.room.users).length * 5)
     }
 
     update(time, delta) {
+        if (this.game_done) return false
         if (this.updateing) return false
         this.updateing = true
         if (!this.player_to_display) this.player_to_display = this.player
         if (this.player.get_ladder().pop() >= this.get_max_score() && this.is_host() && !this.restarting) {
             this.restarting = true
-            setTimeout(() => this.restarting = false)
-            this.send_cmd('reset_game')
+            setTimeout(() => this.restarting = false, 1000)
+            this.send_cmd('game_over')
         }
 
         if (this.ui_text) {

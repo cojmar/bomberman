@@ -76,7 +76,7 @@ export class Bomb extends GameObject {
         this.done = true
         this.emitter.destroy()
         let player = this.scene.game_objects.get(this.ndata.player)
-        let update = { bombs: 1, bomb_range: 0 }
+        let update = { bombs: 1, bomb_range: 0, broken_tiles: 1 }
 
         let bomb_tile = this.get_tile()
         let tiles_to_brake = [bomb_tile]
@@ -190,6 +190,8 @@ export class Bomb extends GameObject {
         if (player) {
             update.bombs += player.ndata.bombs
             update.bomb_range += player.ndata.bomb_range
+            update.broken_tiles += player.ndata.broken_tiles
+
             if (player.ndata.deaths === this.p_deaths) player.set_data(update)
         }
 

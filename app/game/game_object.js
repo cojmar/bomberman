@@ -84,16 +84,9 @@ export class GameObject extends Phaser.Physics.Arcade.Sprite {
 
     delete() {
         this.on_destroy()
-        this.scene.game_objects.delete(this.uid)
+        this.scene?.game_objects.delete(this.uid)
         if (this.scene?.world_data[this.uid]) this.scene.unset_world_object(this.uid)
         setTimeout(_ => this.destroy())
-        try {
-            //this.destroy()
-        } catch (error) {
-
-            delete this
-
-        }
     }
 
     set_data(data) {

@@ -120,9 +120,60 @@ export class UI {
             camera.scrollY -= newWorldPoint.y - worldPoint.y
         })
     }
+    message_text(msg) {
+        return new Promise((r) => {
+            let x = (window.innerWidth + this.scene.game_padding[0] - this.scene.game_padding[4]) / 2
+            const text = this.scene.add.text(x, 100, msg, { fontFamily: 'Arial Black', fontSize: 80, strokeThickness: 3, stroke: '#ffffff', align: 'center' });
+
+            const gradient = text.context.createLinearGradient(0, 0, 0, text.height);
+
+            gradient.addColorStop(0, '#f26522')
+            gradient.addColorStop(0.5, '#fff200')
+            gradient.addColorStop(0.5, '#f7941d')
+            gradient.addColorStop(1, '#ed1c24')
+
+            text.setFill(gradient)
+            text.setOrigin(0.5, 0.5)
+            text.setScale(0.1)
+            this.scene.forground_layer.add([text])
+
+            this.scene.tweens.add({
+                targets: [text],
+                scale: 1.15,
+                ease: 'sine.inout',
+                onComplete: () => {
+                    this.scene.tweens.add({
+                        targets: [text],
+                        scale: 1,
+                        ease: 'sine.inout',
+                        yoyo: true,
+                        onComplete: () => {
+                            this.scene.tweens.add({
+                                targets: [text],
+                                alpha: 0,
+                                ease: 'sine.inout',
+                                onComplete: () => {
+                                    text.destroy()
+                                    r()
+                                }
+                            })
+                        }
+                    })
+                }
+            })
+        })
+    }
+    message(text) {
+        return new Promise(r => {
+            this.message_text(text)
+            setTimeout(async _ => {
+                await this.message_text(text)
+                r()
+            }, 100)
+        })
+    }
+
     init_ui() {
-
-
 
         //game camera border
         if (this.scene.ui_layer.cam_border) this.scene.ui_layer.cam_border.destroy()
