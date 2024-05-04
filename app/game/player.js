@@ -88,6 +88,10 @@ export class Player extends GameObject {
     }
 
     render() {
+        if (this.ndata.direction.indexOf('l') !== -1) this.anims.play('player_left', true)
+        else if (this.ndata.direction.indexOf('r') !== -1) this.anims.play('player_right', true)
+        else this.anims.play('player_turn', true)
+
         let direction = this.ndata.direction
         this.scene.physics.world.collide(this, this.scene.collision_layer, (obj1, obj2) => {
             if (!obj2.visible) return
@@ -105,9 +109,7 @@ export class Player extends GameObject {
             this.ndata.direction = direction
         })
 
-        if (this.ndata.direction.indexOf('l') !== -1) this.anims.play('player_left', true)
-        else if (this.ndata.direction.indexOf('r') !== -1) this.anims.play('player_right', true)
-        else this.anims.play('player_turn', true)
+
     }
 }
 

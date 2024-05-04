@@ -72,7 +72,8 @@ export class Bomb extends GameObject {
     explode(uid) {
         if (this.done) return false
         if (!uid) uid = this.ndata.player
-
+        this.visible = false
+        this.text.visible = false
         this.done = true
         this.emitter.destroy()
         let player = this.scene.game_objects.get(this.ndata.player)

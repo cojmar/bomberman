@@ -31,8 +31,8 @@ export class GameObject extends Phaser.Physics.Arcade.Sprite {
         if (this.scene.game_objects.has(this.uid)) return false
         this.scene.game_objects.set(this.uid, this)
         this.init_anims()
+        this.setBounce(0.1)
 
-        if (this.scene.map_layer) this.map_collider = this.scene.physics.add.collider(this, this.scene.map_layer, (obj1, tile) => this.map_collision(tile))
         this.safe_spots = []
         if (this.scene?.map?.safe_spots) this.safe_spots = [...this.safe_spots, ...this.scene.map.safe_spots]
         this.create()
@@ -111,15 +111,28 @@ export class GameObject extends Phaser.Physics.Arcade.Sprite {
         if (!this.ndata) return this.updateing = false
         this.depth = this.y + 20
         this.render(time, delta)
+        let collision = false
+        this.scene.physics.world.collide(this, this.scene.map_layer, (obj1, obj2) => collision = true)
 
+
+        //if (collision) return this.updateing = false
         let direction = this.ndata.direction
+        if (collision) {
+            this.map_collision(collision)
+            if (this.body.blocked.up) direction = direction.replace('u', '')
+            else if (this.body.blocked.down) direction = direction.replace('d', '')
+
+            else if (this.body.blocked.left) direction = direction.replace('l', '')
+            else if (this.body.blocked.right) direction = direction.replace('r', '')
+
+        }
         if (direction.indexOf('l') !== -1) this.setVelocityX(-this.ndata.speed)
         else if (direction.indexOf('r') !== -1) this.setVelocityX(this.ndata.speed)
-        else this.setVelocityX(0)
+        else if (!collision) this.setVelocityX(0)
 
         if (direction.indexOf('u') !== -1) this.setVelocityY(-this.ndata.speed)
         else if (direction.indexOf('d') !== -1) this.setVelocityY(this.ndata.speed)
-        else this.setVelocityY(0)
+        else if (!collision) this.setVelocityY(0)
 
         this.updateing = false
     }
