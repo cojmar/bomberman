@@ -77,7 +77,7 @@ export class Bomb extends GameObject {
         this.done = true
         this.emitter.destroy()
         let player = this.scene.game_objects.get(this.ndata.player)
-        let update = { bombs: 1, bomb_range: 0, broken_tiles: 1 }
+        let update = { bombs: 1, bomb_range: 0, broken_tiles: 0 }
 
         let bomb_tile = this.get_tile()
         let tiles_to_brake = [bomb_tile]
@@ -159,6 +159,7 @@ export class Bomb extends GameObject {
                 if (tile.x === t.x && tile.y === t.y && !this.scene.map.safe_spots.includes(t.oindex)) r.push(obj)
             })
             if (this.scene.map.brake_tile(t)) {
+                update.broken_tiles++
                 update.bombs++
                 update.bomb_range++
             }
@@ -180,14 +181,8 @@ export class Bomb extends GameObject {
             return r
         }, [])
 
-        obj_hit.map(obj => {
-            if (!obj.visible) return
-            if (obj.constructor.name === 'Player' && uid !== obj.uid && uid === this.scene.player.uid) {
-                //kill
-                this.scene.player.set_data({ kills: this.scene.player.ndata.kills + 1 })
-            }
-            if (typeof obj.explode === 'function') obj.explode(this.ndata.player)
-        })
+        obj_hit.map(obj => (obj.visible && typeof obj.explode === 'function') ? obj.explode(uid) : false)
+
         if (player) {
             update.bombs += player.ndata.bombs
             update.bomb_range += player.ndata.bomb_range
@@ -195,10 +190,6 @@ export class Bomb extends GameObject {
 
             if (player.ndata.deaths === this.p_deaths) player.set_data(update)
         }
-
-
-
-
     }
     render() {
         this.update_text()

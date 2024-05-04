@@ -12,10 +12,13 @@ export class Player extends GameObject {
         this.setScale(0.58)
         this.init_score = this.get_score()
     }
-    explode() {
+    explode(uid) {
+        let killer = (uid !== this.uid) ? this.scene.game_objects.get(uid) : false
+        if (killer) killer.set_data({ kills: killer.ndata.kills + 1 })
+
         this.set_data({ visible: false })
         setTimeout(() => {
-            this.set_data({ bombs: 1, bomb_range: 1, deaths: this.ndata.deaths + 1 })
+            this.set_data({ bombs: 1, bomb_range: 1, deaths: this.ndata.deaths + (uid) ? 1 : 0 })
             this.action_respawn()
         }, 500)
     }
