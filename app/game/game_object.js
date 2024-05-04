@@ -112,7 +112,7 @@ export class GameObject extends Phaser.Physics.Arcade.Sprite {
         this.depth = this.y + 20
         this.render(time, delta)
         let collision = false
-        this.scene.physics.world.collide(this, this.scene.map_layer, (obj1, obj2) => collision = true)
+        this.scene.physics.world.collide(this, this.scene.map_layer, (obj1, obj2) => collision = obj2)
 
 
         //if (collision) return this.updateing = false
