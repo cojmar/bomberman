@@ -98,7 +98,7 @@ class Main extends Phaser.Scene {
             '   CLICK ON OBJECTS TO SEE THERE STATS',
             '   ESC - exit to main menu'
         ].join('\n'), false)
-        this.add_text(10, 380, 20, [
+        this.add_text(10, 390, 20, [
             'GAME PLAY',
             '   SCORING POINTS',
             '       KILL other players',
@@ -121,11 +121,11 @@ class Main extends Phaser.Scene {
         this.start_text.x = window.innerWidth / 2
         this.sys.game.scale.resize(window.innerWidth, window.innerHeight)
     }
-    add_text(x, y, size, data, add_gradient = true) {
+    add_text(x, y, size, data, yello_gradient = true) {
         const text = this.add.text(x, y, data, { fontFamily: 'Arial Black', fontSize: size, strokeThickness: 3, stroke: '#ffffff', align: 'left' })
         const gradient = text.context.createLinearGradient(0, 0, 0, text.height)
         gradient.addColorStop(0, '#f26522')
-        if (add_gradient) gradient.addColorStop(0.5, '#fff200')
+        if (yello_gradient) gradient.addColorStop(0.5, '#fff200')
         gradient.addColorStop(0.5, '#f7941d')
         gradient.addColorStop(1, '#ed1c24')
         text.setFill(gradient)
