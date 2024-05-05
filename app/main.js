@@ -94,10 +94,11 @@ class Main extends Phaser.Scene {
             '   SPACE - place bomb',
             '   E - select/center yourself',
             '   MOUSE DRAG MAP',
-            `   CLICK ON OBJECTS TO SEE THERE STATS`,
+            '   MOUSE WHEEL - zoom in out',
+            '   CLICK ON OBJECTS TO SEE THERE STATS',
             '   ESC - exit to main menu'
-        ].join('\n'))
-        this.add_text(10, 350, 20, [
+        ].join('\n'), false)
+        this.add_text(10, 380, 20, [
             'GAME PLAY',
             '   SCORING POINTS',
             '       KILL other players',
@@ -105,7 +106,7 @@ class Main extends Phaser.Scene {
             '       INCREASE POWERS',
             `   PLAYER WHO GETS FIRST TO MAX SCORE WINS`,
 
-        ].join('\n'))
+        ].join('\n'), false)
         this.start_text = this.add_text(window.innerWidth / 2, 120, 30, 'PRESS ANY KEY TO START')
         this.start_text.setOrigin(0.5, 0.5)
         this.tween = this.tweens.add({
@@ -120,11 +121,11 @@ class Main extends Phaser.Scene {
         this.start_text.x = window.innerWidth / 2
         this.sys.game.scale.resize(window.innerWidth, window.innerHeight)
     }
-    add_text(x, y, size, data) {
+    add_text(x, y, size, data, add_gradient = true) {
         const text = this.add.text(x, y, data, { fontFamily: 'Arial Black', fontSize: size, strokeThickness: 3, stroke: '#ffffff', align: 'left' })
         const gradient = text.context.createLinearGradient(0, 0, 0, text.height)
         gradient.addColorStop(0, '#f26522')
-        gradient.addColorStop(0.5, '#fff200')
+        if (add_gradient) gradient.addColorStop(0.5, '#fff200')
         gradient.addColorStop(0.5, '#f7941d')
         gradient.addColorStop(1, '#ed1c24')
         text.setFill(gradient)
