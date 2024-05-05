@@ -286,7 +286,7 @@ export class Game extends Phaser.Scene {
                         `                    `,
 
                     ].join('\n')
-                if (this.ui_text.text !== new_text) this.ui_text.text = new_text
+                if (this.ui_text && this?.ui_text?.text !== new_text) this.ui_text.text = new_text
             } catch (error) { console.log(error) }
         }
         // calculate movment direction
