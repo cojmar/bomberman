@@ -261,7 +261,7 @@ export class Game extends Phaser.Scene {
                         `FPS ${Math.floor(this.sys.game.loop.actualFps)} ${(this.game.renderer instanceof Phaser.Renderer.WebGL.WebGLRenderer) ? 'GPU' : 'CPU'}`,
                         `Players ${Object.keys(this.net.room.users).length}`,
                         ``,
-                        `User ${this.net.room.users[this.player_to_display.uid].info.user.split('-').pop()}`,
+                        `User ${this.net.room.users[this.player_to_display.uid]?.info.user.split('-').pop() || 'LEFT'}`,
                         `Wins ${this?.player_to_display.ndata?.wins || 0}`,
                         `Score ${this?.player_to_display.get_score() || 0}/${this.get_max_score()}`,
                         `Top ${this?.player_to_display.get_ladder().shift()}/${Object.keys(this.net.room.users).length}`,

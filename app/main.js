@@ -100,7 +100,8 @@ class Main extends Phaser.Scene {
             '       KILL other players',
             '       BRAKE TILES',
             '       INCREASE POWERS',
-            `   PLAYER WHO GETS FIRST TO MAX SCORE WINS`
+            `   PLAYER WHO GETS FIRST TO MAX SCORE WINS`,
+            `   CLICK ON OTHER PLAYERS TO SEE THERE STATS`
         ].join('\n'))
         this.start_text = this.add_text(window.innerWidth / 2, 120, 30, 'PRESS ANY KEY TO START')
         this.start_text.setOrigin(0.5, 0.5)
