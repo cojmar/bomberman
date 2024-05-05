@@ -10,7 +10,7 @@ export class Player extends GameObject {
         this.body.setSize(20, 30, true)
         this.body.setOffset(6, 18)
         this.setScale(0.58)
-        this.init_score = this.get_score()
+        this.init_score = 181
 
     }
     info() {
@@ -80,10 +80,7 @@ export class Player extends GameObject {
     }
     get_score() {
         let score = Array.from(['speed', 'bomb_speed', 'bomb_range', 'kills', 'broken_tiles']).reduce((r, k) => r + this.ndata[k], 0)
-        if (!this.init_score) this.init_score = score
-        score -= this?.init_score || 0
-        if (score < 0) score = 0
-        return score
+        return score - this?.init_score || 0
     }
     get_ladder() {
         let players = []
