@@ -119,8 +119,7 @@ export class Game extends Phaser.Scene {
 
         this.player.set_data({ direction: "" })
         this.player.update()
-        this.world_data = {}
-        this.send_cmd('set_data', { world_data: JSON.stringify(this.world_data) })
+        this.update_world_data({})
         this.game_objects.forEach(obj => (obj.constructor.name !== 'Player') ? obj.delete() : obj.visible = false)
         await this.ui.message([
             'Game Over',
@@ -133,10 +132,8 @@ export class Game extends Phaser.Scene {
     }
     reset_game() {
         this.ui.message('New Game')
-        if (Object.keys(this.world_data).length) {
-            this.world_data = {}
-            this.send_cmd('set_data', { world_data: JSON.stringify(this.world_data) })
-        }
+        if (Object.keys(this.world_data).length) this.update_world_data({})
+
         this.game_objects.forEach(obj => (obj.constructor.name !== 'Player') ? obj.delete() : obj.visible = true)
         this.game_done = false
         this.map.reset_map()
@@ -144,6 +141,7 @@ export class Game extends Phaser.Scene {
         this.set_player(this.net.me.info.user, this.default_player_data)
         this.player_to_display = this.player
     }
+
 
     init_game() {
         this.cheats = (window.location.hash.indexOf('cheats') !== -1)
@@ -225,7 +223,7 @@ export class Game extends Phaser.Scene {
         if (!data) data = {}
         let obj = this.game_objects.get(uid) || this.new_object(eval(`${obj_type}`), uid, data)
         this.world_data[uid] = [obj_type, uid, obj.get_data()]
-        this.send_cmd('set_data', { world_data: JSON.stringify(this.world_data) })
+        this.update_world_data()
         if (emit) this.send_cmd('set_object', this.world_data[uid])
         return obj
     }
@@ -233,7 +231,11 @@ export class Game extends Phaser.Scene {
         this.game_objects.delete(uid)
         if (!this.world_data[uid]) return false
         delete this.world_data[uid]
-        this.send_cmd('set_data', { world_data: JSON.stringify(this.world_data) })
+        this.update_world_data()
+    }
+    update_world_data(data = false) {
+        if (data) this.world_data = Object.assign(data)
+        return this.send_cmd('set_data', { world_data: JSON.stringify(this.world_data) })
     }
 
     new_object(obj, uid = 'default', data) {
