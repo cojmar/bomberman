@@ -9,28 +9,28 @@ export class Game extends Phaser.Scene {
 
     }
     preload() {
+        this.sys.game.preloader(this)
         Player.preload(this)
         Bomb.preload(this)
         TileMap.preload(this)
 
-        this.ui = new UI(this)
+
     }
 
     create() {
+        this.ui = new UI(this)
         this.sys.game.net_cmd = (data) => this.net_cmd(data)
-        this.net = this.sys.game.net
-
-
         this.sys.game.resize = () => this.ui.init_screen()
+        this.net = this.sys.game.net
         this.send_cmd = (cmd, data) => this.sys.game.net.send_cmd(cmd, data)
-        this.init_game()
+
         this.game.events.on('blur', () => {
             this.idle = true
         })
         this.game.events.on('focus', () => {
             this.idle = false
         })
-
+        this.init_game()
         // setTimeout(() => this.scene.switch('main'), 4000)
     }
     get_time() {
@@ -260,7 +260,7 @@ export class Game extends Phaser.Scene {
             this.send_cmd('game_over')
         }
 
-        if (this.ui_text) {
+        if (this.ui_text && this.player_to_display) {
             try {
                 let tile = this?.player_to_display.get_tile()
                 let new_text =
