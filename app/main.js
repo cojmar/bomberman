@@ -76,11 +76,13 @@ class Main extends Phaser.Scene {
         }
     }
     create() {
+        if (!this.sys.game.default_room) this.sys.game.default_room = this.sys.game.net.me.room
         this.sys.game.net_cmd = (data) => this.net_cmd(data)
         this.sys.game.resize = () => this.on_resize()
         this.net = this.sys.game.net
         this.net.send_cmd('join', 'lobby')
-        let game_to_join = 'bomb-main'
+
+        let game_to_join = `${this.sys.game.default_room}${window.location.hash.replace('#', '').replace('gpu', '')}`
 
         this.input.keyboard.on('keyup', e => (e.code !== 'Escape') ? this.join_game(game_to_join) : false)
         this.input.on('pointerdown', e => this.join_game(game_to_join))
@@ -136,7 +138,7 @@ class Main extends Phaser.Scene {
 }
 
 let net = new Network()
-net.on('connect', () => net.send_cmd('auth', { 'user': '', 'room': 'bomb-main' }))
+net.on('connect', () => net.send_cmd('auth', { 'user': '', 'room': 'bomberman' }))
 
 net.on('auth.info', (data) => {
     const game = new Phaser.Game({
