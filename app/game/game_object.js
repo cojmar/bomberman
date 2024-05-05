@@ -34,7 +34,9 @@ export class GameObject extends Phaser.Physics.Arcade.Sprite {
         this.scene.game_objects.set(this.uid, this)
         this.init_anims()
         this.setBounce(0.1)
-        this.setInteractive()
+        this.setInteractive({
+            useHandCursor: true
+        })
 
         this.safe_spots = []
         if (this.scene?.map?.safe_spots) this.safe_spots = [...this.safe_spots, ...this.scene.map.safe_spots]

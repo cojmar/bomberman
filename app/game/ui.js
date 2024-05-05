@@ -83,16 +83,8 @@ export class UI {
             }
         })
 
-        this.scene.input.on('gameobjectover', (pointer, gameObject) => {
-            this.scene.input.setDefaultCursor('pointer')
-            this.scene.selected_obj = gameObject
-        })
-
-        this.scene.input.on('gameobjectout', (pointer, gameObject) => {
-            this.scene.input.setDefaultCursor('default')
-            this.scene.selected_obj = false
-        })
-
+        this.scene.input.on('gameobjectover', (pointer, gameObject) => this.scene.selected_obj = gameObject)
+        this.scene.input.on('gameobjectout', (pointer, gameObject) => this.scene.selected_obj = false)
 
         this.scene.input.on('pointermove', (pointer) => {
             if (this.scene.selected_obj) return false
