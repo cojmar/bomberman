@@ -179,13 +179,6 @@ export class Game extends Phaser.Scene {
 
         //this.set_object('Bomb', 'bomb 1', { x: this.player.x, y: this.player.y, time: 10 })
 
-        this.input.on('gameobjectover', (pointer, gameObject) => {
-            gameObject.setTint(0xff0000)
-        })
-
-        this.input.on('gameobjectout', (pointer, gameObject) => {
-            gameObject.clearTint()
-        })
 
     }
 
@@ -315,6 +308,7 @@ export class Game extends Phaser.Scene {
             if (this.player.ndata && direction !== this.player.ndata.direction) {
                 this.player.set_data({ direction, x: this.player.x, y: this.player.y })
                 if (this.game_camera) this.game_camera.startFollow(this.player)
+                this.player_to_display = this.player
             }
         }
 

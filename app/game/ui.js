@@ -44,30 +44,6 @@ export class UI {
         })
 
         this.scene.input.keyboard.on('keyup-' + 'ESC', (event) => this.scene.exit_game())
-    }
-    init_cameras() {
-        //main camera
-        this.scene.cameras.main.setBackgroundColor(this.scene.ui_colors[0])
-        if (this.scene.game_layer) this.scene.cameras.main.ignore(this.scene.game_layer)
-
-        //minimap
-        const minimap = this.scene.cameras.add(- 35, -30, 240, 200)
-        minimap.zoom = 0.3
-        minimap.centerToSize()
-        if (this.scene.ui_layer) minimap.ignore(this.scene.ui_layer)
-        if (this.scene.forground_layer) minimap.ignore(this.scene.forground_layer)
-
-        //game camera
-        this.scene.game_camera = this.scene.cameras.add(200, 0)
-        this.scene.game_camera.zoom = 2
-        this.scene.game_camera.setBackgroundColor(this.scene.ui_colors[1])
-        if (this.scene.ui_layer) this.scene.game_camera.ignore(this.scene.ui_layer)
-        if (this.scene.forground_layer) this.scene.game_camera.ignore(this.scene.forground_layer)
-
-        //forground camera
-        this.scene.forground_cam = this.scene.cameras.add()
-        if (this.scene.ui_layer) this.scene.forground_cam.ignore(this.scene.ui_layer)
-        if (this.scene.game_layer) this.scene.forground_cam.ignore(this.scene.game_layer)
 
         // drag
 
@@ -76,6 +52,10 @@ export class UI {
         let cameraDragStartY
 
         this.scene.input.on('pointerdown', (pointer) => {
+            if (this.scene.selected_obj) {
+                this.scene.player_to_display = this.scene.selected_obj
+                return true
+            }
             if (pointer.downX > this.scene.game_padding[0] + this.scene.game_padding[4] * 2 && pointer.downX < (this.scene.game_padding[0] + this.scene.game_padding[4] * 2) + 20
                 &&
                 pointer.downY > this.scene.game_padding[1] + this.scene.game_padding[4] * 2 && pointer.downY < (this.scene.game_padding[1] + this.scene.game_padding[4] * 2) + 20
@@ -93,6 +73,17 @@ export class UI {
                 cameraDragStartY = camera.scrollY
             }
         })
+
+        this.scene.input.on('gameobjectover', (pointer, gameObject) => {
+            this.scene.input.setDefaultCursor('pointer')
+            this.scene.selected_obj = gameObject
+        })
+
+        this.scene.input.on('gameobjectout', (pointer, gameObject) => {
+            this.scene.input.setDefaultCursor('default')
+            this.scene.selected_obj = false
+        })
+
 
         this.scene.input.on('pointermove', (pointer) => {
             if (pointer.isDown) {
@@ -122,6 +113,34 @@ export class UI {
             camera.scrollX -= newWorldPoint.x - worldPoint.x
             camera.scrollY -= newWorldPoint.y - worldPoint.y
         })
+    }
+    init_cameras() {
+        //main camera
+        this.scene.cameras.main.setBackgroundColor(this.scene.ui_colors[0])
+        if (this.scene.game_layer) this.scene.cameras.main.ignore(this.scene.game_layer)
+
+        //minimap
+        const minimap = this.scene.cameras.add(- 35, -30, 240, 200)
+        minimap.zoom = 0.3
+        minimap.centerToSize()
+        if (this.scene.ui_layer) minimap.ignore(this.scene.ui_layer)
+        if (this.scene.forground_layer) minimap.ignore(this.scene.forground_layer)
+
+        //game camera
+        this.scene.game_camera = this.scene.cameras.add(200, 0)
+        this.scene.game_camera.zoom = 2
+        this.scene.game_camera.setBackgroundColor(this.scene.ui_colors[1])
+        if (this.scene.ui_layer) this.scene.game_camera.ignore(this.scene.ui_layer)
+        if (this.scene.forground_layer) this.scene.game_camera.ignore(this.scene.forground_layer)
+
+        //forground camera
+        this.scene.forground_cam = this.scene.cameras.add()
+        if (this.scene.ui_layer) this.scene.forground_cam.ignore(this.scene.ui_layer)
+        if (this.scene.game_layer) this.scene.forground_cam.ignore(this.scene.game_layer)
+
+
+
+
     }
     message_text(msg) {
         return new Promise((r) => {

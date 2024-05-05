@@ -11,6 +11,7 @@ export class Player extends GameObject {
         this.body.setOffset(6, 18)
         this.setScale(0.58)
         this.init_score = this.get_score()
+        this.setInteractive()
     }
     explode(uid) {
         let killer = (uid !== this.uid) ? this.scene.game_objects.get(uid) : false
