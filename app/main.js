@@ -92,16 +92,19 @@ class Main extends Phaser.Scene {
             'CONTROLS',
             '   WASD or ARROWS - move',
             '   SPACE - place bomb',
+            '   E - select/center yourself',
+            '   MOUSE DRAG MAP',
+            `   CLICK ON OBJECTS TO SEE THERE STATS`,
             '   ESC - exit to main menu'
         ].join('\n'))
-        this.add_text(10, 280, 20, [
+        this.add_text(10, 350, 20, [
             'GAME PLAY',
             '   SCORING POINTS',
             '       KILL other players',
             '       BRAKE TILES',
             '       INCREASE POWERS',
             `   PLAYER WHO GETS FIRST TO MAX SCORE WINS`,
-            `   CLICK ON OBJECTS TO SEE THERE STATS`
+
         ].join('\n'))
         this.start_text = this.add_text(window.innerWidth / 2, 120, 30, 'PRESS ANY KEY TO START')
         this.start_text.setOrigin(0.5, 0.5)

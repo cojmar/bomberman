@@ -42,6 +42,15 @@ export class UI {
             if (!this.scene.cheats) return false
             this.scene.net.send_cmd('action', 'respawn')
         })
+        this.scene.input.keyboard.on('keyup-' + 'E', (event) => {
+            this.scene.obj_to_display = this.scene.player
+            if (this.scene.game_camera) this.scene.game_camera.startFollow(this.scene.player)
+        })
+        /*
+        this.scene.input.keyboard.on('keyup', (event) => {
+            console.log(event.key)
+        })
+        */
 
         this.scene.input.keyboard.on('keyup-' + 'ESC', (event) => this.scene.exit_game())
 
