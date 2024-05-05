@@ -10,6 +10,20 @@ export class Bomb extends GameObject {
         scene.load.spritesheet(...this.img_data)
         scene.load.atlas('flares', 'assets/img/flares.png', 'assets/json/flares.json')
     }
+    info() {
+
+        if (!this.scene) return []
+
+        return [
+            `BOMB ${this.uid.split('-').pop()}`,
+            `USER ${this?.ndata?.player.split('-').pop() || ''}`,
+            ``,
+            `Time ${Math.trunc(((this.ndata.time * 1000) - this.time()) / 1000) + 1 || 0}`,
+            `Range ${this?.ndata?.bomb_range || 0}`,
+            `Speed ${this?.ndata?.speed || 0}`,
+        ]
+
+    }
 
     map_collision(tile) {
         this.ndata.direction = ""

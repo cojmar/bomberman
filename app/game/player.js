@@ -11,7 +11,28 @@ export class Player extends GameObject {
         this.body.setOffset(6, 18)
         this.setScale(0.58)
         this.init_score = this.get_score()
-        this.setInteractive()
+
+    }
+    info() {
+        if (!this.scene) return []
+        let tile = this.get_tile()
+        return [
+            `User ${this?.scene?.net.room.users[this.uid]?.info.user.split('-').pop() || 'LEFT'}`,
+            `Wins ${this?.ndata?.wins || 0}`,
+            `Score ${this?.get_score() || 0}/${this.scene.get_max_score()}`,
+            `Top ${this?.get_ladder().shift()}/${Object.keys(this.scene.net.room.users).length}`,
+            ``,
+            `Kills ${this?.ndata?.kills || 0}`,
+            `Deaths ${this?.ndata?.deaths || 0}`,
+            `Move Speed ${this?.ndata?.speed || 0}`,
+            `Broken Tiles ${this?.ndata?.broken_tiles || 0}`,
+            `X:${tile?.x || 0} Y:${tile?.y || 0}`,
+            ``,
+            `Bombs ${this?.ndata?.bombs || 0}`,
+            `Bomb Range ${this?.ndata?.bomb_range || 0}`,
+            `Bomb Time ${this?.ndata?.bomb_time || 0}`,
+            `Bomb Speed ${this?.ndata?.bomb_speed || 0}`,
+        ]
     }
     explode(uid) {
         let killer = (uid !== this.uid) ? this.scene.game_objects.get(uid) : false

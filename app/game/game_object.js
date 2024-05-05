@@ -9,7 +9,9 @@ export class GameObject extends Phaser.Physics.Arcade.Sprite {
     static preload(scene) {
         scene.load.spritesheet(...this.img_data)
     }
-
+    info() {
+        return []
+    }
     constructor(scene, uid = 'default', data) {
         super(scene, 0, 0, '')
         this.uid = uid
@@ -32,6 +34,7 @@ export class GameObject extends Phaser.Physics.Arcade.Sprite {
         this.scene.game_objects.set(this.uid, this)
         this.init_anims()
         this.setBounce(0.1)
+        this.setInteractive()
 
         this.safe_spots = []
         if (this.scene?.map?.safe_spots) this.safe_spots = [...this.safe_spots, ...this.scene.map.safe_spots]
@@ -86,6 +89,7 @@ export class GameObject extends Phaser.Physics.Arcade.Sprite {
         this.on_destroy()
         this.scene?.game_objects.delete(this.uid)
         if (this.scene?.world_data[this.uid]) this.scene.unset_world_object(this.uid)
+        if (this.scene?.obj_to_display?.uid === this.uid) this.scene.obj_to_display = false
         setTimeout(_ => this.destroy())
     }
 

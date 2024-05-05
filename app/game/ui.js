@@ -53,7 +53,7 @@ export class UI {
 
         this.scene.input.on('pointerdown', (pointer) => {
             if (this.scene.selected_obj) {
-                this.scene.player_to_display = this.scene.selected_obj
+                this.scene.obj_to_display = this.scene.selected_obj
                 return true
             }
             if (pointer.downX > this.scene.game_padding[0] + this.scene.game_padding[4] * 2 && pointer.downX < (this.scene.game_padding[0] + this.scene.game_padding[4] * 2) + 20
@@ -86,6 +86,7 @@ export class UI {
 
 
         this.scene.input.on('pointermove', (pointer) => {
+            if (this.scene.selected_obj) return false
             if (pointer.isDown) {
                 if (pointer.downX < this.scene.game_padding[0]) return
                 if (pointer.downY < this.scene.game_padding[1]) return

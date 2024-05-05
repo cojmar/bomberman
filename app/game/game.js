@@ -139,7 +139,7 @@ export class Game extends Phaser.Scene {
         this.map.reset_map()
         this.spawn_player()
         this.set_player(this.net.me.info.user, this.default_player_data)
-        this.player_to_display = this.player
+        this.obj_to_display = this.player
     }
 
 
@@ -173,7 +173,7 @@ export class Game extends Phaser.Scene {
 
         this.spawn_player()
         this.set_player(this.net.me.info.user, Object.assign(this.default_player_data, { wins: this.player.get_data()?.wins || 0 }))
-        this.player_to_display = this.player
+        this.obj_to_display = this.player
 
         this.net.send_cmd('player_joined')
 
@@ -246,40 +246,23 @@ export class Game extends Phaser.Scene {
         if (this.game_done) return false
         if (this.updateing) return false
         this.updateing = true
-        if (!this.player_to_display) this.player_to_display = this.player
+        if (!this.obj_to_display) this.obj_to_display = this.player
         if (this.player.get_ladder().pop() >= this.get_max_score() && this.is_host() && !this.restarting) {
             this.restarting = true
             setTimeout(() => this.restarting = false, 5000)
             this.send_cmd('game_over')
         }
 
-        if (this.ui_text && this.player_to_display) {
+        if (this.ui_text && this.obj_to_display) {
             try {
-                let tile = this?.player_to_display.get_tile()
                 let new_text =
                     [
                         `FPS ${Math.floor(this.sys.game.loop.actualFps)} ${(this.game.renderer instanceof Phaser.Renderer.WebGL.WebGLRenderer) ? 'GPU' : 'CPU'}`,
                         `Players ${Object.keys(this.net.room.users).length}`,
-                        ``,
-                        `User ${this.net.room.users[this.player_to_display.uid]?.info.user.split('-').pop() || 'LEFT'}`,
-                        `Wins ${this?.player_to_display.ndata?.wins || 0}`,
-                        `Score ${this?.player_to_display.get_score() || 0}/${this.get_max_score()}`,
-                        `Top ${this?.player_to_display.get_ladder().shift()}/${Object.keys(this.net.room.users).length}`,
-                        ``,
-                        `Kills ${this?.player_to_display.ndata?.kills || 0}`,
-                        `Deaths ${this?.player_to_display.ndata?.deaths || 0}`,
-                        `Move Speed ${this?.player_to_display?.ndata?.speed || 0}`,
-                        `Broken Tiles ${this?.player_to_display?.ndata?.broken_tiles || 0}`,
-                        `X:${tile?.x || 0} Y:${tile?.y || 0}`,
-                        ``,
-                        `Bombs ${this?.player_to_display.ndata?.bombs || 0}`,
-                        `Bomb Range ${this?.player_to_display.ndata?.bomb_range || 0}`,
-                        `Bomb Time ${this?.player_to_display.ndata?.bomb_time || 0}`,
-                        `Bomb Speed ${this?.player_to_display.ndata?.bomb_speed || 0}`,
                         `                    `,
-
+                        ...this.obj_to_display.info()
                     ].join('\n')
-                if (this.ui_text && this?.ui_text?.text !== new_text) this.ui_text.text = new_text
+                if (this.ui_text && this?.ui_text?.text !== new_text) if (this?.ui_text) this.ui_text.text = new_text
             } catch (error) { console.log(error) }
         }
         // calculate movment direction
@@ -308,7 +291,7 @@ export class Game extends Phaser.Scene {
             if (this.player.ndata && direction !== this.player.ndata.direction) {
                 this.player.set_data({ direction, x: this.player.x, y: this.player.y })
                 if (this.game_camera) this.game_camera.startFollow(this.player)
-                this.player_to_display = this.player
+                this.obj_to_display = this.player
             }
         }
 
