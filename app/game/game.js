@@ -291,7 +291,7 @@ export class Game extends Phaser.Scene {
             if (this.player.ndata && direction !== this.player.ndata.direction) {
                 this.player.set_data({ direction, x: this.player.x, y: this.player.y })
                 if (this.game_camera) this.game_camera.startFollow(this.player)
-                this.obj_to_display = this.player
+                //this.obj_to_display = this.player
             }
         }
 
