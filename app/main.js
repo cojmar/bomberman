@@ -82,10 +82,10 @@ class Main extends Phaser.Scene {
         this.net = this.sys.game.net
         this.net.send_cmd('join', 'lobby')
 
-        let game_to_join = `${this.sys.game.default_room}${window.location.hash.replace('#', '').replace('gpu', '')}`
+        this.sys.game.game_to_join = `${this.sys.game.default_room}${window.location.hash.replace('#', '').replace('gpu', '')}`
 
-        this.input.keyboard.on('keyup', e => (e.code !== 'Escape') ? this.join_game(game_to_join) : false)
-        this.input.on('pointerdown', e => this.join_game(game_to_join))
+        this.input.keyboard.on('keyup', e => (e.code !== 'Escape') ? this.join_game(this.sys.game.game_to_join) : false)
+        this.input.on('pointerdown', e => this.join_game(this.sys.game.game_to_join))
         this.add_text(10, 10, 40, 'BOMBERMAN BETA')
         this.add_text(10, 50, 12, 'MADE BY COJMAR (2024)')
         this.add_text(10, 160, 20, [

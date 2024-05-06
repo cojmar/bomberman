@@ -29,14 +29,15 @@ export class Game extends Phaser.Scene {
         if (!this.sys.game.init_events) {
             this.sys.game.init_events = true
             this.game.events.on('blur', () => {
-                if (this.sys.game.scene.getKey() !== 'game') return false
+                if (this.sys.game.net.room.name !== this.sys.game.game_to_join) return false
                 this.died_afk = false
                 this.idle = true
                 this.killed_afk = {}
             })
             this.game.events.on('focus', () => {
+                if (this.sys.game.net.room.name !== this.sys.game.game_to_join) return false
 
-                if (this.sys.game.scene.getKey() !== 'game') return false
+
 
                 if (this.last_wd_update) {
                     this.game_objects.forEach(obj => (obj.constructor.name !== 'Player') ? obj.delete() : false)
