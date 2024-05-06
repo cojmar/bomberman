@@ -15,10 +15,11 @@ export class Surprise extends GameObject {
     pick(player) {
         if (this.done) return
         this.done = true
-        if (player) {
-            if (this?.stype === '💥') player.set_data({ bomb_range: player.ndata.bomb_range + 1 })
-            else if (this?.stype === '💣') player.set_data({ bombs: player.ndata.bombs + 1 })
-            else if (this?.stype === '💨') player.set_data({ bomb_speed: player.ndata.bomb_speed + 50 })
+        if (player && player.uid === this.scene.player.uid) {
+
+            if (this?.ndata.stype === '💥') player.set_data({ bomb_range: player.ndata.bomb_range + 1 })
+            else if (this?.ndata.stype === '💣') player.set_data({ bombs: player.ndata.bombs + 1 })
+            else if (this?.ndata.stype === '💨') player.set_data({ bomb_speed: player.ndata.bomb_speed + 50 })
         }
         this.text.visible = false
         this.graphics.visible = false
@@ -46,13 +47,13 @@ export class Surprise extends GameObject {
     info() {
         if (!this.scene) return []
         let desc = ''
-        if (this?.stype === '💥') desc = 'Bomb Range +1'
-        else if (this?.stype === '💣') desc = 'Bombs +1'
-        else if (this?.stype === '💨') desc = 'Bomb Speed +50'
+        if (this?.ndata?.stype === '💥') desc = 'Bomb Range +1'
+        else if (this?.ndata?.stype === '💣') desc = 'Bombs +1'
+        else if (this?.ndata?.stype === '💨') desc = 'Bomb Speed +50'
 
         return [
             `POWER ${this.uid.split('-').pop()}`,
-            `TYPE ${this?.stype || ''}`,
+            `TYPE ${this?.ndata?.stype || ''}`,
             ``,
             desc
 
@@ -78,11 +79,11 @@ export class Surprise extends GameObject {
         this.graphics.x = this.x + center
         this.graphics.y = this.y + center
 
-        this.stype = this.random().pick(['💥', '💣', '💨'])
-        //this.stype = '💨'
+        if (!this.ndata.stype) this.ndata.stype = this.random().pick(['💥', '💣', '💨'])
+        //this.ndata.stype = '💨'
 
 
-        this.text = this.scene.add.text(this.x + 0.5, this.y - 0.5, this.stype, { font: '12px monospace', fill: '#010e1b', fontStyle: 'bold', align: 'center' }).setOrigin(0.5, 0.5)
+        this.text = this.scene.add.text(this.x + 0.5, this.y - 0.5, this.ndata.stype, { font: '12px monospace', fill: '#010e1b', fontStyle: 'bold', align: 'center' }).setOrigin(0.5, 0.5)
         this.scene.game_layer.add(this.text)
 
         //tween

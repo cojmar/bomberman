@@ -154,7 +154,7 @@ export class TileMap {
                 this.get_map().data.map(t => { if (this.brakeable_tiles.indexOf(t) !== -1) all_gone = false })
                 if (all_gone) this.reset_map()
             }
-            if (!this.scene.idle) this.scene.net.send_cmd('set_data', { map_data: this.get_map() })
+            this.scene.net.send_cmd('set_data', { map_data: this.get_map() })
         })
 
     }

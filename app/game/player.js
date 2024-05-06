@@ -37,10 +37,13 @@ export class Player extends GameObject {
     explode(uid) {
         let killer = (uid !== this.uid) ? this.scene.game_objects.get(uid) : false
         if (killer) killer.set_data({ kills: killer.ndata.kills + 1 })
+        this.scene.send_cmd('pk', [uid, this.uid])
+
 
         this.set_data({ visible: false })
         setTimeout(() => {
-            this.set_data({ bombs: 1, bomb_range: 1, bomb_speed: 0, deaths: this.ndata.deaths + (uid) ? 1 : 0 })
+            this.scene.killed_afk = {}
+            this.set_data({ bombs: this.scene.default_player_data.bombs, bomb_range: this.scene.default_player_data.bomb_range, bomb_speed: this.scene.default_player_data.bomb_speed, deaths: this.ndata.deaths + 1 })
             this.action_respawn()
         }, 500)
     }

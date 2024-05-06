@@ -82,6 +82,9 @@ export class Bomb extends GameObject {
         if (this.tween) this.tween.remove()
         if (this.emitter) this.emitter.destroy()
         this.text.destroy()
+        let player = this.scene.game_objects.get(this.ndata.player)
+        if (!player) return
+        player.set_data({ bombs: player.ndata.bombs + 1 })
     }
     explode(uid) {
         if (this.done) return false
@@ -91,7 +94,7 @@ export class Bomb extends GameObject {
         this.done = true
         this.emitter.destroy()
         let player = this.scene.game_objects.get(this.ndata.player)
-        let update = { bombs: 1, bomb_range: 0, broken_tiles: 0 }
+        let update = { broken_tiles: 0 }
 
         let bomb_tile = this.get_tile()
         let tiles_to_brake = [bomb_tile]
@@ -174,9 +177,10 @@ export class Bomb extends GameObject {
             })
             if (this.scene.map.brake_tile(t)) {
                 update.broken_tiles++
-                if (this.ndata.player === this.scene.player.uid) this.scene.set_object('Surprise', `s-${this.uid}`, { x: t.pixelX + (t.baseWidth / 2), y: t.pixelY + (t.baseHeight / 2), bomb: this.uid })
-                //update.bombs++
-                //update.bomb_range++
+                // if (this.ndata.player === this.scene.player.uid) 
+                this.scene.set_object('Surprise', `s-${this.uid}`, { x: t.pixelX + (t.baseWidth / 2), y: t.pixelY + (t.baseHeight / 2), bomb: this.uid, player: this.ndata.player })
+
+
             }
             let flame = this.scene.add.particles(t.pixelX + (t.baseWidth / 2), t.pixelY + (t.baseHeight / 2), 'flares',
                 {
@@ -199,8 +203,8 @@ export class Bomb extends GameObject {
         obj_hit.map(obj => (obj.visible && typeof obj.explode === 'function') ? obj.explode(uid, this.uid) : false)
 
         if (player) {
-            update.bombs += player.ndata.bombs
-            update.bomb_range += player.ndata.bomb_range
+            //update.bombs += player.ndata.bombs
+            //update.bomb_range += player.ndata.bomb_range
             update.broken_tiles += player.ndata.broken_tiles
 
             if (player.ndata.deaths === this.p_deaths) player.set_data(update)

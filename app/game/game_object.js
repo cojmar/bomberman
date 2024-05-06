@@ -25,7 +25,8 @@ export class GameObject extends Phaser.Physics.Arcade.Sprite {
             "y": 0,
             "speed": 80,
             "creation_time": this.scene.get_time(),
-            "update_time": this.scene.get_time()
+            "update_time": this.scene.get_time(),
+            "player": ""
         }
         if (typeof data === 'object') this.set_data(data)
         this.body.immovable = true
@@ -88,10 +89,12 @@ export class GameObject extends Phaser.Physics.Arcade.Sprite {
     }
 
     delete() {
-        this.on_destroy()
-        this.scene?.game_objects.delete(this.uid)
-        if (this.scene?.world_data[this.uid]) this.scene.unset_world_object(this.uid)
-        if (this.scene?.obj_to_display?.uid === this.uid) this.scene.obj_to_display = false
+
+        if (this.scene) {
+            this.on_destroy()
+            this.scene.unset_world_object(this.uid)
+            if (this.scene?.obj_to_display?.uid === this.uid) this.scene.obj_to_display = false
+        }
         setTimeout(_ => this.destroy())
     }
 
@@ -99,13 +102,16 @@ export class GameObject extends Phaser.Physics.Arcade.Sprite {
         //console.log(data)
         if (!this?.ndata) return false
         if (typeof data !== "object") return false
+
         Object.keys(data).map(k => { this.ndata[k] = data[k] })
         this.ndata.update_time = this.scene.get_time()
         if (data.x) this.x = data.x
         if (data.y) this.y = data.y
         if (data.direction && !this.visible) this.visible = true
         if (typeof data.visible !== 'undefined') this.visible = data.visible
-        if (this.scene && this.uid === this.scene.net.me.info.user && Object.keys(data).length) this.scene.send_cmd('set_data', data)
+        if (this.scene) {
+            if (this.uid === this.scene.net.me.info.user && Object.keys(data).length) this.scene.send_cmd('set_data', data)
+        }
     }
 
     render(time, delta) {
