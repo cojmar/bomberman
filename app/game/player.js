@@ -40,7 +40,7 @@ export class Player extends GameObject {
 
         this.set_data({ visible: false })
         setTimeout(() => {
-            this.set_data({ bombs: 1, bomb_range: 1, deaths: this.ndata.deaths + (uid) ? 1 : 0 })
+            this.set_data({ bombs: 1, bomb_range: 1, bomb_speed: 0, deaths: this.ndata.deaths + (uid) ? 1 : 0 })
             this.action_respawn()
         }, 500)
     }

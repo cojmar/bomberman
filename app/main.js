@@ -92,18 +92,20 @@ class Main extends Phaser.Scene {
             'CONTROLS',
             '   WASD or ARROWS - move',
             '   SPACE - place bomb',
+            '   DIRECTION + SPACE - throw bomb if u have bomb speed',
             '   E - select/center yourself',
             '   MOUSE DRAG MAP',
             '   MOUSE WHEEL - zoom in out',
             '   CLICK ON OBJECTS TO SEE THERE STATS',
             '   ESC - exit to main menu'
         ].join('\n'), false)
-        this.add_text(10, 390, 20, [
+        this.add_text(10, 410, 20, [
             'GAME PLAY',
             '   SCORING POINTS',
             '       KILL other players',
             '       BRAKE TILES',
             '       INCREASE POWERS',
+            '   BOMBS DO NOT DETONATE IN SPAWNS',
             `   PLAYER WHO GETS FIRST TO MAX SCORE WINS`,
 
         ].join('\n'), false)
