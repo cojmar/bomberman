@@ -178,7 +178,7 @@ export class Bomb extends GameObject {
             if (this.scene.map.brake_tile(t)) {
                 update.broken_tiles++
                 // if (this.ndata.player === this.scene.player.uid) 
-                this.scene.set_object('Surprise', `s-${this.uid}`, { x: t.pixelX + (t.baseWidth / 2), y: t.pixelY + (t.baseHeight / 2), bomb: this.uid, player: this.ndata.player })
+                this.scene.set_object('Surprise', `s-${t.pixelX}-${t.pixelY}-${this.uid}`, { x: t.pixelX + (t.baseWidth / 2), y: t.pixelY + (t.baseHeight / 2), bomb: this.uid, player: this.ndata.player })
 
 
             }
