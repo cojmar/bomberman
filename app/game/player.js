@@ -10,7 +10,7 @@ export class Player extends GameObject {
         this.body.setSize(20, 30, true)
         this.body.setOffset(6, 18)
         this.setScale(0.58)
-        this.init_score = 181
+        this.init_score = 81
 
     }
     info() {
@@ -79,7 +79,8 @@ export class Player extends GameObject {
         this.scene.spawn_player(true)
     }
     get_score() {
-        let score = Array.from(['speed', 'bomb_speed', 'bomb_range', 'kills', 'broken_tiles']).reduce((r, k) => r + this.ndata[k], 0)
+        let score = Array.from(['speed', 'bomb_range', 'kills', 'broken_tiles']).reduce((r, k) => r + this.ndata[k], 0)
+        score += this.ndata.bomb_speed / 50
         return score - this?.init_score || 0
     }
     get_ladder() {
@@ -121,6 +122,8 @@ export class Player extends GameObject {
         this.scene.physics.world.collide(this, this.scene.collision_layer, (obj1, obj2) => {
             if (!obj2.visible) return
             if (obj2.constructor.name === 'Bomb' && !obj2.moved) return false
+            if (obj2.pick) obj2.pick(this)
+            if (obj2.constructor.name === 'Surprise') return false
 
             let tile = this.get_tile()
             if (this.safe_spots.indexOf(tile.oindex) !== -1) return

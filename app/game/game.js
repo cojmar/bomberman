@@ -2,6 +2,7 @@ import { Player } from './player.js'
 import { UI } from './ui.js'
 import { TileMap } from './tilemap.js'
 import { Bomb } from './bomb.js'
+import { Surprise } from './surprise.js'
 
 export class Game extends Phaser.Scene {
     constructor() {
@@ -12,6 +13,7 @@ export class Game extends Phaser.Scene {
         this.sys.game.preloader(this)
         Player.preload(this)
         Bomb.preload(this)
+
         TileMap.preload(this)
 
 
@@ -145,7 +147,7 @@ export class Game extends Phaser.Scene {
 
     init_game() {
         this.cheats = (window.location.hash.indexOf('cheats') !== -1)
-        this.default_player_data = { bombs: 1, bomb_range: 1, kills: 0, deaths: 0, bomb_speed: 100, bomb_time: 5, broken_tiles: 0 }
+        this.default_player_data = { bombs: 1, bomb_range: 1, kills: 0, deaths: 0, bomb_speed: 0, bomb_time: 5, broken_tiles: 0 }
         this.game_objects = new Map()
         this.game_layer.getChildren().forEach(child => child.destroy())
         if (this.collision_layer) this.collision_layer.destroy()
@@ -177,8 +179,8 @@ export class Game extends Phaser.Scene {
 
         this.net.send_cmd('player_joined')
 
-        //this.set_object('Bomb', 'bomb 1', { x: this.player.x, y: this.player.y, time: 10 })
-
+        let tile = this.player.get_tile_center()
+        //this.set_object('Surprise', `s-${this.player.uid}`, { x: tile.x, y: tile.y, time: 10 })
 
     }
 
@@ -262,8 +264,10 @@ export class Game extends Phaser.Scene {
                         `                    `,
                         ...this.obj_to_display.info()
                     ].join('\n')
-                if (this.ui_text && this?.ui_text?.text !== new_text) if (this?.ui_text) this.ui_text.text = new_text
-            } catch (error) { console.log(error) }
+                if (!new_text) new_text = ''
+
+                if (this.ui_text && this?.ui_text?.text !== new_text) if (this.ui_text) this.ui_text.text = new_text
+            } catch (error) { }
         }
         // calculate movment direction
         if (this.player) {

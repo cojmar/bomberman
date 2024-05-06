@@ -174,8 +174,9 @@ export class Bomb extends GameObject {
             })
             if (this.scene.map.brake_tile(t)) {
                 update.broken_tiles++
-                update.bombs++
-                update.bomb_range++
+                this.scene.set_object('Surprise', `s-${this.uid}`, { x: t.pixelX + (t.baseWidth / 2), y: t.pixelY + (t.baseHeight / 2) })
+                //update.bombs++
+                //update.bomb_range++
             }
             let flame = this.scene.add.particles(t.pixelX + (t.baseWidth / 2), t.pixelY + (t.baseHeight / 2), 'flares',
                 {
