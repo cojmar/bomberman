@@ -9,8 +9,8 @@ export class Surprise extends GameObject {
         if (this.graphics) this.graphics.destroy()
         if (this.text) this.text.destroy()
     }
-    explode() {
-        this.pick()
+    explode(p, bomb) {
+        if (bomb !== this?.ndata?.bomb) this.pick()
     }
     pick(player) {
         if (this.done) return

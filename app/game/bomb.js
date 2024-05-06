@@ -174,7 +174,7 @@ export class Bomb extends GameObject {
             })
             if (this.scene.map.brake_tile(t)) {
                 update.broken_tiles++
-                this.scene.set_object('Surprise', `s-${this.uid}`, { x: t.pixelX + (t.baseWidth / 2), y: t.pixelY + (t.baseHeight / 2) })
+                if (this.ndata.player === this.scene.player.uid) this.scene.set_object('Surprise', `s-${this.uid}`, { x: t.pixelX + (t.baseWidth / 2), y: t.pixelY + (t.baseHeight / 2), bomb: this.uid })
                 //update.bombs++
                 //update.bomb_range++
             }
@@ -196,7 +196,7 @@ export class Bomb extends GameObject {
             return r
         }, [])
 
-        obj_hit.map(obj => (obj.visible && typeof obj.explode === 'function') ? obj.explode(uid) : false)
+        obj_hit.map(obj => (obj.visible && typeof obj.explode === 'function') ? obj.explode(uid, this.uid) : false)
 
         if (player) {
             update.bombs += player.ndata.bombs
