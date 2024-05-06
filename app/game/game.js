@@ -36,14 +36,25 @@ export class Game extends Phaser.Scene {
             })
             this.game.events.on('focus', () => {
                 if (this.sys.game.net.room.name !== this.sys.game.game_to_join) return false
+                if (this.is_host()) return false
+                let host = this.host()
+                if (!host?.data?.map_data) return false
+                let map_data = this.map.get_map()
 
-
-
-                if (this.last_wd_update) {
-                    this.game_objects.forEach(obj => (obj.constructor.name !== 'Player') ? obj.delete() : false)
-                    if (this.last_wd_update[1]) this.map.set_map(this.last_wd_update[1], false, false)
-                    Object.values(this.last_wd_update[0]).map(obj => this.set_object(...obj, false))
+                if (JSON.stringify(map_data) !== JSON.stringify(host.data.map_data)) {
+                    if (
+                        host.data.map_data.width !== map_data.width ||
+                        host.data.map_data.height !== map_data.height
+                    ) this.map.init_map(host.data.map_data, false, false)
+                    else this.map.set_map(host.data.map_data.data, false, false)
                 }
+
+                this.game_objects.forEach(obj => (obj.constructor.name !== 'Player') ? obj.delete() : false)
+                this.world_data = JSON.parse(host?.data?.world_data || "{}")
+
+                Object.keys(this.world_data).map(k => this.set_object(...this.world_data[k], false))
+
+
                 if (this.died_afk) this.player.explode(this.died_afk)
                 if (Object.keys(this.killed_afk).length) this.player.set_data({ kills: this.player.ndata.kills + Object.keys(this.killed_afk).length })
                 this.died_afk = false
@@ -69,16 +80,16 @@ export class Game extends Phaser.Scene {
                 if (cmd_data.data.user === this.net.me.info.user) return false
 
                 this.set_player(cmd_data.data.user, cmd_data.data.data)
-                if (this.net.room.users[cmd_data.data.user]?.data?.world_data && this.net.room.users[cmd_data.data.user]?.data?.map_data)
-                    this.last_wd_update = [JSON.parse(this.net.room.users[cmd_data.data.user].data.world_data), this.net.room.users[cmd_data.data.user].data.map_data.data]
+
                 if (this.is_host(cmd_data.data.user) || !this.net.room.host) {
-                    if (cmd_data.data.data?.map_data?.data && cmd_data.data.data?.update_map) {
+
+                    if (cmd_data.data.data?.map_data?.data) {
                         let map_data = this.map.get_map()
                         if (JSON.stringify(map_data) === JSON.stringify(cmd_data.data.data.map_data)) return false
                         if (
                             cmd_data.data.data.map_data.width !== map_data.width ||
                             cmd_data.data.data.map_data.height !== map_data.height
-                        ) this.map.init_map(cmd_data.data.data.map_data)
+                        ) this.map.init_map(cmd_data.data.data.map_data, false)
                         else this.map.set_map(cmd_data.data.data.map_data.data, false, false)
                     }
                 }
@@ -103,12 +114,9 @@ export class Game extends Phaser.Scene {
                     this.game_objects.get(cmd_data.data.user)[`action_${cmd_data.data.data}`]()
                 } catch (error) { }
                 break
-            case 'update_wd':
-                this.last_wd_update = [JSON.parse(this.net.room.users[cmd_data.data.user].data.world_data), this.net.room.users[cmd_data.data.user].data.map_data.data]
-                break;
+
             case 'set_object':
                 if (cmd_data.data.user === this.net.me.info.user) return false
-                this.last_wd_update = [JSON.parse(this.net.room.users[cmd_data.data.user].data.world_data), this.net.room.users[cmd_data.data.user].data.map_data.data]
                 this.set_object(...cmd_data.data.data, false)
                 break
             case 'spawn':
@@ -127,10 +135,15 @@ export class Game extends Phaser.Scene {
         }
     }
 
-
-    host() {
-
-        return (this.net.room.host) ? this.net.room.users[this.net.room.host] : Object.values(this.net.room.users).shift() || false
+    add_hoc_host(not_me) {
+        return Object.values(this.net.room.users).reduce((r, user) => {
+            if (not_me && user.info.user === this.net.me.info.user) return r
+            if (!user.data.update_time) return r
+            return r = (!r) ? user : (r.data.update_time > user.data.update_time) ? r : user
+        }, false) || Object.values(this.net.room.users).shift() || false
+    }
+    host(not_me = false) {
+        return (this.net.room.host) ? this.net.room.users[this.net.room.host] : this.add_hoc_host(not_me)
     }
     is_host(uid = false) {
         if (!this.host()) return false
@@ -143,7 +156,7 @@ export class Game extends Phaser.Scene {
         return Phaser.Math.RND
     }
     exit_game() {
-        this.player.set_data({ map_data: false, world_data: false })
+        this.player.set_data({ map_data: false, world_data: false, update_time: 0 })
         this.scene.stop('game')
         this.scene.start('main')
     }
@@ -178,6 +191,7 @@ export class Game extends Phaser.Scene {
 
 
     init_game() {
+
         this.cheats = (window.location.hash.indexOf('cheats') !== -1)
         this.died_afk = false
         this.killed_afk = {}
@@ -187,9 +201,9 @@ export class Game extends Phaser.Scene {
         if (this.collision_layer) this.collision_layer.destroy()
         this.collision_layer = this.physics.add.group()
 
-        this.world_data = JSON.parse(this.host()?.data?.world_data || "{}")
-        this.map = new TileMap(this, this.host()?.data?.map_data?.data || {})
-        this.last_wd_update = [this.world_data, this.map.get_map().data]
+        this.world_data = JSON.parse(this.host(true)?.data?.world_data || "{}")
+        this.map = new TileMap(this, this.host(true)?.data?.map_data?.data || {})
+
         // setInterval(() => (this.is_host()) ? this.send_cmd('random') : '', 1000)
 
         // this.map.spawn_tiles.push(1)
@@ -258,8 +272,7 @@ export class Game extends Phaser.Scene {
         if (emit) this.send_cmd('set_object', this.world_data[uid])
         return obj
     }
-    unset_world_object(uid, emit = true) {
-        if (emit && this.game_objects.get(uid)?.ndata.player === this.player.uid) setTimeout(() => this.send_cmd('update_wd'))
+    unset_world_object(uid) {
         this.game_objects.delete(uid)
         if (this.world_data[uid]) {
             delete this.world_data[uid]

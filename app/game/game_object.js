@@ -103,16 +103,16 @@ export class GameObject extends Phaser.Physics.Arcade.Sprite {
         if (!this?.ndata) return false
         if (typeof data !== "object") return false
         if (!this.scene) return false
-
+        if (!data.update_time) data.update_time = this.scene.get_time()
         Object.keys(data).map(k => { this.ndata[k] = data[k] })
-        this.ndata.update_time = this.scene.get_time()
+
         if (data.x) this.x = data.x
         if (data.y) this.y = data.y
         if (data.direction && !this.visible) this.visible = true
         if (typeof data.visible !== 'undefined') this.visible = data.visible
-        if (this.scene) {
-            if (this.uid === this.scene.net.me.info.user && Object.keys(data).length) this.scene.send_cmd('set_data', data)
-        }
+
+        if (this.uid === this.scene.net.me.info.user && Object.keys(data).length) this.scene.send_cmd('set_data', data)
+
     }
 
     render(time, delta) {
