@@ -80,7 +80,7 @@ export class TileMap {
     def_map() {
         return this.scene.sys.game.tile_layer_data
     }
-    init_map(data = {}) {
+    init_map(data = {}, update = false) {
         let layer_data = this.scene.cache.tilemap.get('map').data.layers[0]
         if (data?.width) layer_data.width = data.width
         if (data?.height) layer_data.height = data.height
@@ -101,13 +101,13 @@ export class TileMap {
 
         this.map_has_brakable_tiles = false
         this.get_map().data.map(t => { if (this.brakeable_tiles.indexOf(t) !== -1) this.map_has_brakable_tiles = true })
-        this.render()
+        this.render(update)
     }
     reset_map() {
         this.set_map(this.init_data, false, false)
     }
     get_x_y(index) {
-        let width = this.map.layers[0].width
+        let width = this.map.layers[0]?.width || 0
         let x = index % width
         let y = Math.floor(index / width)
         return [x, y]
@@ -141,12 +141,12 @@ export class TileMap {
     get_tiles_by_index(index) {
         return this.map.layers[0].data.reduce((a, t) => [...a, ...t.filter(v => v?.oindex == index)], [])
     }
-    render(update = true) {
+    render(update_map = true) {
         this.init_spawns()
         this.tiles_with_animation = Object.keys(this.animated_tiles).reduce((a, index) => [...a, ...this.get_tiles_by_index(index)], [])
         this.tiles_with_animation.map(t => (!t.animation) ? t.animation = new TileAnimation(t, this.animated_tiles[t.oindex]) : false)
 
-        if (!update) return
+        //if (!update_map) return
         clearTimeout(this.update_to)
         this.update_to = setTimeout(() => {
             if (this.map_has_brakable_tiles) {
@@ -154,7 +154,7 @@ export class TileMap {
                 this.get_map().data.map(t => { if (this.brakeable_tiles.indexOf(t) !== -1) all_gone = false })
                 if (all_gone) this.reset_map()
             }
-            this.scene.net.send_cmd('set_data', { map_data: this.get_map() })
+            this.scene.net.send_cmd('set_data', { map_data: this.get_map(), update_map })
         })
 
     }

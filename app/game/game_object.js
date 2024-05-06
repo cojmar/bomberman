@@ -102,6 +102,7 @@ export class GameObject extends Phaser.Physics.Arcade.Sprite {
         //console.log(data)
         if (!this?.ndata) return false
         if (typeof data !== "object") return false
+        if (!this.scene) return false
 
         Object.keys(data).map(k => { this.ndata[k] = data[k] })
         this.ndata.update_time = this.scene.get_time()

@@ -26,24 +26,32 @@ export class Game extends Phaser.Scene {
         this.net = this.sys.game.net
         this.send_cmd = (cmd, data) => this.sys.game.net.send_cmd(cmd, data)
 
-        this.game.events.on('blur', () => {
-            this.died_afk = false
-            this.idle = true
-            this.killed_afk = {}
-        })
-        this.game.events.on('focus', () => {
+        if (!this.sys.game.init_events) {
+            this.sys.game.init_events = true
+            this.game.events.on('blur', () => {
+                if (this.sys.game.scene.getKey() !== 'game') return false
+                this.died_afk = false
+                this.idle = true
+                this.killed_afk = {}
+            })
+            this.game.events.on('focus', () => {
 
-            if (this.last_wd_update) {
-                this.game_objects.forEach(obj => (obj.constructor.name !== 'Player') ? obj.delete() : false)
-                this.map.set_map(this.last_wd_update[1])
-                Object.values(this.last_wd_update[0]).map(obj => this.set_object(...obj, false))
-            }
-            if (this.died_afk) this.player.explode(this.died_afk)
-            if (Object.keys(this.killed_afk).length) this.player.set_data({ kills: this.player.ndata.kills + Object.keys(this.killed_afk).length })
-            this.died_afk = false
-            this.killed_afk = {}
-            this.idle = false
-        })
+                if (this.sys.game.scene.getKey() !== 'game') return false
+
+                if (this.last_wd_update) {
+                    this.game_objects.forEach(obj => (obj.constructor.name !== 'Player') ? obj.delete() : false)
+                    if (this.last_wd_update[1]) this.map.set_map(this.last_wd_update[1], false, false)
+                    Object.values(this.last_wd_update[0]).map(obj => this.set_object(...obj, false))
+                }
+                if (this.died_afk) this.player.explode(this.died_afk)
+                if (Object.keys(this.killed_afk).length) this.player.set_data({ kills: this.player.ndata.kills + Object.keys(this.killed_afk).length })
+                this.died_afk = false
+                this.killed_afk = {}
+                Object.values(this.net.room.users).map(user => (user.info.user !== this.player.uid) ? this.set_player(user.info.user, user.data) : this.set_player(this.player.uid, this.player.get_data()))
+
+                this.idle = false
+            })
+        }
         this.init_game()
         // setTimeout(() => this.scene.switch('main'), 4000)
     }
@@ -63,14 +71,14 @@ export class Game extends Phaser.Scene {
                 if (this.net.room.users[cmd_data.data.user]?.data?.world_data && this.net.room.users[cmd_data.data.user]?.data?.map_data)
                     this.last_wd_update = [JSON.parse(this.net.room.users[cmd_data.data.user].data.world_data), this.net.room.users[cmd_data.data.user].data.map_data.data]
                 if (this.is_host(cmd_data.data.user) || !this.net.room.host) {
-                    if (cmd_data.data.data?.map_data?.data) {
+                    if (cmd_data.data.data?.map_data?.data && cmd_data.data.data?.update_map) {
                         let map_data = this.map.get_map()
                         if (JSON.stringify(map_data) === JSON.stringify(cmd_data.data.data.map_data)) return false
                         if (
                             cmd_data.data.data.map_data.width !== map_data.width ||
                             cmd_data.data.data.map_data.height !== map_data.height
                         ) this.map.init_map(cmd_data.data.data.map_data)
-                        else this.map.set_map(cmd_data.data.data.map_data.data)
+                        else this.map.set_map(cmd_data.data.data.map_data.data, false, false)
                     }
                 }
                 break
@@ -237,11 +245,12 @@ export class Game extends Phaser.Scene {
     set_player(uid = 'default', data) {
         if (!data) data = {}
         let player = this.game_objects.get(uid) || this.new_object(Player, uid)
+        if (!player) return false
         player.set_data(data)
         return player
     }
     set_object(obj_type, uid = 'default', data, emit = true) {
-        if (!data) data = {}
+        if (!data) return false
         let obj = this.game_objects.get(uid) || this.new_object(eval(`${obj_type}`), uid, data)
         this.world_data[uid] = [obj_type, uid, obj.get_data()]
         this.update_world_data()
@@ -264,7 +273,6 @@ export class Game extends Phaser.Scene {
     }
 
     new_object(obj, uid = 'default', data) {
-        if (!data) data = {}
         let r = new obj(this, uid, data)
         r.set_data(data)
         return r
