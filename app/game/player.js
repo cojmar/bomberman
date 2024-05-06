@@ -123,8 +123,8 @@ export class Player extends GameObject {
 
         let direction = this.ndata.direction
         this.scene.physics.world.collide(this, this.scene.collision_layer, (obj1, obj2) => {
-            if (!obj2.visible) return
-            if (obj2.constructor.name === 'Bomb' && !obj2.moved) return false
+            if (!obj2.visible) return false
+            if (obj2.constructor.name === 'Bomb' && !obj2.moved && obj2.ndata.player === this.scene.player.uid) return false
             if (obj2.pick) obj2.pick(this)
             if (obj2.constructor.name === 'Surprise') return false
 
