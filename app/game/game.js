@@ -29,12 +29,15 @@ export class Game extends Phaser.Scene {
         if (!this.sys.game.init_events) {
             this.sys.game.init_events = true
             this.game.events.on('blur', () => {
+                this.idle = true
+                if (this.player) this.player.set_data({ idle: this.idle })
                 if (this.sys.game.net.room.name !== this.sys.game.game_to_join) return false
                 this.died_afk = false
-                this.idle = true
                 this.killed_afk = {}
             })
             this.game.events.on('focus', () => {
+                this.idle = false
+                if (this.player) this.player.set_data({ idle: this.idle })
                 if (this.sys.game.net.room.name !== this.sys.game.game_to_join) return false
                 if (this.is_host()) return false
                 let host = this.host()
@@ -61,7 +64,7 @@ export class Game extends Phaser.Scene {
                 this.killed_afk = {}
                 Object.values(this.net.room.users).map(user => (user.info.user !== this.player.uid) ? this.set_player(user.info.user, user.data) : this.set_player(this.player.uid, this.player.get_data()))
 
-                this.idle = false
+
             })
         }
         this.init_game()
@@ -83,7 +86,7 @@ export class Game extends Phaser.Scene {
 
                 if (this.is_host(cmd_data.data.user) || !this.net.room.host) {
 
-                    if (cmd_data.data.data?.map_data?.data) {
+                    if (cmd_data.data.data?.map_data?.data && cmd_data.data.user && this.is_host(cmd_data.data.user)) {
                         let map_data = this.map.get_map()
                         if (JSON.stringify(map_data) === JSON.stringify(cmd_data.data.data.map_data)) return false
                         if (
@@ -135,15 +138,13 @@ export class Game extends Phaser.Scene {
         }
     }
 
-    add_hoc_host(not_me) {
-        return Object.values(this.net.room.users).reduce((r, user) => {
-            if (not_me && user.info.user === this.net.me.info.user) return r
-            if (!user.data.update_time) return r
-            return r = (!r) ? user : (r.data.update_time > user.data.update_time) ? r : user
-        }, false) || Object.values(this.net.room.users).shift() || false
+    add_hoc_host() {
+        return Object.values(this.net.room.users).reduce((r, user) => (!user.data.idle && !r) ? user : r, false) || Object.values(this.net.room.users).shift()
     }
-    host(not_me = false) {
-        return (this.net.room.host) ? this.net.room.users[this.net.room.host] : this.add_hoc_host(not_me)
+    host() {
+        let host = (this.net.room.host) ? this.net.room.users[this.net.room.host] : this.add_hoc_host()
+        if (host?.data?.idle) host = this.add_hoc_host()
+        return host
     }
     is_host(uid = false) {
         if (!this.host()) return false
@@ -195,7 +196,7 @@ export class Game extends Phaser.Scene {
         this.cheats = (window.location.hash.indexOf('cheats') !== -1)
         this.died_afk = false
         this.killed_afk = {}
-        this.default_player_data = { bombs: 1, bomb_range: 1, kills: 0, deaths: 0, bomb_speed: 0, bomb_time: 5, broken_tiles: 0 }
+        this.default_player_data = { bombs: 1, bomb_range: 1, kills: 0, deaths: 0, bomb_speed: 0, bomb_time: 5, broken_tiles: 0, idle: false }
         this.game_objects = new Map()
         this.game_layer.getChildren().forEach(child => child.destroy())
         if (this.collision_layer) this.collision_layer.destroy()
