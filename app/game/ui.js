@@ -228,17 +228,17 @@ export class UI {
 
             // info text zone
             if (this.scene.ui_text) this.scene.ui_text.destroy()
-            this.scene.ui_text = this.scene.add.text(16, 178, '', { font: '16px monospace', fill: '#d1cdcd', align: 'right' })
+            this.scene.ui_text = this.scene.add.text(16, 178, '', { font: '14px Roboto Mono', fill: '#d1cdcd', align: 'right' })
             this.scene.ui_layer.add([this.scene.ui_text])
 
             // vertical text
             if (this.scene.ui_text2) this.scene.ui_text2.destroy()
-            this.scene.ui_text2 = this.scene.add.text(24, 175, 'BOMBERMAN-BETA'.split('').join('\n'), { font: '20px monospace', fill: '#d1cdcd', align: 'right' })
+            this.scene.ui_text2 = this.scene.add.text(24, 175, 'BOMBERMAN-BETA'.split('').join('\n'), { font: '20px Roboto Mono', fill: '#d1cdcd', align: 'right' })
             this.scene.ui_layer.add([this.scene.ui_text2])
 
             // bottom text
             if (this.scene.ui_text3) this.scene.ui_text3.destroy()
-            this.scene.ui_text3 = this.scene.add.text(10, 480, 'MADE BY COJMAR (2024)', { font: '12px monospace', fill: '#d1cdcd', align: 'left' })
+            this.scene.ui_text3 = this.scene.add.text(10, 480, 'MADE BY COJMAR (2024)', { font: '12px Roboto Mono', fill: '#d1cdcd', align: 'left' })
             this.scene.ui_layer.add([this.scene.ui_text3])
 
         }

@@ -314,7 +314,7 @@ export class Game extends Phaser.Scene {
                     [
                         `FPS ${Math.floor(this.sys.game.loop.actualFps)} ${(this.game.renderer instanceof Phaser.Renderer.WebGL.WebGLRenderer) ? 'GPU' : 'CPU'}`,
                         `Players ${Object.keys(this.net.room.users).length}`,
-                        `                    `,
+                        `                      `,
                         ...this.obj_to_display.info()
                     ].join('\n')
                 if (!new_text) new_text = ''
