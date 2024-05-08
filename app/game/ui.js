@@ -61,6 +61,7 @@ export class UI {
         let cameraDragStartY
 
         this.scene.input.on('pointerdown', (pointer) => {
+            if (pointer.button) return false
             if (this.scene.selected_obj) {
                 this.scene.obj_to_display = this.scene.selected_obj
                 return true
@@ -87,6 +88,7 @@ export class UI {
         this.scene.input.on('gameobjectout', (pointer, gameObject) => this.scene.selected_obj = false)
 
         this.scene.input.on('pointermove', (pointer) => {
+            if (pointer.button) return false
             if (this.scene.selected_obj) return false
             if (pointer.isDown) {
                 if (pointer.downX < this.scene.game_padding[0]) return
