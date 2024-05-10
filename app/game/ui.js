@@ -3,9 +3,9 @@ export class UI {
         this.scene = scene
         this.scene.game_padding = [220, 10, 10, 10, 3]
         this.scene.ui_colors = [0x525151, 0x2b2b2b, 0xd1cdcd]
+        this.info_text_height = 100
 
-
-        this.scene.ui_layer = this.scene.add.layer().setInteractive()
+        this.scene.ui_layer = this.scene.add.layer()
         this.scene.game_layer = this.scene.add.layer()
         this.scene.forground_layer = this.scene.add.layer()
 
@@ -198,6 +198,35 @@ export class UI {
             }, 100)
         })
     }
+    set_info(text) {
+        if (!text) text = ''
+        if (text === this.scene.ui_text.text) return false
+
+        this.scene.ui_text.text = text
+        let h = this.scene.ui_text.height
+
+        if (h < this.scene.ui_text2.height) h = this.scene.ui_text2.height
+
+        if (this.scene.ui_text.height === this.info_text_height) return false
+        this.info_text_height = h
+
+        this.scene.ui_layer.fixed_ui = this.scene.add.graphics({ fillStyle: { color: this.scene.ui_colors[2] } })
+        this.scene.ui_layer.fixed_ui2 = this.scene.add.graphics({ fillStyle: { color: this.scene.ui_colors[1] } })
+
+        if (this.fixed_ui.g1) this.fixed_ui.g1.destroy()
+        if (this.fixed_ui.g2) this.fixed_ui.g2.destroy()
+        this.fixed_ui.g1 = this.scene.add.graphics({ fillStyle: { color: this.scene.ui_colors[2] } })
+        this.fixed_ui.g2 = this.scene.add.graphics({ fillStyle: { color: this.scene.ui_colors[1] } })
+
+        this.fixed_ui.g1.fillRectShape(new Phaser.Geom.Rectangle(200, 185, 50, 25))
+        this.fixed_ui.g1.fillRectShape(new Phaser.Geom.Rectangle(9, 168, 200, this.info_text_height + 20))
+        this.fixed_ui.g2.fillRectShape(new Phaser.Geom.Rectangle(14, 172, 32, this.info_text_height + 12))
+        this.fixed_ui.g2.fillRectShape(new Phaser.Geom.Rectangle(50, 172, 155, this.info_text_height + 12))
+        this.fixed_ui.add([this.fixed_ui.g1, this.fixed_ui.g2])
+
+        this.scene.ui_text3.y = h + 200
+    }
+
 
     init_ui() {
 
@@ -216,17 +245,17 @@ export class UI {
 
         //fixed stuff 
         if (!this.scene.ui_layer.fixed_ui) {
+            this.fixed_ui = this.scene.add.layer()
+
             this.scene.ui_layer.fixed_ui = this.scene.add.graphics({ fillStyle: { color: this.scene.ui_colors[2] } })
             this.scene.ui_layer.fixed_ui2 = this.scene.add.graphics({ fillStyle: { color: this.scene.ui_colors[1] } })
+
             this.scene.ui_layer.fixed_ui.fillRectShape(new Phaser.Geom.Rectangle(9, 8, 200, 152))
             this.scene.ui_layer.fixed_ui.fillRectShape(new Phaser.Geom.Rectangle(200, 90, 50, 25))
 
-            this.scene.ui_layer.fixed_ui.fillRectShape(new Phaser.Geom.Rectangle(9, 168, 200, 308))
-            this.scene.ui_layer.fixed_ui2.fillRectShape(new Phaser.Geom.Rectangle(14, 172, 32, 300))
-            this.scene.ui_layer.fixed_ui2.fillRectShape(new Phaser.Geom.Rectangle(50, 172, 155, 300))
-            this.scene.ui_layer.fixed_ui.fillRectShape(new Phaser.Geom.Rectangle(200, 185, 50, 25))
 
-            this.scene.ui_layer.add([this.scene.ui_layer.fixed_ui, this.scene.ui_layer.fixed_ui2])
+
+            this.scene.ui_layer.add([this.scene.ui_layer.fixed_ui, this.scene.ui_layer.fixed_ui2, this.fixed_ui])
 
             // info text zone
             if (this.scene.ui_text) this.scene.ui_text.destroy()
@@ -235,13 +264,14 @@ export class UI {
 
             // vertical text
             if (this.scene.ui_text2) this.scene.ui_text2.destroy()
-            this.scene.ui_text2 = this.scene.add.text(24, 175, 'BOMBERMAN'.split('').join('\n'), { font: '20px Roboto Mono', fill: '#d1cdcd', align: 'right' })
+            this.scene.ui_text2 = this.scene.add.text(24, 175, 'BOMBERMAN-BETA'.split('').join('\n'), { font: '20px Roboto Mono', fill: '#d1cdcd', align: 'right' })
             this.scene.ui_layer.add([this.scene.ui_text2])
 
             // bottom text
             if (this.scene.ui_text3) this.scene.ui_text3.destroy()
             this.scene.ui_text3 = this.scene.add.text(10, 480, 'MADE BY COJMAR (2024)', { font: '12px Roboto Mono', fill: '#d1cdcd', align: 'left' })
             this.scene.ui_layer.add([this.scene.ui_text3])
+
 
         }
 
