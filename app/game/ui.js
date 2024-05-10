@@ -264,7 +264,7 @@ export class UI {
 
             // vertical text
             if (this.scene.ui_text2) this.scene.ui_text2.destroy()
-            this.scene.ui_text2 = this.scene.add.text(24, 175, 'BOMBERMAN-BETA'.split('').join('\n'), { font: '20px Roboto Mono', fill: '#d1cdcd', align: 'right' })
+            this.scene.ui_text2 = this.scene.add.text(24, 175, 'BOMBERMAN-BETA'.split('').join('\n'), { font: '20px Roboto Mono', fill: '#d1cdcd', align: 'right' }).setBackgroundColor('#2b2b2b')
             this.scene.ui_layer.add([this.scene.ui_text2])
 
             // bottom text
