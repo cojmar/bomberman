@@ -153,35 +153,49 @@ class Main extends Phaser.Scene {
     join_game(game) {
         this.net.send_cmd('join', game)
     }
+    update() {
+        console.log(this.sys.game.loop.actualFps)
+    }
 }
 
-let net = new Network()
-net.on('connect', () => net.send_cmd('auth', { 'user': '', 'room': 'bomberman' }))
+new class {
+    constructor() {
+        this.mode = (window.location.hash.indexOf('gpu') !== -1) ? 'gpu' : 'cpu'
+        this.net = new Network()
+        this.net.on('connect', () => this.net.send_cmd('auth', { 'user': '', 'room': 'bomberman' }))
+        this.net.on('auth.info', (data) => this.start_game())
+        window.addEventListener("resize", () => this.resize())
+        this.net.connect('wss://ws.emupedia.net/ws/')
+        window.u_network = this.net
 
-net.on('auth.info', (data) => {
-    const game = new Phaser.Game({
-        type: (window.location.hash.indexOf('gpu') !== -1) ? Phaser.AUTO : Phaser.CANVAS,
-        width: window.innerWidth,
-        height: window.innerHeight,
-        parent: window,
-        physics: {
-            default: 'arcade',
-            arcade: {
-                gravity: { y: 0 },
-                fps: 60,
-                // debug: true // Show hitboxes
-            }
-        },
-        scene: [Main, Game]
-    })
-    let net_time = new Date(net.me.info.last_login_date).getTime()
-    let now_time = Date.now()
-    game.time = () => net_time + (Date.now() - now_time)
+    }
+    start_game() {
+        if (this.game) this.game.destroy(true, false)
+        this.game = new Phaser.Game({
+            type: (this.mode === 'cpu') ? Phaser.CANVAS : (this.mode === 'gpu') ? Phaser.WEBGL : Phaser.AUTO,
+            width: window.innerWidth,
+            height: window.innerHeight,
+            parent: window,
+            physics: {
+                default: 'arcade',
+                arcade: {
+                    gravity: { y: 0 },
+                    fps: 60,
+                    // debug: true // Show hitboxes
+                }
+            },
+            scene: [Main, Game]
+        })
 
-    game.net = net
-    game.net.on("cmd", (data) => { if (game.net_cmd) game.net_cmd(data) })
-    window.addEventListener("resize", () => (game.resize) ? game.resize() : false)
-})
+        let net_time = new Date(this.net.me.info.last_login_date).getTime()
+        let now_time = Date.now()
+        this.game.time = () => net_time + (Date.now() - now_time)
 
-net.connect('wss://ws.emupedia.net/ws/')
-window.u_network = net
+        this.game.net = this.net
+        this.game.net.on("cmd", (data) => { if (this.game.net_cmd) this.game.net_cmd(data) })
+        this.game.main = this
+    }
+    resize() {
+        if (this.game.resize) this.game.resize()
+    }
+}
