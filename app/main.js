@@ -153,9 +153,7 @@ class Main extends Phaser.Scene {
     join_game(game) {
         this.net.send_cmd('join', game)
     }
-    update() {
-        console.log(this.sys.game.loop.actualFps)
-    }
+
 }
 
 new class {

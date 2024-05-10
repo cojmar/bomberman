@@ -309,10 +309,25 @@ export class Game extends Phaser.Scene {
         }
 
         if (this.ui_text && this.obj_to_display) {
+            let fps = Math.floor(this.sys.game.loop.actualFps)
+            if (fps < 40 && !this.check_if_open_gl && this.sys.game.main.mode !== 'gpu') {
+                this.check_if_open_gl = true
+                let a = confirm("LOW FPS SWITCH TO GPU?")
+                if (a) {
+                    this.sys.game.main.mode = 'gpu'
+                    this.sys.game.main.start_game()
+
+                } else {
+                    this.game_camera.startFollow(this.player)
+                    this.game_camera.startFollow(this.player)
+                }
+
+                console.log(a)
+            }
             try {
                 let new_text =
                     [
-                        `FPS ${Math.floor(this.sys.game.loop.actualFps)} ${(this.game.renderer instanceof Phaser.Renderer.WebGL.WebGLRenderer) ? 'GPU' : 'CPU'}`,
+                        `FPS ${fps} ${(this.game.renderer instanceof Phaser.Renderer.WebGL.WebGLRenderer) ? 'GPU' : 'CPU'}`,
                         `Players ${Object.keys(this.net.room.users).length}`,
                         `                      `,
                         ...this.obj_to_display.info()
