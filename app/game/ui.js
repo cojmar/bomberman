@@ -149,7 +149,7 @@ export class UI {
     message_text(msg) {
         return new Promise((r) => {
             let x = (window.innerWidth + this.scene.game_padding[0] - this.scene.game_padding[4]) / 2
-            const text = this.scene.add.text(x, 100, msg, { fontFamily: 'Arial Black', fontSize: 80, strokeThickness: 3, stroke: '#ffffff', align: 'center' })
+            const text = this.scene.add.text(x, 100, msg, { fontFamily: 'Roboto Mono', fontSize: 80, strokeThickness: 3, stroke: '#ffffff', align: 'center', fontStyle: 'bold' })
 
             const gradient = text.context.createLinearGradient(0, 0, 0, text.height)
 
@@ -235,7 +235,7 @@ export class UI {
 
             // vertical text
             if (this.scene.ui_text2) this.scene.ui_text2.destroy()
-            this.scene.ui_text2 = this.scene.add.text(24, 175, 'BOMBERMAN-BETA'.split('').join('\n'), { font: '20px Roboto Mono', fill: '#d1cdcd', align: 'right' })
+            this.scene.ui_text2 = this.scene.add.text(24, 175, 'BOMBERMAN'.split('').join('\n'), { font: '20px Roboto Mono', fill: '#d1cdcd', align: 'right' })
             this.scene.ui_layer.add([this.scene.ui_text2])
 
             // bottom text

@@ -6,6 +6,7 @@ class Main extends Phaser.Scene {
         super({ key: 'main' })
     }
     preload() {
+        this.load.script('webfont', './assets/js/webfont.js')
         this.sys.game.preloader = (scene) => {
             if (!scene) scene = this
             let width = window.innerWidth
@@ -75,7 +76,17 @@ class Main extends Phaser.Scene {
             this.load.image('logo' + i, 'zenvalogo.png')
         }
     }
-    create() {
+    async create() {
+
+        await new Promise(r => WebFont.load({
+            custom: {
+                families: ['Roboto Mono']
+            },
+            active: function () {
+                r()
+            }
+        }))
+
         if (!this.sys.game.default_room) this.sys.game.default_room = this.sys.game.net.me.room
         this.sys.game.net_cmd = (data) => this.net_cmd(data)
         this.sys.game.resize = () => this.on_resize()
@@ -124,7 +135,7 @@ class Main extends Phaser.Scene {
         this.sys.game.scale.resize(window.innerWidth, window.innerHeight)
     }
     add_text(x, y, size, data, yello_gradient = true) {
-        const text = this.add.text(x, y, data, { fontFamily: 'Arial Black', fontSize: size, strokeThickness: 3, stroke: '#ffffff', align: 'left' })
+        const text = this.add.text(x, y, data, { fontFamily: 'Roboto Mono', fontSize: size, strokeThickness: 2, stroke: '#ffffff', align: 'left', fontStyle: 'bold' })
         const gradient = text.context.createLinearGradient(0, 0, 0, text.height)
         gradient.addColorStop(0, '#f26522')
         if (yello_gradient) gradient.addColorStop(0.5, '#fff200')
