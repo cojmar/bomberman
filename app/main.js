@@ -82,9 +82,7 @@ class Main extends Phaser.Scene {
             custom: {
                 families: ['Roboto Mono']
             },
-            active: function () {
-                r()
-            }
+            active: () => r()
         }))
 
         if (!this.sys.game.default_room) this.sys.game.default_room = this.sys.game.net.me.room
