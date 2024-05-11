@@ -322,7 +322,7 @@ export class Game extends Phaser.Scene {
                     this.game_camera.startFollow(this.player)
                 }
 
-                console.log(a)
+
             }
             try {
                 let new_text =

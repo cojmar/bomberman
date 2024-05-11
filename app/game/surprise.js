@@ -61,23 +61,15 @@ export class Surprise extends GameObject {
     }
     create() {
         this.setTexture()
-        let center = 0
-        this.graphics = this.scene.add.graphics({ fillStyle: { color: 0x000000 } })
 
-        const circle = new Phaser.Geom.Circle(- center, - center, 10)
-        this.graphics.fillCircleShape(circle)
+        this.graphics = this.scene.add.graphics({ fillStyle: { color: 0xffffff } })
+        this.graphics.fillCircleShape(new Phaser.Geom.Circle(0, 0, 12))
+        this.graphics.fillStyle(0x000000)
+        this.graphics.fillCircleShape(new Phaser.Geom.Circle(0, 0, 10))
 
-
-
-        this.graphics.lineStyle(20, 0xffffff)
-
-        this.graphics.beginPath()
-        this.graphics.arc(- center, - center, 1, Phaser.Math.DegToRad(0), Phaser.Math.DegToRad(360), false, 0.001)
-        this.graphics.strokePath()
-        this.graphics.closePath()
         this.scene.game_layer.add(this.graphics)
-        this.graphics.x = this.x + center
-        this.graphics.y = this.y + center
+        this.graphics.x = this.x
+        this.graphics.y = this.y
 
         if (!this.ndata.stype) this.ndata.stype = this.random().pick(['💥', '💣', '💨'])
         //this.ndata.stype = '💨'
